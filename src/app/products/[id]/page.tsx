@@ -5,6 +5,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { useCart } from "@/app/context/CartContext";
+import Link from "next/link";
 
 interface Product {
   id: number;
@@ -17,6 +19,7 @@ interface Product {
 export default function ProductDetailPage() {
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     if (!id) {
@@ -42,6 +45,17 @@ export default function ProductDetailPage() {
         <b>Car:</b> {product.car}
       </p>
       <p>${product.priceCad} CAD</p>
+      <button
+        onClick={() => {
+          addToCart(product);
+          alert("Added to cart"); // 临时确认点击确实发生
+        }}
+      >
+        Add to Cart
+      </button>
+      <Link href="/cart">
+        <button style={{ marginLeft: 8 }}>Go to Cart</button>
+      </Link>
     </main>
   );
 }

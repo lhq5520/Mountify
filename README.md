@@ -64,3 +64,22 @@ Dynamic routing [id] You’ll be able to build any kind of “detail page” or 
 useParams The standard way to read URL parameters.
 fetch + find The logic behind filtering and retrieving data.
 Component navigation (Link) The foundation of how routes and pages connect.
+
+## Step 1C:
+
+✅ Test this out!
+
+Open /product/1 → Click “Add to Cart”
+
+Open /cart → Check whether the item you just added appears
+
+Add it a few more times → See if the quantity increases
+
+Click “Remove” → Check if the item can be deleted
+
+🧭 After completing this, you’ll have learned:
+
+Concept Practical Meaning
+Context / Provider A way to share state across multiple pages
+Custom Hook (useCart) A good habit for encapsulating reusable logic
+State update logic (setCart(prev => ...)) The core of React’s “immutable updates” concept
