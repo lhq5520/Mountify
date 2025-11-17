@@ -1,7 +1,12 @@
+// Goal: show single page description
+// Data: from /api/products, pull all products and filter out coresponding id
+
 "use client";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { useCart } from "@/app/context/CartContext";
+import Link from "next/link";
 
 interface Product {
   id: number;
@@ -14,38 +19,23 @@ interface Product {
 export default function ProductDetailPage() {
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();
 
   useEffect(() => {
-    if (!id) return;
-
-    async function load() {
-      try {
-        const res = await fetch(`/api/products/${id}`);
-        if (!res.ok) {
-          const err = await res.json();
-          setError(err.error || "Failed to load product");
-          setProduct(null);
-        } else {
-          const data = await res.json();
-          setProduct(data.product);
-          setError(null);
-        }
-      } catch (e) {
-        setError("Network error");
-        setProduct(null);
-      } finally {
-        setLoading(false);
-      }
+    if (!id) {
+      return;
     }
-
-    load();
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        const final = data.products.find((p: Product) => p.id === Number(id));
+        setProduct(final);
+      });
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (!product) return <p>Product not found.</p>;
+  if (!product) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <main style={{ padding: "20px" }}>
@@ -54,7 +44,18 @@ export default function ProductDetailPage() {
       <p>
         <b>Car:</b> {product.car}
       </p>
-      <p>${product.priceCad.toFixed(2)} CAD</p>
+      <p>${product.priceCad} CAD</p>
+      <button
+        onClick={() => {
+          addToCart(product);
+          alert("Added to cart"); // 临时确认点击确实发生
+        }}
+      >
+        Add to Cart
+      </button>
+      <Link href="/cart">
+        <button style={{ marginLeft: 8 }}>Go to Cart</button>
+      </Link>
     </main>
   );
 }
