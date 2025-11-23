@@ -144,3 +144,55 @@ At this point, you already have:
 ✅ Simple admin panel: /admin/orders to view all orders
 
 This is already a fully functional end-to-end e-commerce MVP — just missing payments and real user management.
+
+## Step 2D:
+
+Stripe Checkout Integration (Learning Version)
+Goal
+Integrate Stripe Checkout to enable test payment processing in the e-commerce MVP, focusing on understanding the payment flow rather than production-ready security.
+What Was Implemented
+
+1. Backend API Endpoint (/api/checkout/route.ts)
+
+Created POST endpoint to generate Stripe Checkout Sessions
+Converts cart items into Stripe's line_items format
+Handles price conversion (CAD dollars → cents)
+Returns checkout URL for frontend redirection
+Note: Currently accepts frontend-provided prices without database verification (security limitation acknowledged for learning purposes)
+
+2. Success Page (/checkout/success/page.tsx)
+
+Client component to display payment confirmation
+Reads session_id from URL query parameters
+Provides user feedback after successful payment
+Note: Does not verify session validity with Stripe (to be improved in future iterations)
+
+3. Cart Page Enhancement (/cart/page.tsx)
+
+Added handleStripeCheckout() function
+Sends cart data (including product names) to /api/checkout
+Redirects browser to Stripe's hosted payment page using window.location.href
+Maintains existing order creation functionality
+
+Technical Flow Achieved
+
+User clicks "Checkout" → Frontend sends cart data to backend
+Backend creates Stripe Session → Receives payment URL
+Browser redirects to Stripe's hosted checkout page
+User enters test card details (4242 4242 4242 4242)
+On success → Stripe redirects to /checkout/success
+On cancel → Stripe redirects back to /cart
+
+Key Learnings
+
+Checkout Session concept: Temporary authorization token containing order details
+Separation of concerns: Credit card data never touches your server (PCI compliance)
+Payment flow timeline: Session creation ≠ payment completion
+Security awareness: Identified two critical issues for future improvement:
+
+Trusting frontend-provided prices
+No session validation on success page
+
+Status
+✅ Functional for testing and learning
+⚠️ Not production-ready - requires database price validation and webhook integration

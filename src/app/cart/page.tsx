@@ -13,7 +13,7 @@ export default function CartPage() {
     0
   );
 
-  async function handleCheckout() {
+  async function handleStripeCheckout() {
     if (cart.length === 0) {
       setMessage("Cart is empty.");
       return;
@@ -23,7 +23,7 @@ export default function CartPage() {
     setMessage(null);
 
     try {
-      const res = await fetch("/api/orders", {
+      const res = await fetch("/api/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,25 +33,21 @@ export default function CartPage() {
           email: "test@example.com",
           items: cart.map((item) => ({
             productId: item.id,
+            name: item.name,
             quantity: item.quantity,
             priceCad: item.priceCad,
           })),
         }),
       });
 
-      const data = await res.json();
+      const data = await res.json(); // data = { url: "https://checkout.stripe.com/..." }
 
       if (!res.ok) {
         setMessage(data.error || "Failed to create order.");
         return;
       }
 
-      setMessage(
-        `Order created! ID: ${data.orderId}, total $${data.total.toFixed(
-          2
-        )} CAD`
-      );
-      clearCart();
+      window.location.href = data.url;
     } catch (e) {
       setMessage("Network error during checkout.");
     } finally {
@@ -75,7 +71,7 @@ export default function CartPage() {
       <hr />
       <p>Total: ${total.toFixed(2)} CAD</p>
 
-      <button onClick={handleCheckout} disabled={loading}>
+      <button onClick={handleStripeCheckout} disabled={loading}>
         {loading ? "Processing..." : "Checkout"}
       </button>
 
