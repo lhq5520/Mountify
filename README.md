@@ -707,3 +707,5 @@ if (success) {
 - User authentication
 - Real email confirmation
 - Better error handling
+
+Version 3A:

@@ -42,12 +42,12 @@
 
   body {
     color: var(--color-text-primary);
-    background-color: var(--color-background);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      "Helvetica Neue", Arial, sans-serif;
-    line-height: 1.6;
-    text-wrap: pretty;
-    @apply antialiased;
+      background-color: var(--color-background);
+      font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      text-wrap: pretty;
+      @apply antialiased;
   }
 
   *:focus-visible {

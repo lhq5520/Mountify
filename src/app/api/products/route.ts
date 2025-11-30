@@ -12,6 +12,7 @@ export async function GET() {
     description: row.description,
     image_url: row.image_url,
     image_url_hover: row.image_url_hover,
+    detailed_description: row.detailed_description,
   }));
 
   return NextResponse.json({ products });

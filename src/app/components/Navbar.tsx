@@ -13,7 +13,7 @@ export default function Navbar() {
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <nav className="bg-white border-b border-[var(--color-border)] sticky top-0 z-[var(--z-sticky)]">
+    <nav className="bg-white/95 backdrop-blur border-b border-[var(--color-border)] sticky top-0 z-50">
       <div className="container-custom">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
