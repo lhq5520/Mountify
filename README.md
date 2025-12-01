@@ -710,4 +710,1084 @@ if (success) {
 - Real email confirmation
 - Better error handling
 
-Version 3A:
+# Version 3A: UI/UX Complete Redesign
+
+## Overview
+
+Completed a comprehensive UI/UX overhaul of the entire e-commerce application, establishing a production-ready design system inspired by premium brands (MyProtein, Verve Coffee, Pure Cycles, Apple). The redesign prioritizes visual refinement, smooth interactions, and a cohesive user experience across all pages.
+
+---
+
+## Goals
+
+- Establish a comprehensive design system with global CSS variables
+- Implement a premium, Apple-like aesthetic ("细腻丝滑的感觉" - delicate and smooth feeling)
+- Create consistent visual language across all pages
+- Build responsive layouts for mobile, tablet, and desktop
+- Add subtle, meaningful animations and interactions
+- Move from "programmer UI" to production-quality design
+
+---
+
+## Design Philosophy
+
+### Core Principles
+
+1. **Minimalism with Purpose** - Every element serves a function
+2. **Generous Whitespace** - Let content breathe
+3. **Smooth Transitions** - All interactions feel refined (200-500ms)
+4. **Subtle Details** - Micro-animations, shadow depth changes, hover effects
+5. **Typography Hierarchy** - Clear visual levels through size and weight
+6. **Restrained Color Palette** - Black, white, gray foundation with blue accent
+
+### Design Inspirations
+
+- **MyProtein**: 4-column product grid, hover image transitions
+- **Verve Coffee**: Clean layouts, generous spacing
+- **Pure Cycles**: Minimalist product cards, clear typography
+- **Apple**: Refined interactions, subtle shadows, breathing room
+
+---
+
+## What Was Implemented
+
+### 1. Global Design System Foundation
+
+#### File: `src/app/globals.css`
+
+**Established comprehensive CSS variables:**
+
+```css
+:root {
+  /* Colors */
+  --color-primary: #007aff; /* Apple blue */
+  --color-text-primary: #1a1a1a; /* Near-black (softer than pure black) */
+  --color-text-secondary: #666666; /* Mid-gray */
+  --color-text-tertiary: #999999; /* Light gray */
+  --color-background: #fafafa; /* Off-white (not pure white) */
+  --color-surface: #ffffff; /* Card backgrounds */
+  --color-border: #e5e5e5; /* Subtle borders */
+
+  /* Border Radius */
+  --radius-md: 12px;
+  --radius-full: 9999px;
+}
+```
+
+**Dark mode support:**
+
+- Automatic system preference detection
+- Inverted color scheme for dark environments
+- Maintains contrast and readability
+
+**Global resets and base styles:**
+
+- Smooth scrolling
+- Font smoothing for better rendering
+- Custom scrollbar styling (thin, subtle)
+- Focus-visible states for accessibility
+- Print-friendly styles
+
+**Custom animations:**
+
+```css
+@keyframes fadeIn
+@keyframes fadeInUp
+@keyframes shimmer;
+```
+
+**Utility components:**
+
+- `.glass` - Glassmorphism effect
+- `.container-custom` - Consistent max-width container
+- `.skeleton` - Loading state shimmer animation
+
+---
+
+### 2. Root Layout Architecture
+
+#### File: `src/app/layout.tsx`
+
+**Implemented global layout structure:**
+
+```typescript
+<html lang="en" className={inter.variable}>
+  <body>
+    <CartProvider>
+      <Navbar /> // Global navigation
+      <main>{children}</main> // Page content
+      <Footer /> // Global footer
+    </CartProvider>
+  </body>
+</html>
+```
+
+**Key improvements:**
+
+- ✅ Inter font integration from Google Fonts
+- ✅ Metadata configuration (title, description, favicon)
+- ✅ CartProvider wraps entire app
+- ✅ Navbar appears on all pages
+- ✅ Consistent footer
+- ✅ Flexbox layout ensures footer sticks to bottom
+
+**Font configuration:**
+
+```typescript
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap", // Prevents invisible text during load
+});
+```
+
+---
+
+### 3. Global Navigation Component
+
+#### File: `src/app/components/Navbar.tsx`
+
+**Features:**
+
+- Sticky positioning (stays on top during scroll)
+- Brand logo with hover transition
+- Desktop horizontal menu
+- Mobile hamburger menu with slide-down animation
+- Shopping cart icon with dynamic badge showing item count
+- Backdrop blur effect (`bg-white/95 backdrop-blur`)
+
+**Responsive behavior:**
+
+- Desktop: Horizontal navigation with cart icon
+- Mobile: Hamburger menu → full dropdown menu
+- Cart badge animates in when items added (`animate-scaleIn`)
+
+**Technical details:**
+
+```typescript
+const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
+// Displays total quantity across all cart items
+```
+
+---
+
+### 4. Homepage Redesign
+
+#### File: `src/app/page.tsx`
+
+**Design approach: Full-bleed hero with content overlay**
+
+**Structure:**
+
+1. **Hero Section** (70-80vh height)
+
+   - Full-width background image
+   - Gradient overlay for text readability
+   - Content positioned on left side
+   - Badge, headline, subtitle, dual CTAs
+
+2. **Brand Story Section**
+   - Dark gradient background
+   - Centered prose layout
+   - Story about brand origins
+
+**Key features:**
+
+- Toggle between normal/sale mode via `IS_SALE` constant
+- Responsive image with Next.js Image component
+- Gradient overlay: `from-black/80 via-black/55 to-black/5`
+- Dual CTA buttons: Primary (solid) + Secondary (outline)
+
+**Typography:**
+
+```typescript
+badge: uppercase, 11px, wide letter-spacing
+title: 3xl-5xl, semibold, pre-line (allows \n breaks)
+subtitle: responsive, relaxed line-height
+```
+
+---
+
+### 5. Products Listing Page
+
+#### File: `src/app/products/page.tsx`
+
+**Layout: 4-column responsive grid**
+
+- Desktop (xl): 4 columns
+- Laptop (lg): 3 columns
+- Tablet (md): 2 columns
+- Mobile: 1 column
+
+**Product card features:**
+
+- **Aspect ratio**: 4:5 (portrait, similar to MyProtein)
+- **Hover image transition**: Smooth 300ms fade between main and hover images
+- **Image implementation**: Next.js Image component with proper sizing
+- **Content**: Product name, description (line-clamped), price
+- **CTA**: "View details" link (subtle, doesn't steal attention)
+
+**Loading states:**
+
+- Skeleton loaders (8 placeholder cards)
+- Pulse animation during load
+
+**Empty states:**
+
+- Graceful message when no products available
+
+**Technical highlights:**
+
+```typescript
+// Image transition on hover
+className = "transition-opacity duration-300 group-hover:opacity-0";
+// Hover image
+className = "opacity-0 transition-opacity duration-300 group-hover:opacity-100";
+```
+
+**Design details:**
+
+- Cards use `rounded-2xl` for modern look
+- Background: `#f1f2f4` (neutral gray for image containers)
+- Gap between cards: 6-8 units (24-32px)
+- Sort/filter UI placeholder for future functionality
+
+---
+
+### 6. Product Detail Page
+
+#### File: `src/app/products/[id]/page.tsx`
+
+**Layout: Two-column split**
+
+- Left: Large product image (4:5 aspect ratio)
+- Right: Product information and actions
+
+**Content hierarchy:**
+
+1. Breadcrumb: "← Back to products"
+2. Product badge: "Product detail" (small uppercase)
+3. Product name (2xl-3xl, semibold)
+4. Description (small, relaxed)
+5. Price (xl, semibold)
+6. Add to Cart + Go to Cart buttons
+7. Fine print (returns, taxes info)
+8. Detailed description section (if available)
+
+**Loading states:**
+
+- Full skeleton layout matching final structure
+- Pulse animation
+
+**Error states:**
+
+- "Product not found" message
+- Back navigation available
+
+**CTA buttons:**
+
+- Primary: "Add to Cart" (solid black → hover gray-900)
+- Secondary: "Go to Cart" (outlined)
+- Alert notification on add (can be replaced with toast later)
+
+---
+
+### 7. Shopping Cart Page
+
+#### File: `src/app/cart/page.tsx`
+
+**Layout: Two-column grid on desktop**
+
+- Left (2fr): Cart items list
+- Right (~1fr): Order summary sidebar
+
+**Cart item cards:**
+
+- Rounded white cards with subtle shadow
+- Product name, quantity, unit price
+- Calculated item total
+- Remove button (text link style)
+
+**Order summary sidebar:**
+
+- Sticky positioning (stays visible during scroll)
+- Subtotal display
+- Tax/shipping disclaimer
+- "Checkout with Stripe" primary button
+- "Clear cart" secondary button
+- Status messages display
+
+**Empty state:**
+
+- Dashed border card with centered message
+- "Browse products" CTA
+
+**Responsive behavior:**
+
+- Desktop: Two columns
+- Mobile: Stacked (items then summary)
+
+**Visual polish:**
+
+- Gradient background: `from-[#f5f5f7] to-white`
+- Rounded corners: 2xl (16px)
+- Shadow: Subtle, professional
+- Button states: Disabled styling during loading
+
+---
+
+### 8. Checkout Success Page
+
+#### File: `src/app/checkout/success/page.tsx`
+
+**Design: Centered card with status visualization**
+
+**Status icons (top of card):**
+
+- ✅ Green checkmark circle: Payment succeeded
+- ⏳ Spinning loader: Confirming payment (gray)
+- ⚠️ Yellow exclamation: Timeout warning
+- ❌ Red X: Error state
+
+**Content structure:**
+
+1. Icon (64x64 circle)
+2. Status headline (2xl-3xl)
+3. Supporting text
+4. Order Summary card (gray background)
+   - Payment status
+   - Customer email
+   - Session ID
+5. "Back to Home" button
+
+**Polling visualization:**
+
+- Shows "Attempt X of 15" during confirmation
+- Smooth transitions between states
+- Clear messaging for each state
+
+**Visual details:**
+
+- Gradient background: `from-[#f0f4ff] to-white` (subtle blue tint)
+- Main card: Large rounded corners (3xl), prominent shadow
+- Summary card: Nested inside, contrasting background
+
+---
+
+## Technical Implementation Details
+
+### CSS Architecture
+
+**Layer structure:**
+
+```css
+@layer base {
+  ...;
+} // CSS variables, global resets
+@layer components {
+  ...;
+} // Reusable component classes
+@layer utilities {
+  ...;
+} // Animation utilities
+```
+
+**Benefits:**
+
+- Proper cascade control
+- Easy to override
+- Clear separation of concerns
+
+### Responsive Design Strategy
+
+**Breakpoints used:**
+
+- `sm:` 640px (mobile landscape)
+- `md:` 768px (tablet)
+- `lg:` 1024px (laptop)
+- `xl:` 1280px (desktop)
+
+**Grid patterns:**
+
+- Products: 1 → 2 → 3 → 4 columns
+- Product detail: Stack → 2 columns
+- Cart: Stack → sidebar layout
+
+### Animation Strategy
+
+**Transition timing:**
+
+- Fast: 150ms (micro-interactions)
+- Base: 200ms (standard interactions)
+- Slow: 300-500ms (image transitions, page loads)
+
+**Easing:**
+
+- `cubic-bezier(0.4, 0, 0.2, 1)` - Smooth deceleration
+- Matches Apple's animation curves
+
+### Image Optimization
+
+**Next.js Image component usage:**
+
+- Automatic lazy loading
+- Responsive srcset generation
+- Proper sizing hints for performance
+- Priority loading for above-fold images
+
+**Sizes attribute examples:**
+
+```typescript
+// Products grid
+sizes = "(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw";
+
+// Detail page
+sizes = "(min-width: 1280px) 40vw, (min-width: 768px) 50vw, 100vw";
+```
+
+---
+
+## Files Created/Modified
+
+### New Files
+
+```
+src/app/components/Navbar.tsx
+```
+
+### Modified Files
+
+```
+src/app/globals.css              // Complete redesign
+src/app/layout.tsx              // Added Navbar, Footer, Inter font
+src/app/page.tsx                // Hero redesign
+src/app/products/page.tsx       // 4-column grid with hover effects
+src/app/products/[id]/page.tsx  // Two-column detail layout
+src/app/cart/page.tsx           // Refined cart UI
+src/app/checkout/success/page.tsx  // Enhanced status display
+```
+
+### Database Changes
+
+```sql
+-- Remove unused column
+ALTER TABLE products DROP COLUMN car;
+
+-- Add image support
+ALTER TABLE products
+ADD COLUMN image_url TEXT,
+ADD COLUMN image_url_hover TEXT;
+```
+
+---
+
+## Key Design Patterns
+
+### 1. Consistent Card Styling
+
+```typescript
+// Base card style used throughout
+rounded-2xl               // 16px border radius
+bg-white                 // Clean white surface
+border border-[var(--color-border)]  // Subtle border
+shadow-sm                // Soft shadow
+hover:shadow-lg          // Deeper shadow on hover
+transition-all duration-300  // Smooth state changes
+```
+
+### 2. Typography Hierarchy
+
+```
+Page title: text-2xl md:text-3xl font-semibold
+Section title: text-lg font-semibold
+Body text: text-sm md:text-base
+Small print: text-xs
+Labels: text-[11px] uppercase tracking-[0.16em]
+```
+
+### 3. Button Patterns
+
+**Primary action:**
+
+```typescript
+bg-black text-white hover:bg-gray-900
+rounded-full px-6 py-2.5
+```
+
+**Secondary action:**
+
+```typescript
+border border-[var(--color-border)] bg-white
+text-[var(--color-text-secondary)]
+hover:border-gray-400
+```
+
+### 4. Interactive States
+
+```
+Default → Hover → Active
+- Color shift
+- Scale change (active:scale-95)
+- Shadow depth change
+- Translate Y (hover:-translate-y-1)
+```
+
+---
+
+## Color Palette Rationale
+
+### Why Not Pure Black/White?
+
+**Instead of:**
+
+- `#000000` (pure black) → Too harsh
+- `#FFFFFF` on `#FFFFFF` → No depth
+
+**We use:**
+
+- `#1A1A1A` - Near-black (easier on eyes)
+- `#FAFAFA` - Off-white background (subtle warmth)
+- `#E5E5E5` - Nearly invisible borders (define space without shouting)
+
+### Primary Blue: #007AFF
+
+- Apple's signature blue
+- High contrast against black/white
+- Universally recognizable as interactive
+- Hover state: `#0051D5` (slightly darker)
+
+---
+
+## Responsive Design Strategy
+
+### Mobile-First Approach
+
+All layouts start with mobile (single column) and progressively enhance:
+
+```typescript
+// Base: Mobile (1 column)
+grid grid-cols-1
+
+// Tablet: 2 columns
+sm:grid-cols-2
+
+// Laptop: 3 columns
+lg:grid-cols-3
+
+// Desktop: 4 columns
+xl:grid-cols-4
+```
+
+### Breakpoint-Specific Behaviors
+
+**Navigation:**
+
+- Desktop: Horizontal menu
+- Mobile: Hamburger → dropdown
+
+**Product grid:**
+
+- Mobile: 1 column, larger cards
+- Tablet: 2 columns
+- Laptop: 3 columns
+- Desktop: 4 columns (MyProtein style)
+
+**Typography:**
+
+- Mobile: Smaller font sizes (text-2xl)
+- Desktop: Larger, more impactful (text-5xl)
+
+---
+
+## Component-by-Component Breakdown
+
+### Homepage (`/`)
+
+**Hero Section:**
+
+- Full-viewport height (70-80vh)
+- Background image with gradient overlay
+- Toggle-able sale/normal mode via constant
+- Dual CTA buttons with different visual weights
+
+**Brand Story Section:**
+
+- Dark gradient background (`from-black to-[#050509]`)
+- Centered prose layout (max-w-3xl)
+- Muted white text for readability
+
+**Design decisions:**
+
+- Image-first approach (product photography drives interest)
+- Gradient ensures text readability over varied images
+- Two CTAs: Primary (shop now) + Secondary (explore)
+
+---
+
+### Products Listing (`/products`)
+
+**Grid Layout:**
+
+- 4 columns on desktop (xl:grid-cols-4)
+- 24-32px gaps for breathing room
+- Consistent aspect ratio (4:5) across all cards
+
+**Product Card Anatomy:**
+
+1. Image container (aspect-[4/5], rounded-2xl)
+2. Main image (default state)
+3. Hover image (opacity transition)
+4. Product name (line-clamp-2)
+5. Short description (line-clamp-2)
+6. Price (right-aligned)
+7. "View details" link (subtle, doesn't compete with card click)
+
+**Hover effects:**
+
+- Image crossfade (500ms)
+- Card doesn't lift (keeps grid stable)
+- Text color shift to primary blue
+
+**Loading experience:**
+
+- 8 skeleton cards with pulse animation
+- Maintains layout during load (no CLS)
+
+**Empty state:**
+
+- Centered message
+- Encourages action
+
+---
+
+### Product Detail (`/products/[id]`)
+
+**Two-column layout:**
+
+- Left: Large product image (60% width)
+- Right: Product information (40% width)
+
+**Information hierarchy:**
+
+1. Breadcrumb navigation
+2. Category badge (uppercase, tiny)
+3. Product name (large, bold)
+4. Short description
+5. Price (prominent, large)
+6. Action buttons (Add to Cart primary, Go to Cart secondary)
+7. Fine print (returns policy, shipping)
+8. Detailed description (collapsible section below)
+
+**Image treatment:**
+
+- Same 4:5 aspect ratio as listing
+- Rounded corners
+- Neutral background
+- Badge overlay indicating hover image exists
+
+**Paragraph rendering:**
+
+```typescript
+// Splits detailed_description by double line breaks
+.split(/\n{2,}|\r?\n/).filter(Boolean).map(...)
+// Preserves paragraphs with whitespace-pre-line
+```
+
+---
+
+### Shopping Cart (`/cart`)
+
+**Header section:**
+
+- Page title + subtitle
+- "Continue shopping" link (right-aligned on desktop)
+
+**Grid layout:**
+
+- Desktop: 2fr (items) + 0.9fr (summary)
+- Mobile: Stacked
+
+**Cart item cards:**
+
+- White cards with subtle shadow
+- Left-aligned: Product info, quantity, unit price
+- Right-aligned: Item total, Remove button
+
+**Order summary sidebar:**
+
+- Sticky on desktop (scrolls with items on mobile)
+- Subtotal calculation
+- Disclaimer text (taxes/shipping)
+- Primary CTA: "Checkout with Stripe"
+- Secondary: "Clear cart"
+- Status message display area
+
+**Empty state:**
+
+- Dashed border card (visual emptiness)
+- Encouraging copy
+- CTA to browse products
+
+---
+
+### Checkout Success (`/checkout/success`)
+
+**Centered card approach:**
+
+- Max-width: 3xl (768px)
+- Large rounded card with prominent shadow
+- Gradient background for visual interest
+
+**Status visualization:**
+
+- Icon-first design (64x64 circles)
+- Color-coded states:
+  - Green: Success
+  - Gray: Loading
+  - Yellow: Timeout warning
+  - Red: Error
+
+**Dynamic content based on polling:**
+
+```
+Pending (< 15 attempts):
+  - Spinner icon
+  - "Confirming your payment..."
+  - Attempt counter
+
+Paid:
+  - Checkmark icon
+  - "Thank you for your purchase"
+  - Order number display
+
+Timeout (≥ 15 attempts):
+  - Warning icon
+  - "Still checking..."
+  - Support message
+```
+
+**Order summary card:**
+
+- Nested card with gray background
+- Payment status
+- Customer email
+- Session ID reference
+
+---
+
+## Animation & Interaction Details
+
+### Micro-interactions
+
+**Button press:**
+
+```css
+active: scale-95; /* Slight shrink on click */
+```
+
+**Card hover:**
+
+```css
+hover:-translate-y-1  /* Subtle lift */
+hover:shadow-lg       /* Shadow deepens */
+```
+
+**Image crossfade:**
+
+```css
+transition-opacity duration-500  /* Smooth fade */
+```
+
+**Badge appear:**
+
+```css
+animate-scaleIn  /* Pops in when cart count increases */
+```
+
+### Loading Animations
+
+**Skeleton shimmer:**
+
+```css
+background: linear-gradient(90deg, gray → white → gray)
+background-size: 200% 100%
+animation: shimmer 2s infinite
+```
+
+**Spinner:**
+
+```css
+animate-spin  /* Rotating loader */
+border-2 border-gray-400 border-t-transparent
+```
+
+---
+
+## Accessibility Improvements
+
+### Focus Management
+
+```css
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+```
+
+### Reduced Motion Support
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+### Semantic HTML
+
+- Proper heading hierarchy (h1 → h2 → h3)
+- `<article>` for cart items
+- `<nav>` for navigation
+- ARIA labels on interactive elements
+
+### Keyboard Navigation
+
+- All interactive elements focusable
+- Clear focus indicators
+- Logical tab order
+
+---
+
+## Performance Optimizations
+
+### Image Optimization
+
+```typescript
+// Proper sizing prevents over-fetching
+sizes="(min-width: 1280px) 25vw, ..."
+
+// Priority loading for above-fold
+priority={true}
+
+// Lazy loading for below-fold (default)
+```
+
+### Font Loading
+
+```typescript
+display: "swap"  // Show fallback font while loading
+preconnect to fonts.googleapis.com  // DNS prefetch
+```
+
+### Animation Performance
+
+```css
+will-change: transform,
+  opacity // GPU acceleration hint;
+```
+
+### CSS Layer Organization
+
+- Reduces specificity wars
+- Predictable cascade
+- Smaller final bundle (unused styles eliminated)
+
+---
+
+## Design Token Philosophy
+
+### Why CSS Variables Over Tailwind Config?
+
+**Advantages:**
+
+1. **Runtime flexibility** - Can change based on user preference (dark mode)
+2. **Easy theming** - Override variables for different brands
+3. **Works with Tailwind** - Can use both: `text-[var(--color-primary)]`
+4. **Inspector-friendly** - See computed values in DevTools
+5. **No rebuild needed** - Changes apply immediately
+
+**Usage pattern:**
+
+```typescript
+// In Tailwind classes
+bg-[var(--color-surface)]
+
+// In inline styles
+style={{ color: 'var(--color-text-primary)' }}
+
+// In CSS files
+background-color: var(--color-background);
+```
+
+---
+
+## Known Limitations & Trade-offs
+
+### Current State
+
+- ⚠️ Some text still uses inline `style={{}}` for CSS variables (Tailwind JIT limitation)
+- ⚠️ Product images use placeholder URLs (need real product photography)
+- ⚠️ "Add to favorites" button non-functional (UI only)
+- ⚠️ Sort/filter dropdown non-functional (placeholder)
+- ⚠️ Mobile menu doesn't animate smoothly (can enhance with Framer Motion)
+
+### Design Decisions
+
+- ✅ Chose not to add star ratings (per request - keeps UI cleaner)
+- ✅ No modal for spec selection (Phase 2 feature)
+- ✅ Direct "Add to Cart" (one-click action prioritized over customization)
+- ✅ Alert() for cart confirmation (can upgrade to toast library later)
+
+---
+
+## Testing Checklist
+
+### Visual Testing
+
+✅ Desktop (1920px): All layouts render correctly  
+✅ Laptop (1440px): Grid adjusts properly  
+✅ Tablet (768px): 2-column layouts work  
+✅ Mobile (375px): Single column, hamburger menu
+
+### Interaction Testing
+
+✅ Hover image transitions work smoothly  
+✅ Cart badge updates when items added  
+✅ Mobile menu opens/closes  
+✅ All links navigate correctly  
+✅ Buttons show disabled states  
+✅ Loading skeletons display during data fetch
+
+### Browser Testing
+
+✅ Chrome/Edge (Chromium): Full support  
+✅ Firefox: Full support  
+✅ Safari: Full support (backdrop-filter works)
+
+### Accessibility Testing
+
+✅ Keyboard navigation works  
+✅ Focus indicators visible  
+✅ Screen reader friendly (semantic HTML)  
+✅ Color contrast meets WCAG AA
+
+---
+
+## Design System Comparison
+
+### Before Step 3A:
+
+```html
+<ul>
+  <li>Product Name - $29.99</li>
+  <button>Add</button>
+</ul>
+```
+
+- Unstyled HTML elements
+- Inline styles scattered
+- No consistency
+- No responsive design
+- Programmer-looking UI
+
+### After Step 3A:
+
+```typescript
+<div className="grid xl:grid-cols-4 gap-8">
+  <ProductCard
+    image={...}
+    hoverImage={...}
+    onHover={smooth transition}
+  />
+</div>
+```
+
+- Professional design system
+- CSS variables for theming
+- Responsive grid layouts
+- Smooth animations
+- Production-quality UI
+
+---
+
+## Next Steps (Not Implemented)
+
+### Potential Priority Order:
+
+**Step 3B: Security - Price Validation** ← Next immediate task
+
+- Backend validates all prices from database
+- Frontend only sends `productId + quantity`
+- Prevents price manipulation
+
+**Step 3C: User Authentication System**
+
+- User registration/login
+- Order history ("My Orders")
+- Session management
+- Protected routes
+
+**Step 3D: Enhanced Features**
+
+- Product spec selection modal (size, color, etc.)
+- Favorites/wishlist functionality
+- Product search and filtering
+- Toast notifications (replace alert())
+- Product reviews and ratings
+
+**Step 3E: Admin Panel**
+
+- Product management CRUD
+- Order fulfillment workflow
+- Inventory tracking
+
+---
+
+## Status
+
+✅ **Complete and production-ready from UI/UX perspective**  
+⚠️ **Backend security issues remain** - Price validation needed before production deployment
+
+## Lessons Learned
+
+### 1. Architecture-First Approach
+
+Starting with global design system (CSS variables, layout) before individual pages leads to:
+
+- Faster implementation of subsequent pages
+- Better consistency
+- Easier maintenance
+
+### 2. CSS Variables + Tailwind Hybrid
+
+Best of both worlds:
+
+- Tailwind for rapid development
+- CSS variables for theming and complex values
+- Can switch between approaches as needed
+
+### 3. Component Extraction Timing
+
+Extracted Navbar as shared component immediately, but kept page-specific layouts inline:
+
+- Prevents premature abstraction
+- Easier to iterate on unique page designs
+- Can extract common patterns later
+
+### 4. Responsive Design
+
+Mobile-first grid with progressive enhancement works better than desktop-first:
+
+- Ensures mobile experience isn't an afterthought
+- Tailwind's responsive prefixes make this natural
+
+---
+
+## Design Inspiration Credits
+
+- **MyProtein**: 4-column grid layout, hover image transitions
+- **Verve Coffee**: Clean typography, generous spacing, minimal navigation
+- **Pure Cycles**: Product card styling, aspect ratios, subtle shadows
+- **Apple**: Overall refinement, micro-interactions, color palette, font smoothing
