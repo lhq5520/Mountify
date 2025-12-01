@@ -26,6 +26,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Potential Optimization：
 
+cart - might need redis or prisma or even db to make it persistent and support cross device view function
+
 checkout status - now using polling to check status -> can be optimized using websocket/SSE
 
 security update
