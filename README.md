@@ -1796,7 +1796,7 @@ Mobile-first grid with progressive enhancement works better than desktop-first:
 - **Pure Cycles**: Product card styling, aspect ratios, subtle shadows
 - **Apple**: Overall refinement, micro-interactions, color palette, font smoothing
 
-# Version 3B: Security Enhancement - Price Validation
+# Step 3B: Security Enhancement - Price Validation
 
 ## Overview
 
@@ -1902,7 +1902,55 @@ type CheckoutItem = {
 
 ---
 
-### 2. Database Query Implementation
+### 2. Input Validation - Quantity Range Check
+
+**Added comprehensive quantity validation before database queries:**
+
+```typescript
+// Validate quantity for each item (fail-fast approach)
+for (const item of body.items) {
+  // Type and format validation
+  if (typeof item.quantity !== "number" || !Number.isInteger(item.quantity)) {
+    return NextResponse.json(
+      { error: "Invalid quantity format" },
+      { status: 400 }
+    );
+  }
+
+  // Range validation
+  if (item.quantity < 1 || item.quantity > 1000) {
+    return NextResponse.json(
+      { error: "Quantity must be between 1 and 1000" },
+      { status: 400 }
+    );
+  }
+}
+```
+
+**What this prevents:**
+
+- String quantities: `quantity: "100"`
+- Decimal quantities: `quantity: 29.5`
+- Zero or negative: `quantity: 0`, `quantity: -5`
+- Unrealistic orders: `quantity: 999999` (resource exhaustion attack)
+- Type coercion issues: `quantity: NaN`, `quantity: null`
+
+**Why 1000 limit?**
+
+- Reasonable wholesale maximum
+- Prevents integer overflow in calculations
+- Protects database from abuse
+- Stripe has transaction limits (~$999,999)
+
+**Performance consideration:**
+
+- Validates before expensive database query
+- Fast rejection of malicious requests
+- O(N) validation cost (N = number of items)
+
+---
+
+### 3. Database Query Implementation
 
 **Added batch query logic:**
 
@@ -2358,6 +2406,18 @@ const missingIds = requestedIds.filter((id) => !foundIds.includes(id));
 
 **Lines of code:** ~40 lines added/modified
 
+**Validation order:**
+
+```typescript
+1. Check cart not empty
+2. Validate quantity format and range (new in this step)
+3. Query database for products
+4. Validate all products exist
+5. Build Map for efficient lookups
+6. Generate lineItems and calculate total
+7. Create Stripe Session and order
+```
+
 ---
 
 ### 2. `/cart/page.tsx`
@@ -2449,7 +2509,52 @@ obj[productId]; // productId coerced to string
 
 ---
 
-### 3. Comprehensive Error Handling
+### 3. Input Sanitization and Validation
+
+**Multi-layered validation approach:**
+
+**Layer 1: Type safety (TypeScript)**
+
+```typescript
+type CheckoutItem = {
+  productId: number; // Compiler enforces type
+  quantity: number;
+};
+```
+
+**Layer 2: Runtime type checking**
+
+```typescript
+typeof item.quantity !== "number"; // Catches type coercion
+!Number.isInteger(item.quantity); // Catches decimals
+```
+
+**Layer 3: Business rule validation**
+
+```typescript
+item.quantity < 1 || item.quantity > 1000; // Catches unrealistic values
+```
+
+**Defense-in-depth strategy:**
+
+- TypeScript catches most issues at compile time
+- Runtime checks catch dynamic/malicious input
+- Business rules enforce domain constraints
+
+**Why check `Number.isInteger()`?**
+
+```typescript
+// These pass typeof === "number" but aren't valid:
+29.5; // Decimal
+Infinity; // Special number
+NaN; // Not a number (but typeof === "number"!)
+
+// Number.isInteger() rejects all of these
+```
+
+---
+
+### 4. Comprehensive Error Handling
 
 **Validation checkpoints:**
 
@@ -2513,13 +2618,21 @@ try {
 - ✅ No order created
 - ✅ No Stripe Session created
 
-**Test 4: Mixed valid/invalid products**
+**Test 4: Invalid quantity values**
+
+- ✅ Request with quantity = 0 → Returns 400 error
+- ✅ Request with quantity = -5 → Returns 400 error
+- ✅ Request with quantity = 9999 → Returns 400 error
+- ✅ Request with quantity = "100" (string) → Returns 400 error
+- ✅ Request with quantity = 29.5 (decimal) → Returns 400 error
+
+**Test 5: Mixed valid/invalid products**
 
 - ✅ Request [valid_id, valid_id, invalid_id]
 - ✅ Entire request rejected (all-or-nothing)
 - ✅ Error lists specific missing IDs
 
-**Test 5: Deleted product in cart**
+**Test 6: Deleted product in cart**
 
 - ✅ Add product to cart
 - ✅ Delete product from database
@@ -2616,13 +2729,13 @@ Cart → Frontend sends IDs only → Backend queries DB → Backend calculates
 - Product existence validation
 - SQL injection prevention (parameterized queries)
 - Webhook signature verification (from Step 2D)
+- Quantity validation (type checking, range limits)
 
 ### ⚠️ Still pending (future work)
 
 - **User authentication:** No verification that email belongs to requester
 - **Rate limiting:** No protection against checkout spam
 - **Inventory validation:** No check for stock availability
-- **Quantity limits:** No validation of reasonable quantities (could order 9999 items)
 - **CSRF protection:** Not implemented (Next.js API routes vulnerable)
 - **Session validation on success page:** Still doesn't verify payment truly succeeded
 
