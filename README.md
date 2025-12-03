@@ -35,7 +35,7 @@ security update
 - price verification from backend instead of trusing frontend
 - payment verification (making sure user actually paid)
 
-## Version 1A:
+# Version 1A:
 
 Goal: use fake data(API) to fetch data! In another words, use api as database to return data!
 
@@ -47,7 +47,7 @@ Goal: use fake data(API) to fetch data! In another words, use api as database to
 
 That means your frontend and backend just connected for the first time — browser → API → data response.
 
-## Version 1B:
+# Version 1B:
 
 Goal: make frontend able to talk to backend(through API!)
 ✅ Testing after completion
@@ -68,7 +68,7 @@ useParams The standard way to read URL parameters.
 fetch + find The logic behind filtering and retrieving data.
 Component navigation (Link) The foundation of how routes and pages connect.
 
-## Version 1C:
+# Version 1C:
 
 Goal: making cart function working!
 
@@ -90,7 +90,7 @@ Click “Remove” → Check if the item can be deleted
 | **Custom Hook (`useCart`)**                     | A good habit for organizing and reusing logic    |
 | **State update logic (`setCart(prev => ...)`)** | The core idea behind React’s immutable updates   |
 
-## Version 2A:
+# Version 2A:
 
 🧭 Stage Goal
 
@@ -104,7 +104,7 @@ Next, we want this API to start pulling real data from the database.
 | Frontend Page          | ✔ Reused as-is, no structural changes needed                                      |
 | Technical Breakthrough | ✅ You successfully rendered dynamic data from a real database for the first time |
 
-## Version 2B:
+# Version 2B:
 
 In 2A the setup is:
 
@@ -124,7 +124,7 @@ Now this part has finished:
 
 Database → API (list + single) → Frontend pages (list + detail).
 
-## Version 2C:
+# Version 2C:
 
 Overall Goal:
 
@@ -145,7 +145,7 @@ At this point, you already have:
 
 This is already a fully functional end-to-end e-commerce MVP — just missing payments and real user management.
 
-## Version 2D - Stripe Checkout Integration (Sandbox Version):
+# Version 2D - Stripe Checkout Integration (Sandbox Version):
 
 Goal
 Integrate Stripe Checkout to enable test payment processing in the e-commerce MVP, focusing on understanding the payment flow rather than production-ready security.
@@ -2871,7 +2871,7 @@ ALTER TABLE orders RENAME COLUMN total_cad TO total;
 
 - `/api/checkout/route.ts`
 - `/api/orders/session/[sessionId]/route.ts`
-- `/api/admin/orders/route.ts` (if exists)
+- `/api/admin/orders/route.ts`
 
 **Changes:**
 
@@ -2905,9 +2905,9 @@ priceCad: number → priceUsd: number
 ${product.priceCad.toFixed(2)} CAD
 
 // After
-$${product.priceUsd.toFixed(2)}
+${product.priceUsd.toFixed(2)}
 // or
-$${product.priceUsd.toFixed(2)} USD
+${product.priceUsd.toFixed(2)} USD
 ```
 
 ---
