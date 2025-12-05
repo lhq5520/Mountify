@@ -103,7 +103,7 @@ export default function Navbar() {
                       {/* Menu Items */}
                       <div className="py-1">
                         <Link
-                          href="/admin/orders"
+                          href="/orders"
                           className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-background)] hover:text-[var(--color-text-primary)] transition-colors duration-150"
                           onClick={() => setAccountOpen(false)}
                         >
