@@ -5346,11 +5346,3 @@ User still has admin access until re-login
 ⚠️ **Role changes require re-login** (acceptable trade-off)
 
 ---
-
-## Technical Stack
-
-- **Middleware:** Next.js 15 Middleware (Edge Runtime)
-- **JWT Verification:** next-auth/jwt `getToken()`
-- **Session Management:** NextAuth.js v5
-- **Type Safety:** TypeScript with module augmentation
-- **Database:** PostgreSQL (role storage only, not accessed in middleware)
