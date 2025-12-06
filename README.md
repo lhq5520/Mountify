@@ -1,5 +1,7 @@
 This is a ecommerce website - still under development. the following step record how this website was constructed
 
+Version 4A is the Minimal Viable Product! It contains all what a e-commerce website except a few patches.
+
 ## Technical Stack
 
 - **Frontend:** Next.js 16 (App Router), React, TypeScript, NextAuth hooks
@@ -4356,3 +4358,999 @@ Time: 2-5ms
 ⚠️ **Email verification recommended before production**
 
 ---
+
+# Version 4B: Role-Based Access Control & Route Protection
+
+## Overview
+
+Implemented role-based access control (RBAC) and route protection middleware to secure admin routes and user-specific pages. Added role field to users table and configured Next.js middleware to enforce authentication and authorization at the routing level.
+
+---
+
+## Goals
+
+- Add user roles (customer/admin) to differentiate access levels
+- Protect `/admin/*` routes (admin-only access)
+- Protect user-specific routes like `/orders` (require login)
+- Implement centralized route protection (avoid per-page checks)
+- Maintain compatibility with Edge Runtime
+
+---
+
+## What Was Implemented
+
+### 1. Database Schema - Role Field
+
+**Added role column to users table:**
+
+```sql
+ALTER TABLE users
+ADD COLUMN role TEXT DEFAULT 'customer' CHECK (role IN ('customer', 'admin'));
+```
+
+**Design decisions:**
+
+**DEFAULT 'customer':**
+
+- All new registrations are customers by default
+- Prevents privilege escalation (can't register as admin)
+- Admin role must be manually assigned
+
+**CHECK constraint:**
+
+```sql
+CHECK (role IN ('customer', 'admin'))
+```
+
+- Enforces data integrity at database level
+- Only allows predefined roles
+- Attempting to insert invalid role (e.g., 'hacker') → Database rejects
+- Future-proof: Easy to add more roles ('moderator', 'seller')
+
+**TEXT vs ENUM:**
+
+- Used TEXT for flexibility
+- Can add new roles without schema migration
+- CHECK constraint provides validation
+
+---
+
+**Promoted first user to admin:**
+
+```sql
+UPDATE users
+SET role = 'admin'
+WHERE email = 'your-email@test.com';
+```
+
+**Security note:**
+
+- First user manually promoted via SQL
+- Future: Admin panel to manage user roles
+- Alternative: First registered user auto-promoted (startup script)
+
+---
+
+### 2. NextAuth Configuration Updates
+
+#### A. Include Role in JWT Token
+
+**File:** `src/auth.ts`
+
+**Modified authorize() to fetch role:**
+
+```typescript
+// Updated query
+const result = await query(
+  "SELECT id, email, password_hash, role FROM users WHERE email = $1",
+  [email]
+);
+
+// Updated return value
+return {
+  id: user.id.toString(),
+  email: user.email,
+  role: user.role, // Added role to user object
+};
+```
+
+---
+
+**Modified jwt callback:**
+
+```typescript
+async jwt({ token, user }) {
+  if (user) {
+    token.id = user.id;
+    token.role = user.role;  // Store role in JWT
+  }
+  return token;
+}
+```
+
+**What this does:**
+
+- On login, adds `role` to JWT payload
+- JWT now contains: `{ id, email, role, iat, exp }`
+- Role persists in token until expiration
+
+---
+
+**Modified session callback:**
+
+```typescript
+async session({ session, token }) {
+  if (token.id) {
+    session.user.id = token.id as string;
+  }
+  if (token.role) {
+    session.user.role = token.role as string;  // Expose role to session
+  }
+  return session;
+}
+```
+
+**What this does:**
+
+- Extracts role from JWT token
+- Makes it available as `session.user.role`
+- Accessible in both client (`useSession()`) and server (`auth()`)
+
+---
+
+#### B. TypeScript Type Extensions
+
+**File:** `src/types/next-auth.d.ts`
+
+**Extended NextAuth types:**
+
+```typescript
+import { DefaultSession } from "next-auth";
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      role: string;
+    } & DefaultSession["user"];
+  }
+
+  interface User {
+    id: string;
+    email: string;
+    role: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    role: string;
+  }
+}
+```
+
+**Why necessary:**
+
+- TypeScript doesn't know about custom fields by default
+- Without this, `session.user.role` would show type error
+- Provides autocomplete and type safety
+
+---
+
+### 3. Middleware Implementation
+
+#### File: `src/middleware.ts`
+
+**Route protection logic:**
+
+```typescript
+import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+import { auth } from "@/auth";
+
+export default auth(async function middleware(req) {
+  const { pathname } = req.nextUrl;
+  const session = req.auth;
+
+  const protectedRoutes = ["/orders", "/profile", "/settings"];
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+  const isAdminRoute = pathname.startsWith("/admin");
+
+  if (isProtectedRoute || isAdminRoute) {
+    // Check 1: User logged in?
+    if (!session?.user) {
+      const signInUrl = new URL("/auth/signin", req.url);
+      signInUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(signInUrl);
+    }
+
+    // Check 2: Admin route requires admin role
+    if (isAdminRoute && session.user.role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+  }
+
+  return NextResponse.next();
+}) as any;
+```
+
+---
+
+**Matcher configuration:**
+
+```typescript
+export const config = {
+  matcher: [
+    "/orders/:path*", // Requires login
+    "/profile/:path*", // Requires login (future)
+    "/settings/:path*", // Requires login (future)
+    "/admin/:path*", // Requires admin role
+  ],
+};
+```
+
+**What `:path*` means:**
+
+- Matches route and all sub-routes
+- `/admin/:path*` matches:
+  - `/admin`
+  - `/admin/orders`
+  - `/admin/products`
+  - `/admin/orders/123`
+  - etc.
+
+---
+
+### 4. Edge Runtime Compatibility Issue & Solution
+
+#### Problem Encountered
+
+**Initial approach (failed):**
+
+```typescript
+export default auth((req) => {
+  const session = req.auth;
+  // ...
+});
+```
+
+**Error:**
+
+```
+The edge runtime does not support Node.js 'crypto' module
+```
+
+**Root cause:**
+
+- Middleware runs in Edge Runtime (not Node.js)
+- PostgreSQL client (`pg`) requires Node.js `crypto` module
+- Edge Runtime has limited Node.js API support
+
+---
+
+#### Solution: Use NextAuth's Edge-Compatible Method
+
+**Working approach:**
+
+```typescript
+import { auth } from "@/auth";
+
+export default auth(async function middleware(req) {
+  const session = req.auth; // NextAuth handles JWT parsing
+  // ...
+}) as any;
+```
+
+**Why this works:**
+
+- NextAuth v5's `auth()` wrapper handles JWT verification
+- Uses Edge-compatible JWT libraries
+- No database access needed (JWT is self-contained)
+- Session data (including role) available in `req.auth`
+
+**Alternative approach (also works):**
+
+```typescript
+import { getToken } from "next-auth/jwt";
+
+const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+// token.role, token.id directly accessible
+```
+
+**Both approaches are Edge-safe:**
+
+- `auth()` wrapper: More integrated with NextAuth
+- `getToken()`: More explicit, lower-level
+
+---
+
+## Security Architecture
+
+### Multi-Layer Protection
+
+**Layer 1: Middleware (Edge)**
+
+```
+Request → Middleware checks JWT
+          ↓
+     Not logged in? → Redirect to login
+     Not admin? → Redirect to home
+     ↓
+     Allowed → Continue to page
+```
+
+**Layer 2: Page/API (Server)**
+
+```
+Page/API code can still check session
+Double verification for sensitive operations
+```
+
+**Defense in depth:**
+
+- Middleware catches most unauthorized access
+- Page-level checks for extra security
+- API endpoints verify permissions independently
+
+---
+
+### Role-Based Access Matrix
+
+| Route       | Guest      | Customer  | Admin     |
+| ----------- | ---------- | --------- | --------- |
+| `/products` | ✅         | ✅        | ✅        |
+| `/cart`     | ✅         | ✅        | ✅        |
+| Checkout    | ✅ (email) | ✅ (auto) | ✅ (auto) |
+| `/orders`   | ❌ → Login | ✅        | ✅        |
+| `/profile`  | ❌ → Login | ✅        | ✅        |
+| `/settings` | ❌ → Login | ✅        | ✅        |
+| `/admin/*`  | ❌ → Login | ❌ → Home | ✅        |
+
+---
+
+### Redirect Logic
+
+**Unauthenticated access to protected route:**
+
+```
+User visits: /orders
+           ↓
+Middleware: No JWT token found
+           ↓
+Redirect: /auth/signin?callbackUrl=/orders
+           ↓
+User logs in
+           ↓
+NextAuth auto-redirects to: /orders
+```
+
+**Unauthorized access to admin route:**
+
+```
+Customer visits: /admin/orders
+              ↓
+Middleware: JWT valid, but role = 'customer'
+              ↓
+Redirect: / (homepage)
+              ↓
+No error message (silent redirect)
+```
+
+**Design decision:** Silent redirect vs error page
+
+- Chose silent redirect (cleaner UX)
+- Alternative: Show "403 Forbidden" page
+- Can add toast notification in future
+
+---
+
+## JWT Structure Deep Dive
+
+### What's Actually in the JWT?
+
+**After implementing role field:**
+
+```json
+{
+  "id": "1",
+  "email": "user@test.com",
+  "role": "admin",
+  "iat": 1701792000,
+  "exp": 1704384000
+}
+```
+
+**Field explanations:**
+
+- `id` - User ID from database (string)
+- `email` - User email
+- `role` - User role ('customer' or 'admin')
+- `iat` - Issued at (timestamp)
+- `exp` - Expires at (timestamp, typically 30 days)
+
+**Encoded JWT structure:**
+
+```
+header.payload.signature
+eyJhbGc...  .  eyJpZCI...  .  SflKxwRJ...
+↑ Algorithm    ↑ User data   ↑ Cryptographic signature
+```
+
+**Base64 encoded (not encrypted):**
+
+- Anyone can decode and read payload
+- But cannot modify without breaking signature
+- Signature verification prevents tampering
+
+---
+
+### JWT Security in Middleware
+
+**Token verification process:**
+
+```typescript
+const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+```
+
+**Behind the scenes:**
+
+1. Read cookie: `authjs.session-token`
+2. Split JWT: `header.payload.signature`
+3. Decode header and payload (base64)
+4. Verify signature:
+   ```
+   Recalculate signature using payload + AUTH_SECRET
+   Compare with provided signature
+   If match → Valid ✅
+   If different → Tampered ❌ (reject)
+   ```
+5. Check expiration: `exp` timestamp
+6. Return decoded payload or null
+
+**Attack scenario (fails):**
+
+```
+1. Attacker sees JWT in cookie
+2. Decodes payload: { id: "1", role: "customer" }
+3. Changes to: { id: "1", role: "admin" }
+4. Re-encodes payload
+5. Sends modified JWT to server
+   ↓
+6. Middleware verifies signature
+7. Signature doesn't match (payload changed)
+8. Token rejected ❌
+9. User redirected to login
+```
+
+---
+
+## Performance Characteristics
+
+### Middleware Execution
+
+**Metrics:**
+
+- Runs on: Edge Runtime (global CDN)
+- Latency: < 10ms (vs 50-200ms for server routes)
+- Database queries: 0 (JWT is self-contained)
+- Scales automatically (edge locations worldwide)
+
+**vs Page-level auth check:**
+
+```
+Page-level:
+  Request → Server → Load page code → Check auth → Redirect
+  Total: ~200ms + page load time
+
+Middleware:
+  Request → Edge check → Redirect
+  Total: ~10ms
+  Saves: Page loading time, server resources
+```
+
+---
+
+### Role Check Performance
+
+**Middleware approach (chosen):**
+
+```typescript
+// Read role from JWT (in-memory)
+if (token.role !== 'admin') { ... }
+// Time: < 1ms
+```
+
+**Alternative (database check - not used):**
+
+```typescript
+// Query database for fresh role
+const user = await query("SELECT role FROM users WHERE id = $1", [userId]);
+// Time: 10-50ms + database connection overhead
+// Problem: Not available in Edge Runtime
+```
+
+**Trade-off:**
+
+- Middleware uses cached role from JWT (fast)
+- Role changes require re-login to take effect
+- Acceptable for most use cases (roles don't change frequently)
+
+---
+
+## Testing & Verification
+
+### Test Matrix
+
+| Scenario | User State           | Route           | Expected Result                                | Status |
+| -------- | -------------------- | --------------- | ---------------------------------------------- | ------ |
+| 1        | Not logged in        | `/orders`       | Redirect to `/auth/signin?callbackUrl=/orders` | ✅     |
+| 2        | Logged in (customer) | `/orders`       | Allow access                                   | ✅     |
+| 3        | Logged in (customer) | `/admin/orders` | Redirect to `/`                                | ✅     |
+| 4        | Logged in (admin)    | `/admin/orders` | Allow access                                   | ✅     |
+| 5        | Not logged in        | `/products`     | Allow access (public)                          | ✅     |
+| 6        | Login after redirect | After auth      | Redirect to `callbackUrl`                      | ✅     |
+
+---
+
+### Edge Cases Tested
+
+**Scenario 1: Customer tries to guess admin URL**
+
+```
+1. Customer user logged in
+2. Types /admin/orders in address bar
+3. Middleware: role check fails
+4. Redirects to homepage (silent)
+5. No error message (by design)
+```
+
+**Scenario 2: Guest tries to access orders**
+
+```
+1. Not logged in
+2. Clicks "My Orders" in navbar
+3. Middleware: No JWT token
+4. Redirects to /auth/signin?callbackUrl=/orders
+5. After login → Returns to /orders
+```
+
+**Scenario 3: Token expiration**
+
+```
+1. User logged in 30 days ago
+2. Token expired
+3. Visits /orders
+4. Middleware: getToken() returns null (expired)
+5. Redirects to login
+```
+
+---
+
+## Files Created/Modified
+
+### New Files
+
+```
+src/middleware.ts
+src/types/next-auth.d.ts (TypeScript definitions)
+src/types/jwt.d.ts (optional, for better types)
+```
+
+### Modified Files
+
+```
+src/auth.ts
+  - Updated authorize() query (fetch role)
+  - Updated authorize() return (include role)
+  - Updated jwt callback (store role in token)
+  - Updated session callback (expose role to session)
+```
+
+### Database Changes
+
+```sql
+ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'customer' CHECK (...);
+UPDATE users SET role = 'admin' WHERE email = '...';
+```
+
+---
+
+## Technical Deep Dive
+
+### Middleware Execution Flow
+
+**Request lifecycle with middleware:**
+
+```
+1. Browser sends request: GET /admin/orders
+   Headers: Cookie: authjs.session-token=eyJ...
+   ↓
+2. Next.js routing layer receives request
+   ↓
+3. ⭐ Middleware intercepts (before any page code)
+   ├─ Reads JWT from cookie
+   ├─ Verifies signature with AUTH_SECRET
+   ├─ Decodes payload: { id: "1", role: "customer" }
+   ├─ Checks: pathname.startsWith('/admin')
+   ├─ Checks: role !== 'admin'
+   └─ Decision: Redirect to /
+   ↓
+4. Returns 302 redirect response
+   ↓
+5. Page code for /admin/orders never executes
+   ↓
+6. Browser navigates to /
+```
+
+**Benefits:**
+
+- Early rejection (saves server resources)
+- Consistent protection (can't forget to check)
+- Fast response (Edge Runtime < 10ms)
+
+---
+
+### Edge Runtime Compatibility
+
+**Challenge:**
+
+```
+Edge Runtime ≠ Node.js Runtime
+- No access to filesystem
+- No access to full Node.js API
+- No native modules (like 'crypto')
+- Optimized for speed, not flexibility
+```
+
+**Why this matters for auth:**
+
+```
+❌ Cannot use: PostgreSQL client (needs Node.js crypto)
+❌ Cannot use: bcrypt (needs native bindings)
+✅ Can use: JWT verification (pure JavaScript)
+✅ Can use: String manipulation, JSON parsing
+```
+
+**Solution approach:**
+
+**Option 1: NextAuth's auth() wrapper (attempted first)**
+
+```typescript
+export default auth((req) => {
+  const session = req.auth;
+  // Works but can have edge cases
+});
+```
+
+**Option 2: getToken() direct (working solution)**
+
+```typescript
+const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+// Explicitly uses Edge-safe JWT library
+```
+
+**Both are valid:**
+
+- `auth()` wrapper: Higher-level, more integrated
+- `getToken()`: Lower-level, more control
+- Choose based on specific needs and edge cases
+
+---
+
+### Environment Variables
+
+**Required for middleware:**
+
+```env
+AUTH_SECRET=your-secret-key-here
+```
+
+**Generating secure secret:**
+
+```bash
+openssl rand -base64 32
+# Output: random 32-byte base64 string
+```
+
+**Security requirements:**
+
+- Minimum 32 bytes (256 bits)
+- Cryptographically random
+- Never commit to git
+- Different for dev/staging/production
+
+**What it's used for:**
+
+- JWT signature creation (on sign-in)
+- JWT signature verification (on every request)
+- Ensures JWT integrity
+
+---
+
+## Protected Routes Configuration
+
+### Current Protection Rules
+
+**Public routes (no protection):**
+
+```
+/                    Homepage
+/products            Product listing
+/products/[id]       Product details
+/cart                Shopping cart
+/auth/signin         Login page
+/auth/register       Registration page
+/checkout/success    Payment confirmation
+```
+
+**Authentication required:**
+
+```
+/orders              User's order history
+/profile             User profile (future)
+/settings            User settings (future)
+```
+
+**Admin role required:**
+
+```
+/admin               Admin dashboard (future)
+/admin/orders        View all orders
+/admin/products      Product management (future)
+```
+
+---
+
+### Matcher Pattern Explained
+
+```typescript
+matcher: ["/orders/:path*", "/admin/:path*"];
+```
+
+**Pattern syntax:**
+
+- `/orders/:path*` - Matches `/orders` and all nested routes
+- Examples:
+  - ✅ `/orders`
+  - ✅ `/orders/123`
+  - ✅ `/orders/123/details`
+  - ❌ `/order` (no 's')
+  - ❌ `/products` (different route)
+
+**Why use matcher:**
+
+- Performance: Middleware only runs on specified routes
+- Clarity: Explicit about which routes are protected
+- Optimization: Public routes skip middleware entirely
+
+---
+
+## Callback URL Feature
+
+### User Flow with Callback
+
+**Scenario: User wants to view orders but not logged in**
+
+```
+1. User clicks "My Orders" in navbar
+   Target: /orders
+   ↓
+2. Middleware intercepts
+   No session found
+   ↓
+3. Builds redirect URL:
+   /auth/signin?callbackUrl=/orders
+   ↓
+4. User sees login page
+   ↓
+5. User enters credentials and logs in
+   ↓
+6. NextAuth checks for callbackUrl param
+   Found: /orders
+   ↓
+7. Redirects user to: /orders
+   ↓
+8. User sees their order history (original intent fulfilled)
+```
+
+**Without callbackUrl:**
+
+```
+Login → Always redirect to /products (default)
+User has to manually navigate to /orders again
+Worse UX
+```
+
+**Implementation:**
+
+```typescript
+const signInUrl = new URL("/auth/signin", req.url);
+signInUrl.searchParams.set("callbackUrl", pathname);
+return NextResponse.redirect(signInUrl);
+```
+
+---
+
+## Authorization Patterns
+
+### Pattern 1: Route-Level (Middleware)
+
+**Use for:**
+
+- Entire pages requiring auth
+- Role-based page access
+- Broad protection rules
+
+**Example:**
+
+```typescript
+if (pathname.startsWith("/admin") && role !== "admin") {
+  return redirect("/");
+}
+```
+
+---
+
+### Pattern 2: API-Level (Route Handlers)
+
+**Use for:**
+
+- API endpoints
+- Fine-grained permissions
+- Resource-specific access
+
+**Example:**
+
+```typescript
+// /api/orders/[id]/route.ts
+export async function DELETE(req, { params }) {
+  const session = await auth();
+
+  // Check ownership
+  const order = await query("SELECT user_id FROM orders WHERE id = $1", [
+    params.id,
+  ]);
+
+  if (order.user_id !== session.user.id) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  // Delete order...
+}
+```
+
+---
+
+### Pattern 3: Component-Level (UI)
+
+**Use for:**
+
+- Conditional rendering
+- UI element visibility
+- Client-side experience
+
+**Example:**
+
+```typescript
+const { data: session } = useSession();
+
+{
+  session?.user?.role === "admin" && <Link href="/admin">Admin Panel</Link>;
+}
+```
+
+---
+
+## Known Limitations & Trade-offs
+
+### Limitations
+
+**Role changes require re-login:**
+
+```
+Admin demotes user to customer
+  ↓
+User's JWT still has role: 'admin'
+  ↓
+Token valid for 30 more days (until expiration)
+  ↓
+User still has admin access until re-login
+```
+
+**Solutions:**
+
+- Accept trade-off (roles rarely change)
+- Reduce JWT expiration time
+- Implement token refresh mechanism
+- Add database check for sensitive operations
+
+**Future middleware cannot:**
+
+- Access database directly (Edge Runtime limitation)
+- Perform complex computations (timeout limits)
+- Use Node.js-specific modules
+
+---
+
+### Trade-offs Made
+
+**Chose JWT over database sessions:**
+
+- ✅ Pro: No database query per request (faster)
+- ⚠️ Con: Can't instantly revoke (must wait for expiry)
+
+**Chose middleware over page-level checks:**
+
+- ✅ Pro: Centralized, DRY principle
+- ⚠️ Con: Less flexible per-page logic
+
+**Chose silent redirect over error pages:**
+
+- ✅ Pro: Cleaner UX (no scary error messages)
+- ⚠️ Con: Less informative for debugging
+
+---
+
+## Future Enhancements
+
+### Short-term (< 1 hour each)
+
+1. **Toast notification on unauthorized access**
+
+   - Show "Admin access required" before redirecting
+   - Better user feedback
+
+2. **Protect API routes**
+
+   - Add auth checks to `/api/admin/*` endpoints
+   - Double security layer
+
+3. **Admin panel UI**
+   - Create `/admin` dashboard
+   - Quick links to manage orders/products
+
+---
+
+### Medium-term (1-3 hours each)
+
+4. **Permission granularity**
+
+   - Add more roles: 'moderator', 'seller'
+   - Permission-based instead of role-based
+   - `permissions: ['orders.view', 'products.edit']`
+
+5. **Audit logging**
+
+   - Log who accessed what and when
+   - Especially for admin actions
+   - Store in separate `audit_logs` table
+
+6. **Token refresh mechanism**
+   - Short-lived access tokens (15min)
+   - Long-lived refresh tokens (30 days)
+   - Balance security and UX
+
+---
+
+## Status
+
+✅ **Role-based access control implemented**  
+✅ **Route protection active for /orders and /admin**  
+✅ **Edge Runtime compatible**  
+✅ **Type-safe with TypeScript**  
+✅ **Callback URL preserves user intent**
+
+⚠️ **Role changes require re-login** (acceptable trade-off)
+
+---
+
+## Technical Stack
+
+- **Middleware:** Next.js 15 Middleware (Edge Runtime)
+- **JWT Verification:** next-auth/jwt `getToken()`
+- **Session Management:** NextAuth.js v5
+- **Type Safety:** TypeScript with module augmentation
+- **Database:** PostgreSQL (role storage only, not accessed in middleware)

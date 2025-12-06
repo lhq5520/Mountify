@@ -23,7 +23,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 
         // 3. Query database
         const result = await query(
-          "SELECT id, email, password_hash FROM users WHERE email = $1",
+          "SELECT id, email, password_hash, role FROM users WHERE email = $1",
           [email]
         );
                 
@@ -45,6 +45,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return {
           id: user.id.toString(),
           email: user.email,
+          role: user.role,
         };
       }
     })
@@ -63,6 +64,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // On login (when user exists), add user.id to the token
       if (user) {
         token.id = user.id;
+        token.role = user.role;
       }
       return token;
     },
@@ -71,6 +73,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Add token.id to session.user
       if (token.id) {
         session.user.id = token.id as string;
+      }
+      //role 
+        if (token.role) {
+        session.user.role = token.role as string; 
       }
       return session;
     }
