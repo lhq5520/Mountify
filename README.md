@@ -1,3 +1,5 @@
+# ![DEMO](/public/images/DEMO.png)
+
 # About Mountify:
 
 This is a full-stack e-commerce platform built with Next.js 16, TypeScript, PostgreSQL (Neon), NextAuth, and Stripe Checkout + Webhooks. The backend uses Next.js API Routes with JWT authentication, bcrypt hashing, and server-validated pricing, while the frontend follows modern React patterns with App Router and reusable components. Payments are fully implemented with Stripe Session + Webhook lifecycle, including order creation, pending → paid status, and secure server-side verification.

@@ -11,6 +11,7 @@
     "dev:all": "concurrently -k --names \"NEXT,STRIPE\" --prefix-colors \"cyan,magenta\" \"npm run dev\" \"npm run stripe-webhook\""
   },
   "dependencies": {
+    "@upstash/redis": "^1.35.7",
     "baseline-browser-mapping": "^2.8.32",
     "bcryptjs": "^3.0.3",
     "lucide-react": "^0.555.0",
