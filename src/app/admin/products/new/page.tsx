@@ -4,6 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import ImageUploader from "@/app/components/ImageUploader";
+
+// Product image type definition
+interface ProductImage {
+  url: string;
+  publicId: string;
+  displayOrder: number;
+  isPrimary: boolean;
+}
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -15,6 +24,9 @@ export default function NewProductPage() {
   const [imageUrl, setImageUrl] = useState("");
   const [imageUrlHover, setImageUrlHover] = useState("");
 
+  // New: Multiple images state
+  const [images, setImages] = useState<ProductImage[]>([]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,6 +36,7 @@ export default function NewProductPage() {
     setLoading(true);
 
     try {
+      // Step 1: Create product
       const res = await fetch("/api/admin/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -42,6 +55,26 @@ export default function NewProductPage() {
       if (!res.ok) {
         setError(data.error || "Failed to create product");
         return;
+      }
+
+      const productId = data.product.id;
+
+      // Step 2: Save images if uploaded
+      if (images.length > 0) {
+        const imagesRes = await fetch(
+          `/api/admin/products/${productId}/images`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ images }),
+          }
+        );
+
+        if (!imagesRes.ok) {
+          // Product created but image save failed
+          console.error("Failed to save images");
+          // Can choose to continue or show warning
+        }
       }
 
       // Success - redirect to products list
@@ -164,7 +197,7 @@ export default function NewProductPage() {
                 placeholder="https://images.unsplash.com/..."
               />
               <p className="text-xs text-[var(--color-text-tertiary)] mt-1">
-                Primary product image
+                Primary product image (for product listing)
               </p>
             </div>
 
@@ -182,6 +215,17 @@ export default function NewProductPage() {
               />
               <p className="text-xs text-[var(--color-text-tertiary)] mt-1">
                 Image shown on hover (optional)
+              </p>
+            </div>
+
+            {/* Multiple image upload - New section */}
+            <div>
+              <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                Product Gallery Images
+              </label>
+              <ImageUploader images={images} setImages={setImages} />
+              <p className="text-xs text-[var(--color-text-tertiary)] mt-2">
+                Additional images for product detail page gallery
               </p>
             </div>
 

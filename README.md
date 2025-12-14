@@ -9352,3 +9352,387 @@ src/lib/redis.ts                              (Already existed)
 **Originally planned next:**
 
 - Product search functionality
+
+# Version 5B: Cloudinary Multi-Image Upload Feature
+
+## Overview
+
+This document summarizes the implementation of a multi-image upload feature for the e-commerce product management system using Cloudinary as the image hosting service.
+
+---
+
+## Database Schema
+
+### product_images Table
+
+```sql
+CREATE TABLE product_images (
+  id SERIAL PRIMARY KEY,
+  product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  image_url TEXT NOT NULL,
+  cloudinary_public_id TEXT,
+  display_order INTEGER DEFAULT 0,
+  is_primary BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_product_images_product ON product_images(product_id);
+```
+
+**Field Descriptions:**
+| Field | Purpose |
+|-------|---------|
+| `image_url` | Cloudinary CDN URL for the image |
+| `cloudinary_public_id` | Cloudinary's unique ID (used for deletion) |
+| `display_order` | Controls display sequence (0, 1, 2...) |
+| `is_primary` | Marks the primary/main image |
+
+---
+
+## Dependencies
+
+```bash
+npm install cloudinary
+npm install next-cloudinary
+```
+
+---
+
+## Environment Variables
+
+Add to `.env.local`:
+
+```env
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
+
+---
+
+## File Structure
+
+```
+src/
+├── lib/
+│   └── cloudinary.ts              # Cloudinary configuration
+├── components/
+│   ├── ImageUploader.tsx          # Admin upload component
+│   └── ImageGallery.tsx           # Product detail gallery
+├── app/
+│   ├── api/
+│   │   ├── admin/
+│   │   │   ├── upload-image/
+│   │   │   │   └── route.ts       # POST: Upload to Cloudinary
+│   │   │   └── products/
+│   │   │       └── [id]/
+│   │   │           └── images/
+│   │   │               └── route.ts  # GET/POST: Product images
+│   │   └── products/
+│   │       └── [id]/
+│   │           └── route.ts       # GET: Single product + images
+│   ├── admin/
+│   │   └── products/
+│   │       └── new/
+│   │           └── page.tsx       # Create product with images
+│   └── products/
+│       └── [id]/
+│           └── page.tsx           # Product detail with gallery
+```
+
+---
+
+## API Endpoints
+
+### 1. Upload Image to Cloudinary
+
+**`POST /api/admin/upload-image`**
+
+Uploads a single image to Cloudinary.
+
+**Request:** `FormData` with `file` field
+
+**Response:**
+
+```json
+{
+  "url": "https://res.cloudinary.com/xxx/image/upload/v123/mountify/products/abc.jpg",
+  "publicId": "mountify/products/abc",
+  "width": 800,
+  "height": 600
+}
+```
+
+**Validations:**
+
+- Admin authentication required
+- File must be an image
+- Max file size: 5MB
+
+---
+
+### 2. Save Product Images
+
+**`POST /api/admin/products/[id]/images`**
+
+Saves multiple images for a product (uses database transaction).
+
+**Request:**
+
+```json
+{
+  "images": [
+    {
+      "url": "https://...",
+      "publicId": "mountify/products/abc",
+      "displayOrder": 0,
+      "isPrimary": true
+    },
+    {
+      "url": "https://...",
+      "publicId": "mountify/products/def",
+      "displayOrder": 1,
+      "isPrimary": false
+    }
+  ]
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Images saved successfully"
+}
+```
+
+**Features:**
+
+- Uses PostgreSQL transaction (BEGIN/COMMIT/ROLLBACK)
+- Row-level locking with `FOR UPDATE`
+- Ensures only one primary image
+- Clears Redis cache after update
+
+---
+
+### 3. Get Product Images
+
+**`GET /api/admin/products/[id]/images`**
+
+Returns all images for a product, ordered by `display_order`.
+
+**Response:**
+
+```json
+[
+  {
+    "id": 1,
+    "image_url": "https://...",
+    "cloudinary_public_id": "mountify/products/abc",
+    "display_order": 0,
+    "is_primary": true
+  }
+]
+```
+
+---
+
+### 4. Get Single Product with Images
+
+**`GET /api/products/[id]`**
+
+Returns product details and associated images.
+
+**Response:**
+
+```json
+{
+  "product": {
+    "id": 1,
+    "name": "Mountain Bike",
+    "price": 599,
+    "description": "...",
+    "detailedDescription": "...",
+    "imageUrl": "https://...",
+    "imageUrlHover": "https://..."
+  },
+  "images": [
+    {
+      "url": "https://...",
+      "publicId": "mountify/products/abc",
+      "displayOrder": 0,
+      "isPrimary": true
+    }
+  ]
+}
+```
+
+---
+
+## Components
+
+### ImageUploader (Admin)
+
+**Location:** `src/components/ImageUploader.tsx`
+
+**Props:**
+
+```typescript
+interface ImageUploaderProps {
+  images: ProductImage[];
+  setImages: React.Dispatch<React.SetStateAction<ProductImage[]>>;
+}
+```
+
+**Features:**
+
+- Drag & drop or click to upload
+- File validation (image type, 5MB limit)
+- Upload progress indicator
+- Image preview grid
+- Delete images
+- Automatic `displayOrder` and `isPrimary` management
+
+---
+
+### ImageGallery (Product Detail)
+
+**Location:** `src/components/ImageGallery.tsx`
+
+**Props:**
+
+```typescript
+interface ImageGalleryProps {
+  images: GalleryImage[];
+  productName: string;
+}
+```
+
+**Features:**
+
+- Mobile: Swipe carousel with dots
+- Desktop: Main image + thumbnail strip
+- Fit/Fill mode toggle
+- Arrow navigation
+- Image counter (1/5, 2/5, etc.)
+- Blurred background effect
+
+---
+
+## Data Flow
+
+### Creating a New Product with Images
+
+```
+1. User uploads images
+   → POST /api/admin/upload-image (each file)
+   → Cloudinary returns { url, publicId }
+   → Frontend stores in local state
+
+2. User fills product form and submits
+   → POST /api/admin/products (create product)
+   → Returns { product: { id: 123 } }
+
+3. Save images with product ID
+   → POST /api/admin/products/123/images
+   → Images saved to product_images table
+```
+
+---
+
+## TypeScript Interfaces
+
+```typescript
+// For upload component state
+interface ProductImage {
+  url: string;
+  publicId: string;
+  displayOrder: number;
+  isPrimary: boolean;
+}
+
+// For gallery component
+interface GalleryImage {
+  url: string;
+  publicId: string;
+  displayOrder: number;
+  isPrimary: boolean;
+}
+```
+
+---
+
+## Transaction Safety
+
+The image save API uses PostgreSQL transactions to ensure data integrity:
+
+```typescript
+await client.query("BEGIN");
+
+// Lock the product row
+await client.query(
+  "SELECT id FROM products WHERE id = $1 FOR UPDATE",
+  [productId]
+);
+
+// Delete old images
+await client.query(
+  "DELETE FROM product_images WHERE product_id = $1",
+  [productId]
+);
+
+// Insert new images
+for (const image of images) {
+  await client.query("INSERT INTO product_images ...", [...]);
+}
+
+await client.query("COMMIT");
+```
+
+**Why this matters:**
+
+- Prevents partial updates (all or nothing)
+- `FOR UPDATE` prevents concurrent modifications
+- `ROLLBACK` on any error restores previous state
+
+---
+
+## Architecture Decision: Dual Image Storage
+
+**Current Design:**
+
+| Storage           | Table                                            | Purpose              |
+| ----------------- | ------------------------------------------------ | -------------------- |
+| Main/Hover images | `products.image_url`, `products.image_url_hover` | Product listing page |
+| Gallery images    | `product_images` table                           | Product detail page  |
+
+**Rationale:**
+
+- Keeps product listing queries simple (no JOINs)
+- Gallery images are only loaded on detail page
+- Can be refactored later to unify if needed
+
+---
+
+## Next Steps (TODO)
+
+- [ ] Add edit product page with image management
+- [ ] Delete images from Cloudinary when removed
+- [ ] Drag-and-drop reordering for images
+- [ ] Convert main/hover image inputs to upload
+- [ ] Image optimization (auto-resize on upload)
+
+---
+
+## Cloudinary Dashboard
+
+Access your Cloudinary dashboard at: https://console.cloudinary.com/
+
+- **Media Library:** View all uploaded images
+- **Settings > Upload:** Configure upload presets
+- **Usage:** Monitor bandwidth and storage
+
+---
+
+_Last updated: December 13 2025_

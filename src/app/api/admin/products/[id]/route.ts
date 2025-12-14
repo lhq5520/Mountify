@@ -110,7 +110,7 @@ export async function PUT(
 
     // Invalidate cache
     await redis.del(CACHE_KEYS.PRODUCTS_ALL);
-    console.log('🗑️ Cleared product cache after update');
+    console.log('Cleared product cache after update');
 
     return NextResponse.json(
       { 

@@ -6,13 +6,14 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
       },
     ],
-    // other protocals
-    // remotePatterns: [
-    //   { protocol: "https", hostname: "images.unsplash.com" },
-    //   { protocol: "https", hostname: "plus.unsplash.com" },
-    // ],
   },
 };
 
