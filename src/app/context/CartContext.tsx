@@ -10,6 +10,7 @@ import {
 
 import type { Product } from "../types";
 import { useSession } from "next-auth/react";
+import { useToast } from "@/app/context/ToastContext";
 
 interface CartItem extends Product {
   quantity: number;
@@ -20,36 +21,24 @@ interface CartContextType {
   addToCart: (p: Product) => void;
   removeFromCart: (id: number) => void;
   clearCart: () => void;
-  showToast: boolean;
-  toastMessage: string;
-  setShowToast: (show: boolean) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const { showToast } = useToast();
 
-  //new update for toast component instead of raw "alert"
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-
-  // step 4c- cart persistent get login status
   const { data: session, status } = useSession();
 
-  //step 4c
-  // Load cart from database when user logs in
   useEffect(() => {
     if (status === "authenticated" && session?.user?.id) {
       fetchCartFromDatabase();
     } else if (status === "unauthenticated") {
-      // User logged out → clear cart
       setCart([]);
     }
   }, [session?.user?.id, status]);
 
-  //step 4c - grab cart data from database
-  // Fetch cart from database
   async function fetchCartFromDatabase() {
     try {
       const res = await fetch("/api/cart");
@@ -60,26 +49,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setCart(data.cart || []);
     } catch (e) {
       console.error("Error loading cart:", e);
-      // Keep local cart on error and not revert for better user experience
-      // UI and database will sync once refresh even error occur
     }
   }
 
   const addToCart = (product: Product) => {
     setCart((prev) => {
-      //original step1: update UI even API failed
       const existing = prev.find((p) => p.id === product.id);
       if (existing) {
-        // If already exists, increment quantity by 1
         return prev.map((p) =>
           p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
         );
       }
-      // Otherwise, add as new item
       return [...prev, { ...product, quantity: 1 }];
     });
 
-    // new updated in step4c- Step 2: If logged in, sync to database
     if (session?.user?.id) {
       fetch("/api/cart", {
         method: "POST",
@@ -90,23 +73,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }),
       }).catch((e) => {
         console.error("Failed to sync cart to database:", e);
-        // Don't rollback - user will see correct data on refresh
       });
     }
 
-    //new update 4a - for toast component
-    setToastMessage(`${product.name} added to cart`);
-    setShowToast(true);
-
-    setTimeout(() => {
-      setShowToast(false);
-    }, 3000);
+    // update - Version 5C new toast system
+    showToast(`${product.name} added to cart`, "success");
   };
 
   const removeFromCart = (id: number) => {
     setCart((prev) => prev.filter((p) => p.id !== id));
 
-    // updated in Step4c: If logged in, sync to database
     if (session?.user?.id) {
       fetch(`/api/cart/${id}`, {
         method: "DELETE",
@@ -119,7 +95,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const clearCart = () => {
     setCart([]);
 
-    // updated in Step4c: If logged in, sync to database
     if (session?.user?.id) {
       fetch("/api/cart", {
         method: "DELETE",
@@ -136,9 +111,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addToCart,
         removeFromCart,
         clearCart,
-        showToast,
-        toastMessage,
-        setShowToast,
       }}
     >
       {children}
@@ -146,7 +118,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Custom hook: makes it easier for components to use the cart
 export function useCart() {
   const context = useContext(CartContext);
   if (!context) {

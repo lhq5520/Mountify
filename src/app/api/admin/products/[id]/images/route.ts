@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { pool } from "@/lib/db";
 import { redis, CACHE_KEYS } from "@/lib/redis";
+import cloudinary from "@/lib/cloudinary";
 
 // POST /api/admin/products/:id/images - Save product images (with transaction)
 export async function POST(
@@ -41,6 +42,7 @@ export async function POST(
 
     const client = await pool.connect();
     let started = false;
+    let oldPublicIds: string[] = []; //update to store cloudinary public id for compare
 
     try {
         await client.query("BEGIN");
@@ -57,30 +59,70 @@ export async function POST(
             return NextResponse.json({ error: "Product not found" }, { status: 404 });
         }
 
+        //save old pic before deleting
+        const oldImages = await client.query(
+            "SELECT cloudinary_public_id FROM product_images WHERE product_id = $1",
+            [productId]
+        );
+        oldPublicIds = oldImages.rows
+            .map((row: any) => row.cloudinary_public_id)
+            .filter(Boolean);
+
         // Delete old images
         await client.query("DELETE FROM product_images WHERE product_id = $1", [productId]);
 
         // Insert new images
-        for (const image of images) {
-            if (!image?.url || !image?.publicId) {
-                throw new Error("Invalid image object: url/publicId missing");
-            }
-            await client.query(
-                `INSERT INTO product_images (
-                    product_id, image_url, cloudinary_public_id, display_order, is_primary
-                ) VALUES ($1, $2, $3, $4, $5)`,
-                [
-                    productId,
-                    image.url,
-                    image.publicId,
-                    image.displayOrder ?? images.indexOf(image),
-                    Boolean(image.isPrimary),
-                ]
-            );
+        for (let i = 0; i < images.length; i++) {
+        const image = images[i];
+        if (!image?.url || !image?.publicId) {
+            throw new Error("Invalid image object: url/publicId missing");
         }
+
+        await client.query(
+            `INSERT INTO product_images (
+                product_id, image_url, cloudinary_public_id, display_order, is_primary
+            ) VALUES ($1, $2, $3, $4, $5)`,
+            [
+            productId,
+            image.url,
+            image.publicId,
+            image.displayOrder ?? i,
+            Boolean(image.isPrimary),
+            ]
+        );
+        }
+
 
         await client.query("COMMIT");
         started = false;
+
+        //-------------clean cloudinary----------------
+        // Get list of public IDs from new images
+        //now we just use frontend to cleanup. No need to querry databse for extra risk
+        const currentPublicIds = images
+        .map((img: any) => img.publicId)
+        .filter(Boolean);
+
+        try {
+        // Find images to delete (in old list but not in current database)
+            const currentPublicIdSet = new Set(currentPublicIds);
+
+            const toDelete = oldPublicIds.filter(
+            oldId => !currentPublicIdSet.has(oldId)
+            );
+
+            // Now safely delete from Cloudinary
+            await Promise.allSettled(
+                toDelete.map((publicId) => cloudinary.uploader.destroy(publicId))
+            );
+
+
+        } catch (err) {
+        console.error("Cloudinary cleanup failed:", err);
+        // don't throw
+        }
+
+        //---------clean cloudinary end------
 
         // Clear cache
         await redis.del(CACHE_KEYS.PRODUCTS_ALL);

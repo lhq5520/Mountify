@@ -1,31 +1,47 @@
-//toast component
-
 "use client";
 
 import { useEffect } from "react";
-import { CheckCircle, X } from "lucide-react";
-import { useCart } from "@/app/context/CartContext";
+import { CheckCircle, XCircle, AlertTriangle, X } from "lucide-react";
+import { useToast } from "@/app/context/ToastContext";
+
+const icons = {
+  success: <CheckCircle size={20} className="text-green-600" />,
+  error: <XCircle size={20} className="text-red-600" />,
+  warning: <AlertTriangle size={20} className="text-yellow-600" />,
+};
+
+const bgColors = {
+  success: "bg-green-100",
+  error: "bg-red-100",
+  warning: "bg-yellow-100",
+};
+
+const titles = {
+  success: "Success",
+  error: "Error",
+  warning: "Warning",
+};
 
 export default function Toast() {
-  const { showToast, toastMessage, setShowToast } = useCart();
+  const { toast, hideToast } = useToast();
 
   // Auto-hide on ESC key
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
-      if (e.key === "Escape" && showToast) {
-        setShowToast(false);
+      if (e.key === "Escape" && toast) {
+        hideToast();
       }
     }
 
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [showToast, setShowToast]);
+  }, [toast, hideToast]);
 
-  if (!showToast) return null;
+  if (!toast) return null;
 
   return (
     <>
-      {/* Backdrop (optional, for emphasis) */}
+      {/* Backdrop */}
       <div
         className="fixed inset-0 z-40 pointer-events-none"
         style={{ backgroundColor: "rgba(0, 0, 0, 0.02)" }}
@@ -40,24 +56,28 @@ export default function Toast() {
             border: "1px solid var(--color-border)",
           }}
         >
-          {/* Success Icon */}
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 flex-shrink-0">
-            <CheckCircle size={20} className="text-green-600" />
+          {/* Icon */}
+          <div
+            className={`flex h-10 w-10 items-center justify-center rounded-full ${
+              bgColors[toast.type]
+            } flex-shrink-0`}
+          >
+            {icons[toast.type]}
           </div>
 
           {/* Message */}
           <div className="flex-1">
             <p className="text-sm font-medium text-[var(--color-text-primary)]">
-              Success
+              {titles[toast.type]}
             </p>
             <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-              {toastMessage}
+              {toast.message}
             </p>
           </div>
 
           {/* Close Button */}
           <button
-            onClick={() => setShowToast(false)}
+            onClick={hideToast}
             className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0"
             aria-label="Close notification"
           >

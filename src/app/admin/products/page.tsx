@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, Trash2, Package } from "lucide-react";
+import { Plus, Trash2, Package, Pencil } from "lucide-react";
 
 interface Product {
   id: number;
@@ -90,7 +90,7 @@ export default function AdminProductsPage() {
   }
 
   return (
-    <main className="bg-gradient-to-b from-[#f5f5f7] to-white min-h-[calc(100vh-64px)]">
+    <div>
       <div className="container-custom py-10 md:py-14">
         {/* Header */}
         <header className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -208,14 +208,23 @@ export default function AdminProductsPage() {
                         )}
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <button
-                          onClick={() => setDeleteConfirm(product.id)}
-                          className="inline-flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 transition-colors"
-                          disabled={deleting}
-                        >
-                          <Trash2 size={16} />
-                          Delete
-                        </button>
+                        <div className="flex items-center justify-end gap-3">
+                          <Link
+                            href={`/admin/products/${product.id}/edit`}
+                            className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+                          >
+                            <Pencil size={16} />
+                            Edit
+                          </Link>
+                          <button
+                            onClick={() => setDeleteConfirm(product.id)}
+                            className="inline-flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 transition-colors"
+                            disabled={deleting}
+                          >
+                            <Trash2 size={16} />
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -256,6 +265,6 @@ export default function AdminProductsPage() {
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 }

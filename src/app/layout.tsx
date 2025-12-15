@@ -1,4 +1,5 @@
 import "./globals.css";
+import { ToastProvider } from "@/app/context/ToastContext";
 import { CartProvider } from "@/app/context/CartContext";
 import { SessionProvider } from "next-auth/react";
 import Navbar from "@/app/components/Navbar";
@@ -33,7 +34,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <head>
-        {/* Preconnect to font CDN for better performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -42,30 +42,27 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <SessionProvider>
-          <CartProvider>
-            <div className="flex min-h-screen flex-col">
-              {/* Global Navigation */}
-              <Navbar />
-
-              {/* Main Content Area */}
-              <main className="flex-1">{children}</main>
-
-              {/* Footer (optional - can add later) */}
-              <footer className="bg-white border-t border-[var(--color-border)]">
-                <div className="container-custom py-8">
-                  <div className="text-center text-[var(--color-text-secondary)] text-sm">
-                    <p>
-                      &copy; {new Date().getFullYear()} Mountify. All rights
-                      reserved.
-                    </p>
+        <ToastProvider>
+          <SessionProvider>
+            <CartProvider>
+              <div className="flex min-h-screen flex-col">
+                <Navbar />
+                <main className="flex-1">{children}</main>
+                <footer className="bg-white border-t border-[var(--color-border)]">
+                  <div className="container-custom py-8">
+                    <div className="text-center text-[var(--color-text-secondary)] text-sm">
+                      <p>
+                        &copy; {new Date().getFullYear()} Mountify. All rights
+                        reserved.
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </footer>
-            </div>
-            <Toast />
-          </CartProvider>
-        </SessionProvider>
+                </footer>
+              </div>
+              <Toast />
+            </CartProvider>
+          </SessionProvider>
+        </ToastProvider>
       </body>
     </html>
   );

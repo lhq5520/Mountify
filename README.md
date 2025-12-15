@@ -9735,4 +9735,107 @@ Access your Cloudinary dashboard at: https://console.cloudinary.com/
 
 ---
 
-_Last updated: December 13 2025_
+# Version 5C: Cloudinary Feature Updates - Session Notes
+
+The main issue solved in this version is orphan image in cloudinary. It is now use api to handle saved image(saved to database and also uploaded to cloudinary) in edit/new admin page.
+Frontend will handle unsaved image(not saved to database but uploaded to cloudinary). Of course some known limitation address below.
+
+## Known Limitations - Orphan Images
+
+The following scenarios may leave orphan images in Cloudinary:
+
+1. User uploads images, then closes browser tab without saving
+2. User uploads images, then navigates away using browser back button
+3. User uploads images, then refreshes the page
+4. Network failure during Cancel cleanup
+
+**Impact:** Low - Cloudinary has 25GB free storage
+
+**Future Solutions:**
+
+- Add `beforeunload` event listener (unreliable)
+- Scheduled cleanup script comparing Cloudinary vs database
+- Track upload sessions in database with TTL expiration
+
+## New Files Created
+
+| File                                        | Purpose                             |
+| ------------------------------------------- | ----------------------------------- |
+| `src/app/api/admin/delete-image/route.ts`   | Delete single image from Cloudinary |
+| `src/app/context/ToastContext.tsx`          | Global toast state management       |
+| `src/app/admin/products/[id]/edit/page.tsx` | Edit product page                   |
+
+---
+
+## Modified Files
+
+### ImageUploader.tsx
+
+- Added `isNew` flag to distinguish saved vs unsaved images
+- Added `deleting` state for loading indicator
+- Delete logic: if `isNew === true`, call `/api/admin/delete-image`
+- Minimum 1 image validation with toast warning
+
+### Toast.tsx
+
+- Now uses `ToastContext` instead of `CartContext`
+- Supports three types: `success`, `error`, `warning`
+- Dynamic icon and color based on type
+
+### CartContext.tsx
+
+- Removed toast-related state (`showToast`, `toastMessage`, `setShowToast`)
+- Now imports and uses `useToast()` from ToastContext
+
+### layout.tsx
+
+- Added `ToastProvider` wrapping outside `SessionProvider` and `CartProvider`
+
+### admin/products/page.tsx
+
+- Added Edit button with Pencil icon
+- Links to `/admin/products/[id]/edit`
+
+### edit/page.tsx
+
+- `handleCancel()` cleans up `isNew: true` images before navigating away
+
+---
+
+## Key Concepts
+
+### `isNew` Flag
+
+```typescript
+interface ProductImage {
+  // ... existing fields
+  isNew: boolean; // true = uploaded but not saved, false = in database
+}
+```
+
+### Toast Usage
+
+```typescript
+const { showToast } = useToast();
+showToast("Message", "success" | "error" | "warning");
+```
+
+### Provider Order
+
+```
+ToastProvider > SessionProvider > CartProvider
+```
+
+(Outer can be used by inner)
+
+---
+
+## Known Limitations
+
+Orphan images may remain in Cloudinary when:
+
+- User closes browser tab without saving
+- User uses browser back button
+- Page refresh
+
+**Handled:** Cancel button, individual image deletion
