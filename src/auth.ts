@@ -2,10 +2,17 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { query } from "@/lib/db";
+import Google from "next-auth/providers/google";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET,
   providers: [
+  // Google OAuth
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+
     Credentials({
       credentials: {
         email: { label: "Email", type: "email" },
@@ -13,8 +20,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         // 1. Get user input
-        const email = credentials!.email as string;
-        const password = credentials!.password as string;
+        const email = String(credentials?.email || "");
+        const password = String(credentials?.password || "");
+        if (!email || !password) return null;
+
                 
         // 2. Basic validation
         if (!email || !password) {
@@ -33,6 +42,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
                 
         const user = result.rows[0];
+
+        //Oauth new logic - Oauth user can't login with passowrd
+        if (!user.password_hash) {
+          return null;
+        }
                 
         // 5. Verify password
         const isValid = await bcrypt.compare(password, user.password_hash);
@@ -60,24 +74,49 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
 
   callbacks: {
-    async jwt({ token, user }) {
-      // On login (when user exists), add user.id to the token
+    //step5d- Oauth new logic for google login
+    async jwt({ token, user, account }) {
+      // Credentials login - On login (when user exists), add user.id and user.role to the token
       if (user) {
-        token.id = user.id;
-        token.role = user.role;
+        token.id = (user as any).id;
+        token.role = (user as any).role;
       }
-      return token;
-    },
-    
+
+      //google Oauth logic - will upsert(high concurrency) into user table
+      if (account?.provider === "google") {
+        const email = token.email;
+        if (!email) return token; // shouldn't be null but safety measure
+
+        try {
+          const res = await query(
+            `
+            INSERT INTO users (email, password_hash, role)
+            VALUES ($1, NULL, 'customer')
+            ON CONFLICT (email)
+            DO UPDATE SET email = EXCLUDED.email
+            RETURNING id, role
+            `,
+            [email]
+          );
+
+          token.id = res.rows[0].id.toString();
+          token.role = res.rows[0].role;
+        } catch (e) {
+          console.error("OAuth upsert failed:", e);
+          }
+      }
+
+    return token;
+  },
+
     async session({ session, token }) {
-      // Add token.id to session.user
-      if (token.id) {
-        session.user.id = token.id as string;
+      // Add token.id and token.role to session.user
+
+      if (session.user) {
+        (session.user as any).id = token.id as string;
+        (session.user as any).role = token.role as string;
       }
-      //role 
-        if (token.role) {
-        session.user.role = token.role as string; 
-      }
+
       return session;
     }
   }

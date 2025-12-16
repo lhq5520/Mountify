@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { X } from "lucide-react";
 
 interface Product {
   id: number;
@@ -15,18 +17,48 @@ interface Product {
 }
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search") || "";
+
   const [productList, setProductList] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
       try {
-        const res = await fetch("/api/products");
+        let url = "/api/products";
+
+        // If there's a search query, use the search API
+        if (searchQuery) {
+          url = `/api/products/search?q=${encodeURIComponent(
+            searchQuery
+          )}&limit=50`;
+        }
+
+        const res = await fetch(url);
         if (!res.ok) {
           throw new Error("Failed to fetch products");
         }
         const data = await res.json();
-        setProductList(data.products ?? []);
+
+        // Search API returns suggestions, regular API returns products
+        if (searchQuery) {
+          // Transform search results format
+          setProductList(
+            (data.suggestions ?? []).map((s: any) => ({
+              id: s.id,
+              name: s.name,
+              price: s.price,
+              description: "",
+              detailed_description: "",
+              image_url: s.imageUrl,
+              image_url_hover: "",
+            }))
+          );
+        } else {
+          setProductList(data.products ?? []);
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -35,33 +67,56 @@ export default function ProductsPage() {
     };
 
     fetchProducts();
-  }, []);
+  }, [searchQuery]);
 
   return (
     <main className="bg-gradient-to-b from-[#f5f5f7] to-white min-h-[calc(100vh-64px)]">
       <div className="container-custom py-10 md:py-14">
-        {/* Top header area: slightly inspired by Myprotein / Verve */}
+        {/* Header */}
         <header className="mb-8 md:mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-[var(--color-text-primary)]">
-              Products
+              {searchQuery ? "Search Results" : "Products"}
             </h1>
-            <p className="mt-2 text-sm text-[var(--color-text-secondary)] max-w-xl">
-              Curated selection with clean, minimal presentation inspired by
-              Myprotein / Verve / Pure Cycles.
-            </p>
+
+            {/* Search status display */}
+            {searchQuery ? (
+              <div className="mt-2 flex items-center gap-2">
+                <p className="text-sm text-[var(--color-text-secondary)]">
+                  {loading
+                    ? "Searching..."
+                    : `${productList.length} result${
+                        productList.length !== 1 ? "s" : ""
+                      } for "${searchQuery}"`}
+                </p>
+                <Link
+                  href="/products"
+                  className="inline-flex items-center gap-1 text-sm text-[var(--color-primary)] hover:underline"
+                >
+                  <X size={14} />
+                  Clear
+                </Link>
+              </div>
+            ) : (
+              <p className="mt-2 text-sm text-[var(--color-text-secondary)] max-w-xl">
+                Curated selection with clean, minimal presentation inspired by
+                Myprotein / Verve / Pure Cycles.
+              </p>
+            )}
           </div>
 
-          {/* Placeholder space, convenient for adding sort/filter later */}
-          <div className="flex gap-3 text-sm text-[var(--color-text-secondary)]">
-            <button className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-white px-4 py-2 hover:border-gray-400 transition">
-              Sort: Featured
-              <span className="text-xs">▼</span>
-            </button>
-          </div>
+          {/* Sort button - only show when not searching */}
+          {!searchQuery && (
+            <div className="flex gap-3 text-sm text-[var(--color-text-secondary)]">
+              <button className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-white px-4 py-2 hover:border-gray-400 transition">
+                Sort: Featured
+                <span className="text-xs">▼</span>
+              </button>
+            </div>
+          )}
         </header>
 
-        {/* Simple loading skeleton */}
+        {/* Loading skeleton */}
         {loading && (
           <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -74,19 +129,40 @@ export default function ProductsPage() {
           </div>
         )}
 
+        {/* Empty state */}
         {!loading && productList.length === 0 && (
-          <p className="text-sm text-[var(--color-text-secondary)]">
-            No products available yet.
-          </p>
+          <div className="text-center py-16">
+            {searchQuery ? (
+              <>
+                <p className="text-lg font-medium text-[var(--color-text-primary)] mb-2">
+                  No products found for "{searchQuery}"
+                </p>
+                <p className="text-sm text-[var(--color-text-secondary)] mb-4">
+                  Try different keywords or browse all products
+                </p>
+                <Link
+                  href="/products"
+                  className="inline-flex items-center gap-2 rounded-full bg-black px-6 py-2.5 text-sm font-medium text-white hover:bg-gray-900 transition"
+                >
+                  View All Products
+                </Link>
+              </>
+            ) : (
+              <p className="text-sm text-[var(--color-text-secondary)]">
+                No products available yet.
+              </p>
+            )}
+          </div>
         )}
 
+        {/* Product grid */}
         {!loading && productList.length > 0 && (
           <section className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {productList.map((product) => (
               <article key={product.id} className="group flex flex-col">
-                {/* Image area: main image + hover image */}
+                {/* Image area */}
                 <Link
-                  href={`/products/${product.id}`} // Note the leading / prefix here
+                  href={`/products/${product.id}`}
                   className="relative w-full overflow-hidden rounded-2xl bg-[#f1f2f4]"
                 >
                   <div className="relative aspect-[4/5]">
@@ -99,7 +175,7 @@ export default function ProductsPage() {
                       className="object-cover transition-opacity duration-300 group-hover:opacity-0"
                     />
 
-                    {/* Hover image (if available) */}
+                    {/* Hover image */}
                     {product.image_url_hover && (
                       <Image
                         src={product.image_url_hover}
@@ -121,7 +197,7 @@ export default function ProductsPage() {
                       </h2>
                     </div>
                     <p className="text-sm font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
-                      ${product.price.toFixed(2)}
+                      ${Number(product.price).toFixed(2)}
                     </p>
                   </div>
 
@@ -131,7 +207,6 @@ export default function ProductsPage() {
                     </p>
                   )}
 
-                  {/* Subtle "View details" link that doesn't steal attention */}
                   <Link
                     href={`/products/${product.id}`}
                     className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"

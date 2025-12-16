@@ -14,6 +14,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { useCart } from "@/app/context/CartContext";
 import { useSession, signIn, signOut } from "next-auth/react";
+import SearchBar from "@/app/components/SearchBar";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -60,6 +61,9 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
+            {/* Search Bar - new */}
+            <SearchBar className="w-64" placeholder="Search..." />
+
             {/* Middle Navigation */}
             <Link
               href="/products"
@@ -189,6 +193,9 @@ export default function Navbar() {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-[var(--color-border)] animate-fadeInDown">
             <div className="flex flex-col gap-3">
+              <div className="pb-3 border-b border-[var(--color-border)]">
+                <SearchBar placeholder="Search products..." />
+              </div>
               <Link
                 href="/products"
                 onClick={() => setMobileMenuOpen(false)}

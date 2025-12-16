@@ -9839,3 +9839,456 @@ Orphan images may remain in Cloudinary when:
 - Page refresh
 
 **Handled:** Cancel button, individual image deletion
+
+# Version 5C 2nd - Admin Panel Updates
+
+## New Files Created
+
+| File                               | Purpose                               |
+| ---------------------------------- | ------------------------------------- |
+| `src/app/admin/layout.tsx`         | Sidebar layout for all admin pages    |
+| `src/app/admin/page.tsx`           | Dashboard with live stats             |
+| `src/app/api/admin/stats/route.ts` | Stats API (products, orders, revenue) |
+
+---
+
+## Admin Sidebar Layout
+
+**Location:** `src/app/admin/layout.tsx`
+
+Provides consistent sidebar navigation for all `/admin/*` pages.
+
+**Navigation Items:**
+| Label | Path | Status |
+|-------|------|--------|
+| Dashboard | `/admin` | ✅ Active |
+| Products | `/admin/products` | ✅ Active |
+| Orders | `/admin/orders` | ✅ Active |
+| Analytics | `/admin/analytics` | 🔜 Coming Soon |
+| Settings | `/admin/settings` | 🔜 Coming Soon |
+
+**Features:**
+
+- Desktop: Fixed 256px sidebar
+- Mobile: Horizontal scrollable tabs
+- Active state highlighting
+- "Coming Soon" badge for future features
+
+---
+
+## Dashboard Page
+
+**Location:** `src/app/admin/page.tsx`
+
+**Stats Cards:**
+| Stat | Source | Icon Color |
+|------|--------|------------|
+| Products | `COUNT(*) FROM products` | Blue |
+| Total Orders | `COUNT(*) FROM orders` | Green |
+| Revenue | `SUM(total) FROM orders` | Purple |
+| Orders (7 days) | Orders with `created_at > NOW() - 7 days` | Orange |
+
+**Quick Links:**
+
+- Manage Products → `/admin/products`
+- View Orders → `/admin/orders`
+
+---
+
+## Stats API
+
+**Endpoint:** `GET /api/admin/stats`
+
+**Response:**
+
+```json
+{
+  "products": 12,
+  "orders": 45,
+  "revenue": 1234.56,
+  "recentOrders": 8
+}
+```
+
+**Auth:** Admin only
+
+---
+
+## Orders API Enhancement
+
+**Endpoint:** `GET /api/admin/orders`
+
+**Changes:**
+
+- ✅ Added admin auth check
+- ✅ Returns order items with product details
+- ✅ Includes product images
+
+**Response:**
+
+```json
+{
+  "orders": [
+    {
+      "id": 1,
+      "userId": 5,
+      "email": "customer@example.com",
+      "total": "99.99",
+      "status": "completed",
+      "stripeSessionId": "cs_xxx",
+      "createdAt": "2024-12-14T10:00:00Z",
+      "items": [
+        {
+          "productId": 1,
+          "productName": "Mountain Bike",
+          "imageUrl": "https://...",
+          "quantity": 2,
+          "price": "49.99"
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## Orders Page Enhancement
+
+**Location:** `src/app/admin/orders/page.tsx`
+
+**New Features:**
+| Feature | Description |
+|---------|-------------|
+| Stats Summary | Total orders, revenue, completed count |
+| Status Badges | Color-coded (green=completed, yellow=pending, red=failed) |
+| Expandable Rows | Click order to see items |
+| Product Images | Shown in expanded details |
+| Item Subtotals | Quantity × Price calculation |
+
+**Status Colors:**
+
+```typescript
+completed/paid → green
+pending → yellow
+cancelled/failed → red
+default → gray
+```
+
+---
+
+# Version 5d - Authentication Enhancement & Product Search
+
+## Overview
+
+This step adds Google OAuth authentication, updates the Settings page to handle different login methods, and implements a full product search feature with autocomplete.
+
+---
+
+## 1. Google OAuth Authentication
+
+### Database Change
+
+```sql
+ALTER TABLE users ALTER COLUMN password_hash DROP NOT NULL;
+```
+
+This allows OAuth users to exist without a password.
+
+### Environment Variables
+
+```env
+GOOGLE_CLIENT_ID=your_client_id
+GOOGLE_CLIENT_SECRET=your_client_secret
+```
+
+### Google Cloud Console Setup
+
+1. Create project at https://console.cloud.google.com/
+2. Navigate to APIs & Services → Credentials
+3. Create OAuth client ID (Web application)
+4. Add Authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
+5. For production, add: `https://yourdomain.com/api/auth/callback/google`
+
+### auth.ts Updates
+
+**File:** `src/auth.ts`
+
+Key changes:
+
+- Added Google provider import and configuration
+- Added OAuth user upsert logic in JWT callback
+- Uses `ON CONFLICT` for atomic upsert (handles concurrent logins)
+
+```typescript
+import Google from "next-auth/providers/google";
+
+// In providers array:
+Google({
+  clientId: process.env.GOOGLE_CLIENT_ID!,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+}),
+
+// In JWT callback - upsert OAuth user:
+if (account?.provider === "google") {
+  const res = await query(
+    `INSERT INTO users (email, password_hash, role)
+     VALUES ($1, NULL, 'customer')
+     ON CONFLICT (email)
+     DO UPDATE SET email = EXCLUDED.email
+     RETURNING id, role`,
+    [email]
+  );
+  token.id = res.rows[0].id.toString();
+  token.role = res.rows[0].role;
+}
+```
+
+### Sign-in Page Updates
+
+**File:** `src/app/auth/signin/page.tsx`
+
+Added:
+
+- Google sign-in button with official Google icon
+- "or continue with email" divider
+- `oauthLoading` state to prevent double-clicks
+- Form disabled during OAuth loading
+
+```typescript
+async function handleGoogleSignIn() {
+  setOauthLoading(true);
+  await signIn("google", { callbackUrl: "/products" });
+}
+```
+
+---
+
+## 2. Settings Page Enhancement
+
+### Profile API Update
+
+**File:** `src/app/api/user/profile/route.ts`
+
+Added `hasPassword` field to response:
+
+```typescript
+return NextResponse.json({
+  id: user.id,
+  email: user.email,
+  role: user.role,
+  createdAt: user.created_at,
+  hasPassword: user.password_hash !== null, // NEW
+});
+```
+
+### Settings Page Updates
+
+**File:** `src/app/settings/page.tsx`
+
+Changes:
+
+- Added "Login Method" display (Email & Password vs Google Account)
+- Conditional rendering: Password form only shown for password users
+- OAuth users see info message instead of password form
+
+```typescript
+{
+  profile?.hasPassword ? (
+    // Password change form
+    <section>...</section>
+  ) : (
+    // OAuth user message
+    <section>
+      <p>You signed up with Google, so you don't have a password.</p>
+    </section>
+  );
+}
+```
+
+---
+
+## 3. Product Search Feature
+
+### Search API
+
+**File:** `src/app/api/products/search/route.ts`
+
+**Endpoint:** `GET /api/products/search?q=keyword&limit=6`
+
+**Features:**
+
+- Case-insensitive search using PostgreSQL `ILIKE`
+- Searches both `name` and `description` fields
+- Smart ordering: name starts with → name contains → description contains
+- Input sanitization: whitespace normalization, length limits (2-64 chars)
+- Limit boundary check (1-50)
+
+**Response:**
+
+```json
+{
+  "suggestions": [
+    {
+      "id": 1,
+      "name": "Product Name",
+      "price": 29.99,
+      "imageUrl": "https://..."
+    }
+  ]
+}
+```
+
+**SQL Query:**
+
+```sql
+SELECT id, name, price, image_url
+FROM products
+WHERE name ILIKE $1 OR description ILIKE $1
+ORDER BY
+  CASE
+    WHEN name ILIKE $2 THEN 0      -- Name starts with query
+    WHEN name ILIKE $1 THEN 1      -- Name contains query
+    WHEN description ILIKE $1 THEN 2
+    ELSE 3
+  END,
+  name ASC
+LIMIT $3
+```
+
+### SearchBar Component
+
+**File:** `src/components/SearchBar.tsx`
+
+**Features:**
+
+- Debounced API calls (300ms) to reduce requests
+- Autocomplete dropdown with product suggestions
+- Product thumbnails and prices in suggestions
+- Keyboard navigation (Arrow Up/Down, Enter, Escape)
+- "View all results for X" link
+- Loading spinner and clear button
+- Click outside to close dropdown
+
+**Props:**
+
+```typescript
+interface SearchBarProps {
+  className?: string;
+  placeholder?: string;
+}
+```
+
+**Usage:**
+
+```typescript
+<SearchBar className="w-64" placeholder="Search..." />
+```
+
+### Navbar Integration
+
+**File:** `src/components/Navbar.tsx`
+
+Added SearchBar in two places:
+
+1. **Desktop:** Between Products link and Cart/Account
+
+```typescript
+<SearchBar className="w-64" placeholder="Search..." />
+```
+
+2. **Mobile:** Inside mobile menu at top
+
+```typescript
+<div className="pb-3 border-b border-[var(--color-border)]">
+  <SearchBar placeholder="Search products..." />
+</div>
+```
+
+### Products Page Search Support
+
+**File:** `src/app/products/page.tsx`
+
+Changes:
+
+- Reads `?search=xxx` from URL using `useSearchParams()`
+- Conditionally calls search API or products API
+- Displays "X results for 'keyword'" with Clear button
+- Empty state with "View All Products" button
+- Re-fetches when search query changes
+
+```typescript
+const searchParams = useSearchParams();
+const searchQuery = searchParams.get("search") || "";
+
+useEffect(() => {
+  let url = "/api/products";
+  if (searchQuery) {
+    url = `/api/products/search?q=${encodeURIComponent(searchQuery)}&limit=50`;
+  }
+  // fetch...
+}, [searchQuery]);
+```
+
+---
+
+## File Structure Summary
+
+```
+src/
+├── auth.ts                              # Updated: Google provider + OAuth upsert
+├── app/
+│   ├── auth/
+│   │   └── signin/page.tsx              # Updated: Google sign-in button
+│   ├── settings/page.tsx                # Updated: Login method + conditional password form
+│   ├── products/page.tsx                # Updated: Search results support
+│   └── api/
+│       ├── user/
+│       │   └── profile/route.ts         # Updated: Added hasPassword field
+│       └── products/
+│           └── search/route.ts          # NEW: Search API
+└── components/
+    ├── Navbar.tsx                       # Updated: Added SearchBar
+    └── SearchBar.tsx                    # NEW: Autocomplete search component
+```
+
+---
+
+## User Flow Examples
+
+### Google OAuth Flow
+
+```
+1. User clicks "Continue with Google"
+2. Redirected to Google consent screen
+3. Google redirects back to /api/auth/callback/google
+4. JWT callback: upsert user into database
+5. User logged in, redirected to /products
+```
+
+### Search Flow
+
+```
+1. User types in SearchBar
+2. After 300ms, API called with query
+3. Dropdown shows suggestions with images
+4. User can:
+   a. Click suggestion → go to product detail
+   b. Press Enter → go to /products?search=xxx
+   c. Click "View all results" → go to /products?search=xxx
+5. Products page shows filtered results
+6. User clicks "Clear" → back to all products
+```
+
+---
+
+## Security Considerations
+
+- OAuth users have `password_hash = NULL` and cannot use password login
+- Search input sanitized: whitespace normalized, length limited
+- API limit parameter bounded (1-50) to prevent abuse
+- Debounce prevents excessive API calls
+
+---
+
+_Step 5d completed: December 2024_
