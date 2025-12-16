@@ -163,14 +163,25 @@ export default function SignInPage() {
             </div>
 
             {/* Password */}
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium mb-2"
-                style={{ color: "var(--color-text-primary)" }}
-              >
-                Password
-              </label>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="password"
+                  className="text-sm font-medium"
+                  style={{ color: "var(--color-text-primary)" }}
+                >
+                  Password
+                </label>
+
+                <Link
+                  href="/auth/forgot-password"
+                  className="text-xs hover:underline"
+                  style={{ color: "var(--color-primary)" }}
+                >
+                  Forgot password?
+                </Link>
+              </div>
+
               <input
                 id="password"
                 type="password"

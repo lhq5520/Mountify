@@ -10291,4 +10291,377 @@ src/
 
 ---
 
-_Step 5d completed: December 2024_
+# Step 5e - Forgot Password Feature
+
+## Overview
+
+This step implements a secure password reset flow with email verification, rate limiting, and proper token handling.
+
+---
+
+## User Flow
+
+```
+1. User clicks "Forgot password?" on sign-in page
+2. User enters email → POST /api/auth/forgot-password
+3. System generates token, stores hash, sends email
+4. User clicks link in email → /auth/reset-password?token=xxx
+5. User enters new password → POST /api/auth/reset-password
+6. Password updated, redirected to sign-in
+```
+
+---
+
+## 1. Email Service Setup (Resend)
+
+### Installation
+
+```bash
+npm install resend
+```
+
+### Environment Variables
+
+```env
+RESEND_API_KEY=re_xxxxxxxxx
+EMAIL_FROM=noreply@yourdomain.com
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### Domain Verification
+
+1. Go to Resend Dashboard → Domains → Add Domain
+2. Add DNS records (MX, TXT) at your domain registrar
+3. Click Verify in Resend
+
+### Email Utility
+
+**File:** `src/lib/email.ts`
+
+```typescript
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+const EMAIL_FROM = process.env.EMAIL_FROM || "onboarding@resend.dev";
+
+export async function sendPasswordResetEmail(to: string, resetUrl: string) {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: EMAIL_FROM,
+      to,
+      subject: "Reset your password - Mountify",
+      html: `...`, // Styled HTML email template
+    });
+
+    if (error) {
+      console.error("Email send error:", error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (e: any) {
+    console.error("Email send exception:", e);
+    return { success: false, error: e };
+  }
+}
+```
+
+---
+
+## 2. Database Schema
+
+### New Table: password_reset_tokens
+
+```sql
+CREATE TABLE password_reset_tokens (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+  token_hash TEXT NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  used BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_reset_tokens_token_hash ON password_reset_tokens(token_hash);
+```
+
+**Key Design Decisions:**
+
+| Decision                   | Reason                                      |
+| -------------------------- | ------------------------------------------- |
+| `user_id UNIQUE`           | One active token per user, enables upsert   |
+| `token_hash` (not `token`) | Never store raw tokens in database          |
+| `used` flag                | Prevent token reuse without deleting record |
+
+---
+
+## 3. Forgot Password API
+
+**File:** `src/app/api/auth/forgot-password/route.ts`
+
+### Security Features
+
+| Feature                | Implementation                                      |
+| ---------------------- | --------------------------------------------------- |
+| **Rate Limit (IP)**    | 10 requests / 5 minutes                             |
+| **Rate Limit (Email)** | 3 requests / 15 minutes                             |
+| **Cooldown**           | 60 seconds between requests per email               |
+| **Token Hashing**      | SHA256 hash stored, raw token sent in email         |
+| **Uniform Response**   | Always returns success to prevent email enumeration |
+| **OAuth Check**        | Skip users without password_hash                    |
+
+### Token Generation
+
+```typescript
+// Generate random token
+const token = crypto.randomBytes(32).toString("hex");
+
+// Hash for storage (never store raw token)
+const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+
+// Let PostgreSQL handle time (avoids timezone issues)
+await query(
+  `INSERT INTO password_reset_tokens (user_id, token_hash, expires_at, used)
+   VALUES ($1, $2, NOW() + INTERVAL '1 hour', false)
+   ON CONFLICT (user_id)
+   DO UPDATE SET token_hash = EXCLUDED.token_hash,
+                 expires_at = NOW() + INTERVAL '1 hour',
+                 used = false`,
+  [user.id, tokenHash]
+);
+
+// Send raw token in email (not the hash)
+const resetUrl = `${baseUrl}/auth/reset-password?token=${encodeURIComponent(
+  token
+)}`;
+```
+
+### Rate Limiting with Redis
+
+```typescript
+import { redis } from "@/lib/redis";
+
+function getClientIp(req: Request) {
+  const xff = req.headers.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0].trim();
+  return "unknown";
+}
+
+async function rateLimitFixedWindow(
+  key: string,
+  limit: number,
+  windowSeconds: number
+) {
+  const count = await redis.incr(key);
+  if (count === 1) {
+    await redis.expire(key, windowSeconds);
+  }
+  return count <= limit;
+}
+
+// Usage
+const ipKey = `rl:forgot:ip:${ip}`;
+const ipAllowed = await rateLimitFixedWindow(ipKey, 10, 300);
+
+const emailKey = `rl:forgot:email:${normalizedEmail}`;
+const emailAllowed = await rateLimitFixedWindow(emailKey, 3, 900);
+
+const cooldownKey = `cooldown:forgot:email:${normalizedEmail}`;
+const inCooldown = await redis.get(cooldownKey);
+await redis.set(cooldownKey, "1", { ex: 60 });
+```
+
+---
+
+## 4. Reset Password API
+
+**File:** `src/app/api/auth/reset-password/route.ts`
+
+### Security Features
+
+| Feature                      | Implementation                        |
+| ---------------------------- | ------------------------------------- |
+| **Rate Limit (IP)**          | 10 attempts / 15 minutes              |
+| **Rate Limit (Token)**       | 5 attempts / 15 minutes per token     |
+| **Atomic Token Consumption** | UPDATE...WHERE used=FALSE...RETURNING |
+| **Database Transaction**     | pool.connect() for true atomicity     |
+
+### Atomic Token Consumption
+
+```typescript
+import { pool } from "@/lib/db";
+
+const client = await pool.connect();
+
+try {
+  await client.query("BEGIN");
+
+  // Atomically consume token (check + mark used in one query)
+  const consume = await client.query(
+    `UPDATE password_reset_tokens
+     SET used = TRUE
+     WHERE token_hash = $1
+       AND used = FALSE
+       AND expires_at > NOW()
+     RETURNING user_id`,
+    [tokenHash]
+  );
+
+  if (consume.rows.length === 0) {
+    await client.query("ROLLBACK");
+    return NextResponse.json(
+      { error: "Invalid or expired reset link" },
+      { status: 400 }
+    );
+  }
+
+  const userId = consume.rows[0].user_id;
+
+  // Update password
+  const passwordHash = await bcrypt.hash(password, 10);
+  await client.query("UPDATE users SET password_hash = $1 WHERE id = $2", [
+    passwordHash,
+    userId,
+  ]);
+
+  await client.query("COMMIT");
+} catch (e) {
+  try {
+    await client.query("ROLLBACK");
+  } catch {}
+  throw e;
+} finally {
+  client.release();
+}
+```
+
+**Why this is better than SELECT then UPDATE:**
+
+- Prevents race condition where two requests read `used=false` simultaneously
+- Single query checks all conditions and marks as used atomically
+
+---
+
+## 5. Frontend Pages
+
+### Forgot Password Page
+
+**File:** `src/app/auth/forgot-password/page.tsx`
+
+**States:**
+
+- Initial: Email input form
+- Submitted: Success message (always shows, regardless of email existence)
+
+**Features:**
+
+- Back to sign-in link
+- Loading state
+- Success confirmation with email displayed
+
+### Reset Password Page
+
+**File:** `src/app/auth/reset-password/page.tsx`
+
+**States:**
+
+- No token: Error message with link to request new
+- Form: New password + confirm password
+- Success: Confirmation + auto-redirect to sign-in (3 seconds)
+
+**Features:**
+
+- Password visibility toggle
+- Minimum 6 characters validation
+- Password match validation
+- Error display for invalid/expired tokens
+
+### Sign-in Page Update
+
+**File:** `src/app/auth/signin/page.tsx`
+
+Added "Forgot password?" link next to Password label:
+
+```typescript
+<div className="flex items-center justify-between mb-2">
+  <label htmlFor="password">Password</label>
+  <Link href="/auth/forgot-password">Forgot password?</Link>
+</div>
+```
+
+---
+
+## 6. Timezone Fix
+
+### Problem
+
+JavaScript `new Date()` and PostgreSQL `NOW()` may be in different timezones, causing tokens to appear expired immediately.
+
+### Solution
+
+Let PostgreSQL handle all time calculations:
+
+```typescript
+// ❌ Bad: JavaScript time
+const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+await query("INSERT ... VALUES ($1, $2, $3)", [userId, tokenHash, expiresAt]);
+
+// ✅ Good: PostgreSQL time
+await query("INSERT ... VALUES ($1, $2, NOW() + INTERVAL '1 hour')", [
+  userId,
+  tokenHash,
+]);
+```
+
+Both creation and validation use PostgreSQL's `NOW()`, ensuring consistency.
+
+---
+
+## File Structure
+
+```
+src/
+├── lib/
+│   └── email.ts                         # NEW: Resend email utility
+├── app/
+│   ├── auth/
+│   │   ├── signin/page.tsx              # UPDATED: Added forgot password link
+│   │   ├── forgot-password/page.tsx     # NEW: Request reset email
+│   │   └── reset-password/page.tsx      # NEW: Set new password
+│   └── api/
+│       └── auth/
+│           ├── forgot-password/route.ts # NEW: Generate token + send email
+│           └── reset-password/route.ts  # NEW: Validate token + update password
+```
+
+---
+
+## Security Summary
+
+| Attack Vector       | Mitigation                                   |
+| ------------------- | -------------------------------------------- |
+| Email enumeration   | Uniform success response                     |
+| Brute force token   | Rate limiting + long random token (32 bytes) |
+| Token theft from DB | Only hash stored, raw token in email         |
+| Race condition      | Atomic UPDATE...RETURNING in transaction     |
+| Timezone mismatch   | PostgreSQL handles all time calculations     |
+| Token reuse         | `used` flag + atomic consumption             |
+| Spam/abuse          | IP + email rate limits + cooldown            |
+
+---
+
+## Testing Checklist
+
+- [ ] Request reset for existing email → receives email
+- [ ] Request reset for non-existent email → same success message (no leak)
+- [ ] Request reset for OAuth user → same success message (no leak)
+- [ ] Click valid link → can set new password
+- [ ] Click expired link → error message
+- [ ] Click used link → error message
+- [ ] Use new password to login → works
+- [ ] Old password → no longer works
+- [ ] Rate limit triggers → silent fail (same success message)
+
+---
+
+_Step 5e completed: 12/16 2025_
