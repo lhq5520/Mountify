@@ -53,6 +53,7 @@ export default function ProductsPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [loading, setLoading] = useState(true);
+  const [stockMap, setStockMap] = useState<Record<string, number>>({});
 
   // Dropdown states
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
@@ -98,6 +99,17 @@ export default function ProductsPage() {
         const data = await res.json();
         setProductList(data.products ?? []);
         setPagination(data.pagination ?? null);
+
+        // Fetch inventory
+        try {
+          const invRes = await fetch("/api/inventory");
+          if (invRes.ok) {
+            const invData = await invRes.json();
+            setStockMap(invData.inventory || {});
+          }
+        } catch (e) {
+          console.error("Failed to fetch inventory:", e);
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -345,6 +357,19 @@ export default function ProductsPage() {
                         className="object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                       />
                     )}
+
+                    {/* Stock badges */}
+                    {stockMap[String(product.id)] === 0 && (
+                      <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full">
+                        Out of Stock
+                      </div>
+                    )}
+                    {stockMap[String(product.id)] > 0 &&
+                      stockMap[String(product.id)] <= 5 && (
+                        <div className="absolute top-3 left-3 bg-orange-500 text-white text-xs font-medium px-2 py-1 rounded-full">
+                          Low Stock
+                        </div>
+                      )}
                   </div>
                 </Link>
 

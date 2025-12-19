@@ -28,7 +28,7 @@ Mountify is a full‑stack e‑commerce demo built with Next.js App Router, Type
 
 ## Latest Update
 
-- 12/18/2025 Version 5h
+- 12/19/2025 Version 5i
 
 ## Environment Variables
 

@@ -10,6 +10,7 @@ import {
   ChevronRight,
   LayoutDashboard,
   FolderTree,
+  Warehouse,
 } from "lucide-react";
 
 const navItems = [
@@ -23,6 +24,7 @@ const navItems = [
     href: "/admin/products",
     icon: Package,
   },
+  { label: "Inventory", href: "/admin/inventory", icon: Warehouse },
   {
     label: "Categories",
     href: "/admin/categories",

@@ -33,10 +33,13 @@ export default function ProductDetailPage() {
   // Quantity
   const [qty, setQty] = useState(1);
 
-  // Add multiple items (keep CartContext untouched)
+  // Inventory
+  const [available, setAvailable] = useState<number | null>(null);
+
+  // Add multiple items
   function handleAddToCart(count: number) {
     if (!product) return;
-    const safe = Math.max(1, Math.min(99, count));
+    const safe = Math.max(1, Math.min(maxQty, count));
     for (let i = 0; i < safe; i++) addToCart(product);
   }
 
@@ -45,13 +48,25 @@ export default function ProductDetailPage() {
 
     const fetchProduct = async () => {
       try {
-        // Fetch individual product using new API
+        // Fetch product
         const res = await fetch(`/api/products/${id}`);
         if (!res.ok) throw new Error("Failed to fetch product");
 
         const data = await res.json();
         setProduct(data.product);
         setImages(data.images || []);
+
+        // Fetch inventory
+        try {
+          const invRes = await fetch(`/api/inventory?ids=${id}`);
+          if (invRes.ok) {
+            const invData = await invRes.json();
+            setAvailable(invData.inventory?.[String(id)] ?? 0);
+          }
+        } catch (e) {
+          console.error("Failed to fetch inventory:", e);
+          setAvailable(0);
+        }
       } catch (err) {
         console.error(err);
         setProduct(null);
@@ -63,7 +78,7 @@ export default function ProductDetailPage() {
     fetchProduct();
   }, [id]);
 
-  // Parse detailed description (always render everything)
+  // Parse detailed description
   const detailParas = useMemo(() => {
     if (!product?.detailed_description) return [];
     return product.detailed_description
@@ -86,6 +101,19 @@ export default function ProductDetailPage() {
           },
         ]
       : [];
+
+  // Stock status
+  const inStock = available !== null && available > 0;
+  const lowStock = available !== null && available > 0 && available <= 5;
+  const maxQty =
+    available !== null && available > 0 ? Math.min(99, available) : 99;
+
+  // Reset qty if it exceeds available
+  useEffect(() => {
+    if (available !== null && qty > available && available > 0) {
+      setQty(available);
+    }
+  }, [available, qty]);
 
   if (loading) return null;
   if (!product) return null;
@@ -125,52 +153,87 @@ export default function ProductDetailPage() {
               ${product.price.toFixed(2)}
             </p>
 
-            {/* Quantity */}
-            <div className="mt-6">
-              <p className="mb-2 text-sm font-medium text-[var(--color-text-secondary)]">
-                Quantity
+            {/* Stock status */}
+            {available !== null && (
+              <p
+                className={`mt-2 text-sm font-medium ${
+                  !inStock
+                    ? "text-red-600"
+                    : lowStock
+                    ? "text-orange-600"
+                    : "text-green-600"
+                }`}
+              >
+                {!inStock
+                  ? "Out of Stock"
+                  : lowStock
+                  ? `Low Stock - Only ${available} left`
+                  : "In Stock"}
               </p>
+            )}
 
-              <div className="inline-flex items-center rounded-2xl border border-[var(--color-border)] bg-white px-2">
-                <button
-                  onClick={() => setQty((v) => Math.max(1, v - 1))}
-                  className="h-10 w-10 text-lg text-gray-500"
-                >
-                  −
-                </button>
+            {/* Quantity */}
+            {inStock && (
+              <div className="mt-6">
+                <p className="mb-2 text-sm font-medium text-[var(--color-text-secondary)]">
+                  Quantity
+                </p>
 
-                <input
-                  value={qty}
-                  onChange={(e) =>
-                    setQty(
-                      Math.max(1, Math.min(99, Number(e.target.value) || 1))
-                    )
-                  }
-                  inputMode="numeric"
-                  className="w-10 text-center text-sm font-semibold outline-none"
-                />
+                <div className="inline-flex items-center rounded-2xl border border-[var(--color-border)] bg-white px-2">
+                  <button
+                    onClick={() => setQty((v) => Math.max(1, v - 1))}
+                    className="h-10 w-10 text-lg text-gray-500"
+                  >
+                    −
+                  </button>
 
-                <button
-                  onClick={() => setQty((v) => Math.min(99, v + 1))}
-                  className="h-10 w-10 text-lg text-gray-500"
-                >
-                  +
-                </button>
+                  <input
+                    value={qty}
+                    onChange={(e) =>
+                      setQty(
+                        Math.max(
+                          1,
+                          Math.min(maxQty, Number(e.target.value) || 1)
+                        )
+                      )
+                    }
+                    inputMode="numeric"
+                    className="w-10 text-center text-sm font-semibold outline-none"
+                  />
+
+                  <button
+                    onClick={() => setQty((v) => Math.min(maxQty, v + 1))}
+                    className="h-10 w-10 text-lg text-gray-500"
+                  >
+                    +
+                  </button>
+                </div>
+
+                {lowStock && (
+                  <p className="mt-1 text-xs text-orange-600">
+                    Max {available} available
+                  </p>
+                )}
               </div>
-            </div>
+            )}
 
             {/* Desktop buttons */}
             <div className="mt-6 hidden sm:flex gap-3">
               <button
                 onClick={() => handleAddToCart(qty)}
-                className="rounded-2xl bg-black px-6 py-3 text-sm font-semibold text-white"
+                disabled={!inStock}
+                className={`rounded-2xl px-6 py-3 text-sm font-semibold text-white transition-colors ${
+                  inStock
+                    ? "bg-black hover:bg-gray-800"
+                    : "bg-gray-300 cursor-not-allowed"
+                }`}
               >
-                Add to Cart
+                {inStock ? "Add to Cart" : "Out of Stock"}
               </button>
 
               <Link
                 href="/cart"
-                className="rounded-2xl border px-6 py-3 text-sm font-semibold"
+                className="rounded-2xl border px-6 py-3 text-sm font-semibold hover:bg-gray-50 transition-colors"
               >
                 Go to Cart
               </Link>
@@ -211,9 +274,12 @@ export default function ProductDetailPage() {
 
           <button
             onClick={() => handleAddToCart(qty)}
-            className="flex-1 rounded-2xl bg-black py-3 text-sm font-semibold text-white"
+            disabled={!inStock}
+            className={`flex-1 rounded-2xl py-3 text-sm font-semibold text-white transition-colors ${
+              inStock ? "bg-black" : "bg-gray-300 cursor-not-allowed"
+            }`}
           >
-            Add to Cart
+            {inStock ? "Add to Cart" : "Out of Stock"}
           </button>
         </div>
       </div>

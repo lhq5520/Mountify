@@ -51,11 +51,45 @@ export async function POST(req: Request) {
         if (session.payment_status === "paid") {
           // update order status
           await query(
-            "UPDATE orders SET status = $1 WHERE stripe_session_id = $2",
+            "UPDATE orders SET status = $1 WHERE stripe_session_id = $2 AND status = 'pending' ",
             ["paid", session.id]
           );
 
           console.log(`Order paid for session: ${session.id}`);
+
+          // 1.5 deduct inventory (on_hand -= qty, reserved -= qty)
+          try {
+
+            const deductRes = await query(
+              `UPDATE orders
+              SET inventory_reserved = FALSE
+              WHERE stripe_session_id = $1
+                AND inventory_reserved = TRUE
+              RETURNING id`,
+              [session.id]
+            );
+
+            if (deductRes.rows.length > 0) {
+              const orderId = deductRes.rows[0].id;
+
+              // only the first webhook can reach here
+              await query(
+                `UPDATE inventory i
+                SET on_hand = i.on_hand - oi.quantity,
+                    reserved = i.reserved - oi.quantity,
+                    updated_at = NOW()
+                FROM order_items oi
+                WHERE oi.order_id = $1
+                  AND i.sku_id = oi.product_id`,
+                [orderId]
+              );
+
+              console.log(`Inventory deducted for order #${orderId}`);
+            }
+
+          } catch (invError) {
+            console.error("Failed to deduct inventory:", invError);
+          }
 
           // 2. get order detail and send email
           try {
@@ -189,6 +223,41 @@ export async function POST(req: Request) {
         }
         break;
       
+      case "checkout.session.expired":
+        const expiredSession = event.data.object as Stripe.Checkout.Session;
+
+        try {
+          const releaseRes = await query(
+            `UPDATE orders
+            SET status = 'expired',
+                inventory_reserved = FALSE
+            WHERE stripe_session_id = $1
+              AND inventory_reserved = TRUE
+            RETURNING id`,
+            [expiredSession.id]
+          );
+
+          if (releaseRes.rows.length > 0) {
+            const orderId = releaseRes.rows[0].id;
+
+            await query(
+              `UPDATE inventory i
+              SET reserved = GREATEST(0, i.reserved - oi.quantity),
+                  updated_at = NOW()
+              FROM order_items oi
+              WHERE oi.order_id = $1
+                AND i.sku_id = oi.product_id`,
+              [orderId]
+            );
+
+            console.log(`Released inventory for expired order #${orderId}`);
+          }
+        } catch (expireError) {
+          console.error("Failed to release inventory:", expireError);
+        }
+        break;
+
+
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }

@@ -11713,3 +11713,503 @@ For simple address collection without shipping rates, use `customer_details.addr
 ---
 
 _Step 5h completed: 12/18 2025_
+
+# Step 5i - Inventory Management System
+
+## Overview
+
+This step implements a robust inventory management system with stock reservation during checkout, automatic deduction on payment success, and release on expiration. The design prevents overselling through database-level constraints and atomic operations.
+
+---
+
+## Design Philosophy
+
+### Reservation Model
+
+```
+User clicks Checkout
+       ↓
+Reserved += quantity (stock held for 30 min)
+       ↓
+┌─────────────────────┬─────────────────────┐
+│   Payment Success   │  Timeout / Cancel   │
+├─────────────────────┼─────────────────────┤
+│ on_hand -= qty      │ reserved -= qty     │
+│ reserved -= qty     │ status = 'expired'  │
+│ status = 'paid'     │                     │
+└─────────────────────┴─────────────────────┘
+```
+
+### Key Terms
+
+| Term        | Description                         |
+| ----------- | ----------------------------------- |
+| `on_hand`   | Physical stock in warehouse         |
+| `reserved`  | Stock held for pending orders       |
+| `available` | Sellable stock = on_hand - reserved |
+
+---
+
+## 1. Database Schema
+
+### Inventory Table
+
+```sql
+CREATE TABLE IF NOT EXISTS inventory (
+  sku_id BIGINT PRIMARY KEY,                 -- Phase 1: = products.id
+  on_hand INT NOT NULL DEFAULT 0 CHECK (on_hand >= 0),
+  reserved INT NOT NULL DEFAULT 0 CHECK (reserved >= 0),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_inventory_updated_at ON inventory(updated_at);
+
+-- Auto-update trigger
+CREATE TRIGGER trg_inventory_updated_at
+BEFORE UPDATE ON inventory
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+```
+
+### Orders Table Updates
+
+```sql
+ALTER TABLE orders
+ADD COLUMN IF NOT EXISTS inventory_reserved BOOLEAN NOT NULL DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS reserved_until TIMESTAMPTZ;
+
+-- Ensure idempotent order creation
+CREATE UNIQUE INDEX IF NOT EXISTS uq_orders_stripe_session_id
+ON orders (stripe_session_id);
+
+-- Status constraint
+ALTER TABLE orders
+ADD CONSTRAINT orders_status_check
+CHECK (status IN ('pending', 'paid', 'cancelled', 'expired'));
+```
+
+### Order Items Table Updates
+
+```sql
+-- Quantity must be positive
+ALTER TABLE order_items
+ADD CONSTRAINT IF NOT EXISTS ck_order_items_qty_positive CHECK (quantity > 0);
+
+-- One row per product per order
+CREATE UNIQUE INDEX IF NOT EXISTS uq_order_items_order_product
+ON order_items (order_id, product_id);
+
+-- Common indexes
+CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_product_id ON order_items(product_id);
+```
+
+---
+
+## 2. Checkout API - Stock Reservation
+
+**File:** `src/app/api/checkout/route.ts`
+
+### Key Changes
+
+1. **Merge duplicate items** - Same product added multiple times → single row
+2. **Transaction with row locking** - Prevent race conditions
+3. **Atomic reservation** - `UPDATE ... WHERE available >= qty`
+4. **Stripe failure recovery** - Release reservation if Stripe call fails
+
+### Reservation Logic
+
+```typescript
+// Inside transaction
+await client.query("BEGIN");
+
+// 1. Ensure inventory rows exist
+await client.query(
+  `INSERT INTO inventory (sku_id, on_hand, reserved)
+   SELECT unnest($1::bigint[]), 0, 0
+   ON CONFLICT (sku_id) DO NOTHING`,
+  [requestedIds]
+);
+
+// 2. Reserve atomically (prevents oversell)
+for (const item of mergedItems) {
+  const reserveRes = await client.query(
+    `UPDATE inventory
+     SET reserved = reserved + $1,
+         updated_at = NOW()
+     WHERE sku_id = $2
+       AND (on_hand - reserved) >= $1
+     RETURNING sku_id`,
+    [item.quantity, item.productId]
+  );
+
+  if (reserveRes.rowCount === 0) {
+    await client.query("ROLLBACK");
+    return NextResponse.json(
+      { error: "Insufficient stock", productId: item.productId },
+      { status: 409 }
+    );
+  }
+}
+
+// 3. Create order with reservation tracking
+const orderRes = await client.query(
+  `INSERT INTO orders (..., inventory_reserved, reserved_until)
+   VALUES (..., TRUE, $6)
+   RETURNING id`,
+  [..., reservedUntil]  // 30 minutes from now
+);
+
+await client.query("COMMIT");
+```
+
+### Stripe Failure Recovery
+
+```typescript
+let stripeSession: Stripe.Checkout.Session;
+try {
+  stripeSession = await stripe.checkout.sessions.create({...});
+} catch (err) {
+  // Stripe failed AFTER DB committed → release reservation
+  if (orderId) {
+    await query(
+      `UPDATE inventory i
+       SET reserved = GREATEST(0, i.reserved - oi.quantity),
+           updated_at = NOW()
+       FROM order_items oi
+       WHERE oi.order_id = $1
+         AND i.sku_id = oi.product_id`,
+      [orderId]
+    );
+
+    await query(
+      `UPDATE orders
+       SET status = 'cancelled',
+           inventory_reserved = FALSE
+       WHERE id = $1`,
+      [orderId]
+    );
+  }
+  throw err;
+}
+```
+
+---
+
+## 3. Webhook - Inventory Deduction & Release
+
+**File:** `src/app/api/webhooks/stripe/route.ts`
+
+### Payment Success (checkout.session.completed)
+
+```typescript
+case "checkout.session.completed":
+  if (session.payment_status === "paid") {
+    // 1. Update order status
+    await query(
+      "UPDATE orders SET status = $1 WHERE stripe_session_id = $2 AND status = 'pending'",
+      ["paid", session.id]
+    );
+
+    // 2. Deduct inventory (idempotent)
+    const deductRes = await query(
+      `UPDATE orders
+       SET inventory_reserved = FALSE
+       WHERE stripe_session_id = $1
+         AND inventory_reserved = TRUE
+       RETURNING id`,
+      [session.id]
+    );
+
+    if (deductRes.rows.length > 0) {
+      const orderId = deductRes.rows[0].id;
+
+      await query(
+        `UPDATE inventory i
+         SET on_hand = i.on_hand - oi.quantity,
+             reserved = i.reserved - oi.quantity,
+             updated_at = NOW()
+         FROM order_items oi
+         WHERE oi.order_id = $1
+           AND i.sku_id = oi.product_id`,
+        [orderId]
+      );
+
+      console.log(`Inventory deducted for order #${orderId}`);
+    }
+
+    // 3. Send email, save address...
+  }
+  break;
+```
+
+### Session Expired (checkout.session.expired)
+
+```typescript
+case "checkout.session.expired":
+  const releaseRes = await query(
+    `UPDATE orders
+     SET status = 'expired',
+         inventory_reserved = FALSE
+     WHERE stripe_session_id = $1
+       AND inventory_reserved = TRUE
+     RETURNING id`,
+    [expiredSession.id]
+  );
+
+  if (releaseRes.rows.length > 0) {
+    const orderId = releaseRes.rows[0].id;
+
+    await query(
+      `UPDATE inventory i
+       SET reserved = GREATEST(0, i.reserved - oi.quantity),
+           updated_at = NOW()
+       FROM order_items oi
+       WHERE oi.order_id = $1
+         AND i.sku_id = oi.product_id`,
+      [orderId]
+    );
+
+    console.log(`Released inventory for expired order #${orderId}`);
+  }
+  break;
+```
+
+### Idempotency Pattern
+
+```typescript
+// First: Mark as processed and get ID
+const result = await query(
+  `UPDATE orders
+   SET inventory_reserved = FALSE
+   WHERE stripe_session_id = $1
+     AND inventory_reserved = TRUE  -- Only first call matches
+   RETURNING id`,
+  [session.id]
+);
+
+// Second: Only proceed if we got a row
+if (result.rows.length > 0) {
+  // Do the actual inventory update
+}
+```
+
+This ensures duplicate webhooks don't double-deduct inventory.
+
+---
+
+## 4. Admin Inventory API
+
+### GET /api/admin/inventory
+
+```typescript
+const result = await query(
+  `SELECT 
+    p.id,
+    p.name,
+    p.price,
+    COALESCE(i.on_hand, 0)::int as on_hand,
+    COALESCE(i.reserved, 0)::int as reserved,
+    GREATEST(COALESCE(i.on_hand, 0) - COALESCE(i.reserved, 0), 0)::int as available,
+    i.updated_at as inventory_updated_at
+   FROM products p
+   LEFT JOIN inventory i ON i.sku_id = p.id
+   ORDER BY p.name ASC`
+);
+```
+
+### PUT /api/admin/inventory/[id]
+
+```typescript
+// Upsert with safety
+const result = await query(
+  `INSERT INTO inventory (sku_id, on_hand, reserved)
+   VALUES ($1, $2, 0)
+   ON CONFLICT (sku_id) DO UPDATE
+   SET on_hand = EXCLUDED.on_hand,
+       updated_at = NOW()
+   RETURNING 
+     sku_id, 
+     on_hand, 
+     reserved, 
+     GREATEST(on_hand - reserved, 0)::int as available`,
+  [skuId, onHand]
+);
+```
+
+---
+
+## 5. Public Inventory API
+
+**File:** `src/app/api/inventory/route.ts`
+
+```typescript
+// GET /api/inventory - Public stock check
+// Optional: ?ids=1,2,3 for specific products
+
+const result = await query(
+  `SELECT 
+    p.id,
+    GREATEST(COALESCE(i.on_hand, 0) - COALESCE(i.reserved, 0), 0)::int as available
+   FROM products p
+   LEFT JOIN inventory i ON i.sku_id = p.id
+   WHERE p.id = ANY($1::int[])`,
+  [ids]
+);
+
+// Returns: { inventory: { "1": 10, "2": 0, "3": 25 } }
+```
+
+**Safety features:**
+
+- Deduplicate IDs with `new Set()`
+- Limit to 200 IDs max
+- Explicit type cast `$1::int[]`
+
+---
+
+## 6. Admin Inventory Page
+
+**File:** `src/app/admin/inventory/page.tsx`
+
+### Features
+
+| Feature        | Description                         |
+| -------------- | ----------------------------------- |
+| Product list   | Shows all products with stock info  |
+| Status badges  | In Stock / Low Stock / Out of Stock |
+| Inline editing | Click to edit on_hand               |
+| Validation     | Prevents negative stock             |
+
+### Stock Status Logic
+
+```typescript
+function getStockStatus(available: number) {
+  if (available <= 0)
+    return { label: "Out of Stock", color: "text-red-600 bg-red-50" };
+  if (available <= 5)
+    return { label: "Low Stock", color: "text-orange-600 bg-orange-50" };
+  return { label: "In Stock", color: "text-green-600 bg-green-50" };
+}
+```
+
+---
+
+## 7. Frontend Stock Display
+
+### Product Detail Page
+
+**File:** `src/app/products/[id]/page.tsx`
+
+- Fetches inventory via `/api/inventory?ids={id}`
+- Shows stock status (In Stock / Low Stock / Out of Stock)
+- Disables "Add to Cart" when out of stock
+- Limits quantity selector to available stock
+- Hides quantity selector when out of stock
+
+### Products List Page
+
+**File:** `src/app/products/page.tsx`
+
+- Fetches all inventory via `/api/inventory`
+- Shows badges on product cards:
+  - Red "Out of Stock" when available = 0
+  - Orange "Low Stock" when available ≤ 5
+
+---
+
+## File Structure
+
+```
+src/
+├── app/
+│   ├── admin/
+│   │   └── inventory/
+│   │       └── page.tsx              # NEW: Admin inventory management
+│   ├── products/
+│   │   ├── page.tsx                  # UPDATED: Stock badges
+│   │   └── [id]/page.tsx             # UPDATED: Stock status + disable
+│   └── api/
+│       ├── checkout/route.ts         # UPDATED: Stock reservation
+│       ├── inventory/route.ts        # NEW: Public stock API
+│       ├── admin/
+│       │   └── inventory/
+│       │       ├── route.ts          # NEW: Admin list
+│       │       └── [id]/route.ts     # NEW: Admin update
+│       └── webhooks/
+│           └── stripe/route.ts       # UPDATED: Deduct/release
+```
+
+---
+
+## Race Condition Prevention
+
+### Problem
+
+Two users checkout the last item simultaneously:
+
+```
+User A: Check stock → 1 available → Reserve
+User B: Check stock → 1 available → Reserve  ← OVERSELL!
+```
+
+### Solution: Atomic UPDATE with condition
+
+```sql
+UPDATE inventory
+SET reserved = reserved + $quantity
+WHERE sku_id = $sku_id
+  AND (on_hand - reserved) >= $quantity  -- Condition checked atomically
+RETURNING sku_id
+```
+
+If the condition fails, `rowCount = 0` → reject the order.
+
+---
+
+## Testing Checklist
+
+**Admin:**
+
+- [ ] View all products with stock levels
+- [ ] Edit stock for a product
+- [ ] Cannot set negative stock
+
+**Checkout:**
+
+- [ ] Creates order + reserves stock
+- [ ] Fails if insufficient stock
+- [ ] Releases stock if Stripe fails
+
+**Payment Success:**
+
+- [ ] Deducts on_hand and reserved
+- [ ] Idempotent (duplicate webhooks don't double-deduct)
+
+**Session Expired:**
+
+- [ ] Releases reserved stock
+- [ ] Sets order status to 'expired'
+
+**Frontend:**
+
+- [ ] Product list shows stock badges
+- [ ] Product detail shows stock status
+- [ ] Cannot add out-of-stock items to cart
+- [ ] Quantity limited to available stock
+
+---
+
+## Edge Cases Handled
+
+| Scenario             | Behavior                                         |
+| -------------------- | ------------------------------------------------ |
+| Duplicate webhook    | Idempotent via `inventory_reserved = TRUE` check |
+| Stripe API failure   | Rollback reservation, set order cancelled        |
+| Negative available   | `GREATEST(..., 0)` prevents display issues       |
+| Reserved > on_hand   | Caught by reservation logic, not by constraint   |
+| Concurrent checkouts | Atomic UPDATE prevents oversell                  |
+
+---
+
+_Step 5i completed: 12/19 2025_
