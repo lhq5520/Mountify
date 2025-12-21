@@ -12213,3 +12213,684 @@ If the condition fails, `rowCount = 0` → reject the order.
 ---
 
 _Step 5i completed: 12/19 2025_
+
+# Step 6a - Shipping & Tracking System
+
+## Overview
+
+This step implements a comprehensive shipping and tracking system with a hybrid approach: automatic tracking through the 17track API with graceful degradation to manual mode when API limits are reached. The system allows admins to mark orders as shipped, add tracking information, and automatically fetch tracking status updates.
+
+---
+
+## 1. Database Modifications
+
+### Orders Table Enhancement
+
+Added tracking-related fields and shipping address snapshots to the `orders` table:
+
+```sql
+-- Tracking fields
+ALTER TABLE orders
+ADD COLUMN tracking_number TEXT,
+ADD COLUMN carrier TEXT,
+ADD COLUMN shipped_at TIMESTAMPTZ,
+ADD COLUMN tracking_details JSONB,
+ADD COLUMN tracking_last_sync TIMESTAMPTZ;
+
+-- Shipping address snapshot (recommended to prevent address changes affecting order history)
+ALTER TABLE orders
+ADD COLUMN shipping_name TEXT,
+ADD COLUMN shipping_phone TEXT,
+ADD COLUMN shipping_address JSONB;
+ADD COLUMN updated_at TIMESTAMPTZ NOT NULL DEFAULT now();
+
+-- Tracking search index
+CREATE INDEX IF NOT EXISTS idx_orders_tracking_number
+ON orders(tracking_number);
+
+-- Updated status constraint to include shipped and delivered
+ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_status_check;
+ALTER TABLE orders ADD CONSTRAINT orders_status_check
+CHECK (status IN ('pending', 'paid', 'shipped', 'delivered', 'cancelled', 'expired'));
+```
+
+### Field Descriptions
+
+| Field                | Type        | Purpose                                                       |
+| -------------------- | ----------- | ------------------------------------------------------------- |
+| `tracking_number`    | TEXT        | Carrier tracking number                                       |
+| `carrier`            | TEXT        | Carrier code (ups, fedex, usps, dhl, canadapost)              |
+| `shipped_at`         | TIMESTAMPTZ | Timestamp when order was marked as shipped                    |
+| `tracking_details`   | JSONB       | Complete tracking information from API (status, events, etc.) |
+| `tracking_last_sync` | TIMESTAMPTZ | Last time tracking info was refreshed from API                |
+| `shipping_name`      | TEXT        | Customer name snapshot at time of purchase                    |
+| `shipping_phone`     | TEXT        | Customer phone snapshot at time of purchase                   |
+| `shipping_address`   | JSONB       | Complete shipping address snapshot                            |
+
+---
+
+## 2. Tracking Service Library
+
+### File: `src/lib/tracking.ts`
+
+This library provides carrier information, URL generation, and 17track API integration with automatic fallback to manual mode.
+
+#### Key Features
+
+- **Supported Carriers**: UPS, USPS, FedEx, DHL, Canada Post
+- **Hybrid Approach**: Attempts API tracking, falls back to manual links if unavailable
+- **Status Mapping**: Normalizes different carrier statuses to unified format
+- **Type Safety**: Full TypeScript types for tracking information
+
+#### Carrier Configuration
+
+```typescript
+export const CARRIERS = {
+  ups: { name: "UPS", trackingUrl: "https://www.ups.com/track?tracknum=" },
+  usps: {
+    name: "USPS",
+    trackingUrl: "https://tools.usps.com/go/TrackConfirmAction?tLabels=",
+  },
+  fedex: {
+    name: "FedEx",
+    trackingUrl: "https://www.fedex.com/fedextrack/?trknbr=",
+  },
+  dhl: {
+    name: "DHL",
+    trackingUrl: "https://www.dhl.com/en/express/tracking.html?AWB=",
+  },
+  canadapost: {
+    name: "Canada Post",
+    trackingUrl:
+      "https://www.canadapost-postescanada.ca/track-reperage/en#/search?searchFor=",
+  },
+} as const;
+```
+
+#### Tracking Status Types
+
+```typescript
+type TrackingStatus =
+  | "pending" // Not yet shipped
+  | "in_transit" // Package is on the way
+  | "out_for_delivery" // Out for final delivery
+  | "delivered" // Successfully delivered
+  | "exception" // Delivery exception/issue
+  | "unknown"; // Status cannot be determined
+```
+
+#### API Integration
+
+The `fetchTrackingInfo()` function:
+
+- Calls 17track API with carrier code and tracking number
+- Parses and normalizes tracking events
+- Returns `null` on failure (triggers manual mode)
+- Includes error handling for API limits and network issues
+
+#### Helper Functions
+
+```typescript
+// Generate tracking URL for manual checking
+getTrackingUrl(carrier: CarrierCode, trackingNumber: string): string
+
+// Get human-readable status text
+getStatusText(status: string): string
+
+// Get Tailwind color classes for status badges
+getStatusColor(status: string): string
+```
+
+---
+
+## 3. Backend API Endpoints
+
+### 3.1 Webhook Enhancement
+
+**File**: `src/app/api/webhooks/stripe/route.ts`
+
+**Enhancement**: Save shipping address snapshot when payment is successful
+
+```typescript
+// After payment success, save customer details
+const shippingAddress = session.customer_details?.address;
+const shippingName = session.customer_details?.name || null;
+const shippingPhone = session.customer_details?.phone || null;
+
+await query(
+  `UPDATE orders 
+   SET status = 'paid',
+       shipping_name = $2,
+       shipping_phone = $3,
+       shipping_address = $4
+   WHERE stripe_session_id = $1 
+     AND status = 'pending'`,
+  [
+    session.id,
+    shippingName,
+    shippingPhone,
+    shippingAddress ? JSON.stringify(shippingAddress) : null,
+  ]
+);
+```
+
+**Why This Matters**: Captures shipping information at purchase time, preventing issues if customer changes their address later.
+
+---
+
+### 3.2 Ship Order API
+
+**Endpoint**: `POST /api/admin/orders/[id]/ship`
+
+**Purpose**: Admin marks an order as shipped and adds tracking information
+
+**Request Body**:
+
+```json
+{
+  "trackingNumber": "1Z999AA10123456784",
+  "carrier": "ups"
+}
+```
+
+**Workflow**:
+
+1. Validates admin authentication
+2. Validates tracking number and carrier code
+3. Verifies order exists and status is `paid`
+4. Attempts to fetch tracking info from 17track API
+5. Updates order with tracking details (or just number/carrier if API fails)
+6. Sends shipment confirmation email to customer
+7. Returns updated order information
+
+**Security Features**:
+
+- Admin-only access
+- Input validation and sanitization
+- Atomic database update with status check
+- Graceful degradation if API unavailable
+
+**Response Example** (Success):
+
+```json
+{
+  "message": "Order shipped successfully",
+  "order": {
+    "id": 123,
+    "status": "shipped",
+    "tracking_number": "1Z999AA10123456784",
+    "carrier": "ups",
+    "shipped_at": "2025-01-15T10:30:00Z"
+  },
+  "tracking": {
+    "status": "in_transit",
+    "estimatedDelivery": "2025-01-18",
+    "events": [...]
+  }
+}
+```
+
+---
+
+### 3.3 Refresh Tracking API
+
+**Endpoint**: `POST /api/admin/orders/[id]/tracking`
+
+**Purpose**: Manually refresh tracking information from 17track API
+
+**Workflow**:
+
+1. Validates admin authentication
+2. Retrieves order tracking details from database
+3. Calls 17track API to get latest status
+4. Updates `tracking_details` and `tracking_last_sync` in database
+5. Automatically updates order status to `delivered` if tracking shows delivered
+6. Returns updated tracking information
+
+**Rate Limiting**: 30-second throttle between refresh requests for same order
+
+**Response Example**:
+
+```json
+{
+  "message": "Tracking info updated",
+  "tracking": {
+    "status": "delivered",
+    "deliveredAt": "2025-01-17T14:22:00Z",
+    "events": [
+      {
+        "date": "2025-01-17T14:22:00Z",
+        "status": "delivered",
+        "location": "San Francisco, CA",
+        "description": "Delivered, Left at front door"
+      }
+    ]
+  }
+}
+```
+
+---
+
+### 3.4 Admin Orders API Enhancement
+
+**Endpoint**: `GET /api/admin/orders`
+
+**Enhancement**: Include tracking and shipping fields in response
+
+**Additional Fields Returned**:
+
+```sql
+SELECT
+  ...,
+  tracking_number,
+  carrier,
+  shipped_at,
+  tracking_details,
+  tracking_last_sync,
+  shipping_name,
+  shipping_phone,
+  shipping_address
+FROM orders
+```
+
+This allows the admin interface to display complete shipping and tracking information without additional queries.
+
+---
+
+## 4. Admin Interface Changes
+
+### File: `src/app/admin/orders/page.tsx`
+
+#### New Features Added
+
+**4.1 Shipping Status Display**
+
+Orders now show shipping information in expanded view:
+
+- Carrier name and tracking number with external link
+- Current tracking status badge with color coding
+- Shipped timestamp
+- Manual refresh button for tracking updates
+
+**4.2 Ship Order Modal**
+
+New modal for marking orders as shipped:
+
+- Carrier dropdown selection (UPS, FedEx, USPS, DHL, Canada Post)
+- Tracking number input with validation
+- Automatic API call to fetch tracking info
+- Email confirmation to customer
+
+**4.3 Tracking Refresh**
+
+Manual refresh button for shipped orders:
+
+- Calls refresh tracking API
+- Shows loading state during refresh
+- Updates UI with latest tracking status
+- Rate-limited to prevent API abuse
+
+**4.4 Status-Based Actions**
+
+Orders show different actions based on status:
+
+- `paid` orders → "Mark as Shipped" button
+- `shipped`/`delivered` orders → Tracking info + refresh button
+- Other statuses → No shipping actions available
+
+#### UI Components
+
+```typescript
+// Tracking status badge colors
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case "delivered":
+      return "bg-green-100 text-green-800";
+    case "out_for_delivery":
+      return "bg-blue-100 text-blue-800";
+    case "in_transit":
+      return "bg-yellow-100 text-yellow-800";
+    case "exception":
+      return "bg-red-100 text-red-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+};
+```
+
+---
+
+## 5. User-Facing Changes
+
+### File: `src/app/orders/page.tsx`
+
+#### Enhanced Order Display
+
+**5.1 Tracking Information Section**
+
+For shipped/delivered orders, displays:
+
+- **Carrier name** in purple badge
+- **Tracking number** as clickable link to carrier website
+- **Current status** badge (In Transit, Delivered, etc.)
+- **Shipped date** with timestamp
+
+**5.2 Visual Hierarchy**
+
+```
+Order Card
+├── Order Header (ID, Date, Status)
+├── Shipping Info (if shipped)
+│   ├── Carrier Badge
+│   ├── Tracking Link → Opens carrier website
+│   ├── Status Badge (colored based on status)
+│   └── Shipped Date
+└── Order Items (products, quantities, prices)
+```
+
+**5.3 Status Colors**
+
+- `pending` → Gray (Awaiting Payment)
+- `paid` → Blue (Processing)
+- `shipped` → Purple (In Transit)
+- `delivered` → Green (Delivered)
+- `cancelled` → Red (Cancelled)
+
+#### Example UI
+
+```jsx
+{
+  order.tracking_number && order.carrier && (
+    <div className="bg-purple-50 rounded-lg p-3 border border-purple-200">
+      <div className="flex items-center gap-2">
+        <Truck size={16} className="text-purple-600" />
+        <span className="text-sm font-medium">
+          {CARRIERS[order.carrier].name}
+        </span>
+      </div>
+      <a
+        href={getTrackingUrl(order.carrier, order.tracking_number)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-sm text-purple-600 hover:underline flex items-center gap-1"
+      >
+        {order.tracking_number}
+        <ExternalLink size={12} />
+      </a>
+    </div>
+  );
+}
+```
+
+---
+
+## 6. Email Notifications
+
+### Shipment Confirmation Email
+
+**Trigger**: When admin marks order as shipped
+
+**Email Content**:
+
+- Order ID and items summary
+- Shipping carrier name
+- Tracking number
+- Direct link to carrier tracking page
+- Estimated delivery date (if available from API)
+
+**Email Template** (using Resend):
+
+```typescript
+await resend.emails.send({
+  from: "orders@yourdomain.com",
+  to: order.email,
+  subject: `Order #${order.id} has been shipped!`,
+  html: `
+    <h2>Your order is on the way!</h2>
+    <p>Your order #${order.id} has been shipped via ${CARRIERS[carrier].name}.</p>
+    <p><strong>Tracking Number:</strong> 
+       <a href="${trackingUrl}">${trackingNumber}</a>
+    </p>
+    <p>Click the link above to track your package.</p>
+  `,
+});
+```
+
+---
+
+## 7. Hybrid Approach: API vs Manual Mode
+
+### How It Works
+
+```
+Admin marks order as shipped
+         ↓
+Try to fetch tracking from 17track API
+         ↓
+    ┌────────────────────────┐
+    │   API Call Succeeds    │
+    │   ✓ Full tracking data │
+    │   ✓ Status updates     │
+    │   ✓ Estimated delivery │
+    │   ✓ Event history      │
+    └────────────────────────┘
+         ↓
+    User sees complete tracking info
+```
+
+```
+Admin marks order as shipped
+         ↓
+Try to fetch tracking from 17track API
+         ↓
+    ┌────────────────────────┐
+    │   API Call Fails       │
+    │   (Limit reached/Error)│
+    │   ❌ No tracking data  │
+    └────────────────────────┘
+         ↓
+Save carrier + tracking number only
+         ↓
+User sees tracking number + link to carrier site
+(Manual tracking mode)
+```
+
+### Benefits
+
+- **No service interruption**: Always works, even when API is down
+- **Cost-effective**: Uses free API tier, degrades gracefully when limit reached
+- **User experience**: Users can always track packages (via carrier website if needed)
+- **Upgrade path**: Easy to upgrade to paid API tier or switch providers later
+
+---
+
+## 8. Environment Variables
+
+### Optional 17track Configuration
+
+Add to `.env.local` if using 17track API:
+
+```env
+TRACK17_API_KEY=your_api_key_here
+```
+
+**Without API key**: System automatically uses manual mode (tracking links only)
+
+**With API key**: Full tracking features enabled
+
+---
+
+## 9. Security Considerations
+
+### Input Validation
+
+- Tracking numbers are trimmed and validated for non-empty strings
+- Carrier codes validated against whitelist
+- Admin authentication required for all shipping operations
+
+### Rate Limiting
+
+- 30-second throttle on tracking refresh requests
+- Prevents API abuse and excessive database writes
+
+### Database Constraints
+
+- Carrier constrained to valid values
+- Status transitions validated (can only ship `paid` orders)
+- Atomic updates prevent race conditions
+
+### API Error Handling
+
+- Graceful degradation when 17track unavailable
+- No user-facing errors if API fails
+- Logs errors for monitoring
+
+---
+
+## 10. Testing Checklist
+
+### Admin Tests
+
+- [ ] Mark paid order as shipped with valid tracking number
+- [ ] Verify order status changes to `shipped`
+- [ ] Check shipment email is sent to customer
+- [ ] Verify tracking info appears in admin orders list
+- [ ] Test tracking refresh button
+- [ ] Verify tracking link opens correct carrier website
+- [ ] Test with different carriers (UPS, FedEx, USPS, etc.)
+- [ ] Verify cannot ship non-paid orders
+- [ ] Test invalid tracking number rejection
+- [ ] Test invalid carrier code rejection
+
+### User Tests
+
+- [ ] Shipped orders show tracking section
+- [ ] Tracking number links to correct carrier site
+- [ ] Status badges display correct colors
+- [ ] Shipped date displays correctly
+- [ ] Orders without tracking show appropriate message
+
+### Edge Cases
+
+- [ ] Order shipped without API (manual mode)
+- [ ] Order shipped with API failure (graceful degradation)
+- [ ] Refresh tracking when API limit reached
+- [ ] Refresh tracking too frequently (rate limit)
+- [ ] Order delivered (status auto-updates)
+
+---
+
+## 11. Technical Architecture
+
+### Data Flow Diagram
+
+```
+┌─────────────┐
+│   Admin UI  │
+│ Ship Modal  │
+└──────┬──────┘
+       │ POST /api/admin/orders/:id/ship
+       │ { trackingNumber, carrier }
+       ↓
+┌─────────────────────────────┐
+│  Ship Order API             │
+│  1. Validate input          │
+│  2. Check order status      │
+│  3. Call 17track API        │
+│  4. Update database         │
+│  5. Send email              │
+└──────┬──────────────────────┘
+       │
+       ↓
+┌─────────────────────────────┐
+│  Tracking Library           │
+│  - fetchTrackingInfo()      │
+│  - Returns tracking data    │
+│  - Or returns null          │
+└──────┬──────────────────────┘
+       │
+       ↓
+┌─────────────────────────────┐
+│  Database Update            │
+│  - tracking_number          │
+│  - carrier                  │
+│  - shipped_at = NOW()       │
+│  - tracking_details (JSON)  │
+│  - status = 'shipped'       │
+└─────────────────────────────┘
+```
+
+### Refresh Flow
+
+```
+Admin clicks "Refresh"
+       ↓
+POST /api/admin/orders/:id/tracking
+       ↓
+Check tracking_last_sync (rate limit)
+       ↓
+Fetch from 17track API
+       ↓
+Update tracking_details + tracking_last_sync
+       ↓
+If status = "delivered" → Update order status
+       ↓
+Return updated tracking info
+```
+
+---
+
+## 12. Future Enhancements
+
+### Possible Improvements
+
+1. **Automatic Tracking Updates**
+
+   - Background job to refresh tracking for all shipped orders
+   - Cron job or scheduled task
+   - Update customers when status changes
+
+2. **Webhook from 17track**
+
+   - Receive push notifications when tracking updates
+   - Eliminates need for polling
+   - Real-time status updates
+
+3. **Multi-Package Shipments**
+
+   - Support orders with multiple tracking numbers
+   - Split shipments
+   - Partial deliveries
+
+4. **Return/RMA Tracking**
+
+   - Track return shipments
+   - RMA number management
+   - Refund triggers on return delivery
+
+5. **Shipping Labels**
+
+   - Generate shipping labels via API
+   - Print labels from admin panel
+   - Pre-fill carrier information
+
+6. **Advanced Analytics**
+   - Average delivery time by carrier
+   - Delivery success rate
+   - Most common carriers used
+   - Exception rate tracking
+
+---
+
+## Summary
+
+Step 6a implements a production-ready shipping and tracking system with:
+
+✅ **Complete carrier integration** (UPS, FedEx, USPS, DHL, Canada Post)  
+✅ **Hybrid API approach** (automatic tracking with manual fallback)  
+✅ **Admin shipping workflow** (mark as shipped, add tracking, refresh status)  
+✅ **Customer visibility** (tracking info on orders page)  
+✅ **Email notifications** (shipment confirmations with tracking links)  
+✅ **Graceful degradation** (works even when API unavailable)  
+✅ **Security & validation** (input validation, rate limiting, atomic updates)  
+✅ **Type safety** (full TypeScript types throughout)
