@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import cloudinary from "@/lib/cloudinary";
 import { query } from "@/lib/db";
 import { redis, CACHE_KEYS } from "@/lib/redis";
 
@@ -30,7 +31,17 @@ export async function PUT(
     }
 
     const body = await req.json();
-    const { name, price, description, detailedDescription, imageUrl, imageUrlHover, categoryId } = body;
+    const { 
+      name, 
+      price, 
+      description, 
+      detailedDescription, 
+      imageUrl, 
+      imagePublicId,
+      imageUrlHover, 
+      imageHoverPublicId,
+      categoryId 
+    } = body;
 
     // Validation (same as POST)
     if (!name || name.trim().length === 0) {
@@ -61,6 +72,13 @@ export async function PUT(
       );
     }
 
+    if (!imagePublicId) {
+      return NextResponse.json(
+        { error: "Main image publicId is required" },
+        { status: 400 }
+      );
+    }
+
     // URL format validation
     const urlRegex = /^https?:\/\/.+/i;
     if (!urlRegex.test(imageUrl)) {
@@ -77,9 +95,23 @@ export async function PUT(
       );
     }
 
+    if (imageUrlHover && !imageHoverPublicId) {
+      return NextResponse.json(
+        { error: "Hover image publicId is required when hover image is provided" },
+        { status: 400 }
+      );
+    }
+
+    if (imageHoverPublicId && !imageUrlHover) {
+      return NextResponse.json(
+        { error: "Hover image URL is required when hover image publicId is provided" },
+        { status: 400 }
+      );
+    }
+
     // Check if product exists
     const existing = await query(
-      "SELECT id FROM products WHERE id = $1",
+      "SELECT id, image_public_id, image_hover_public_id FROM products WHERE id = $1",
       [productId]
     );
 
@@ -90,20 +122,41 @@ export async function PUT(
       );
     }
 
+    // Clean up old images when they are being replaced
+    const existingRow = existing.rows[0];
+
+    if (existingRow.image_public_id && existingRow.image_public_id !== imagePublicId) {
+      try {
+        await cloudinary.uploader.destroy(existingRow.image_public_id);
+      } catch (destroyErr) {
+        console.error("Failed to delete old main image from Cloudinary:", destroyErr);
+      }
+    }
+
+    if (imageUrlHover && existingRow.image_hover_public_id && existingRow.image_hover_public_id !== imageHoverPublicId) {
+      try {
+        await cloudinary.uploader.destroy(existingRow.image_hover_public_id);
+      } catch (destroyErr) {
+        console.error("Failed to delete old hover image from Cloudinary:", destroyErr);
+      }
+    }
+
     // Update product
     const result = await query(
       `UPDATE products 
        SET name = $1, price = $2, description = $3, detailed_description = $4, 
-           image_url = $5, image_url_hover = $6, category_id = $7
-       WHERE id = $8
-       RETURNING id, name, price`,
+           image_url = $5, image_public_id = $6, image_url_hover = $7, image_hover_public_id = $8, category_id = $9
+       WHERE id = $10
+       RETURNING id, name, price, image_public_id, image_hover_public_id`,
       [
         name.trim(),
         price,
         description.trim(),
         detailedDescription?.trim() || description.trim(),
         imageUrl.trim(),
+        imagePublicId,
         imageUrlHover?.trim() || null,
+        imageUrlHover ? imageHoverPublicId : null,
         categoryId || null,
         productId
       ]
@@ -158,7 +211,7 @@ export async function DELETE(
 
     // Check if product exists
     const existing = await query(
-      "SELECT id, name FROM products WHERE id = $1",
+      "SELECT id, name, image_public_id, image_hover_public_id FROM products WHERE id = $1",
       [productId]
     );
 
@@ -167,6 +220,23 @@ export async function DELETE(
         { error: "Product not found" },
         { status: 404 }
       );
+    }
+
+    // Delete associated Cloudinary images (best effort)
+    const toDelete = [] as string[];
+    if (existing.rows[0].image_public_id) {
+      toDelete.push(existing.rows[0].image_public_id);
+    }
+    if (existing.rows[0].image_hover_public_id) {
+      toDelete.push(existing.rows[0].image_hover_public_id);
+    }
+
+    for (const publicId of toDelete) {
+      try {
+        await cloudinary.uploader.destroy(publicId);
+      } catch (destroyErr) {
+        console.error("Failed to delete Cloudinary image during product deletion:", destroyErr);
+      }
     }
 
     // Delete product

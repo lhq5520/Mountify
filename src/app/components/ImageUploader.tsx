@@ -31,6 +31,13 @@ export default function ImageUploader({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (file.size > 5 * 1024 * 1024) {
+      setError("File must be 5MB or smaller");
+      showToast("Image must be 5MB or smaller", "error");
+      e.target.value = "";
+      return;
+    }
+
     setUploading(true);
     setError(null);
 

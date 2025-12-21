@@ -12894,3 +12894,40 @@ Step 6a implements a production-ready shipping and tracking system with:
 ✅ **Graceful degradation** (works even when API unavailable)  
 ✅ **Security & validation** (input validation, rate limiting, atomic updates)  
 ✅ **Type safety** (full TypeScript types throughout)
+
+---
+
+# Version 6B: Main Image Upload Refactor
+
+Goal: main/hover product images switch to Cloudinary uploads (no manual URLs), carry publicId for cleanup, and polish upload UX.
+
+## Backend
+
+- `POST /api/admin/products`: requires `imagePublicId` for main image; if hover image is provided, requires paired `imageHoverPublicId`. Stores both URL + publicId.
+- `PUT /api/admin/products/:id`: accepts url + publicId; when publicId changes, best-effort `cloudinary.uploader.destroy` of old main/hover images before updating.
+- `DELETE /api/admin/products/:id`: best-effort delete stored main/hover Cloudinary images, then remove product; keeps cache invalidation.
+- `GET /api/products/:id`: now returns `imagePublicId` and `imageHoverPublicId` so the edit form can hydrate uploads.
+
+## Frontend (Admin)
+
+- New product page: replaces main/hover URL inputs with upload widgets; submits url + publicId; main image is required; cancel clears unsaved uploads (main/hover + gallery) via delete-image endpoint.
+- Edit product page: hydrates existing main/hover url + publicId; updating submits new publicIds; cancel clears unsaved uploads; main image required.
+
+## Components & UX
+
+- `SingleImageUploader`: single-file Cloudinary uploader with aspect-ratio-aware preview (clamped to sane range), optional remove, hints; uses `/api/admin/upload-main-image` by default.
+- `ImageUploader` (gallery): unchanged layout, now with the same size guard.
+- Both uploaders block files > 5MB with inline error + toast, and reset the input without sending the request.
+
+## Data Expectations
+
+- Products table now should contain `image_public_id` and `image_hover_public_id` alongside existing URLs; old rows without publicId will need re-upload to enable cleanup.
+
+## Testing Checklist (6B)
+
+- [ ] Create product with main image upload → db has url + `image_public_id`
+- [ ] Optional hover upload → db has url + `image_hover_public_id`
+- [ ] Update product replacing main/hover → old Cloudinary files deleted, new IDs saved
+- [ ] Delete product → main/hover Cloudinary files best-effort removed
+- [ ] Cancel create/edit after uploading → temporary main/hover/gallery images deleted
+- [ ] Upload >5MB file → blocked with error/toast, no request sent

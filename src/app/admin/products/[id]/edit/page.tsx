@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import ImageUploader from "@/app/components/ImageUploader";
+import SingleImageUploader from "@/app/components/SingleImageUploader";
 
 interface ProductImage {
   url: string;
@@ -23,8 +24,16 @@ export default function EditProductPage() {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [detailedDescription, setDetailedDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [imageUrlHover, setImageUrlHover] = useState("");
+  const [mainImage, setMainImage] = useState<{
+    url: string;
+    publicId: string;
+    isNew: boolean;
+  } | null>(null);
+  const [hoverImage, setHoverImage] = useState<{
+    url: string;
+    publicId: string;
+    isNew: boolean;
+  } | null>(null);
   const [images, setImages] = useState<ProductImage[]>([]);
   const [categoryId, setCategoryId] = useState<string>("");
   const [categories, setCategories] = useState<{ id: number; name: string }[]>(
@@ -63,8 +72,25 @@ export default function EditProductPage() {
         setPrice(product.price?.toString() || "");
         setDescription(product.description || "");
         setDetailedDescription(product.detailedDescription || "");
-        setImageUrl(product.imageUrl || "");
-        setImageUrlHover(product.imageUrlHover || "");
+        if (product.imageUrl && product.imagePublicId) {
+          setMainImage({
+            url: product.imageUrl,
+            publicId: product.imagePublicId,
+            isNew: false,
+          });
+        } else {
+          setMainImage(null);
+        }
+
+        if (product.imageUrlHover && product.imageHoverPublicId) {
+          setHoverImage({
+            url: product.imageUrlHover,
+            publicId: product.imageHoverPublicId,
+            isNew: false,
+          });
+        } else {
+          setHoverImage(null);
+        }
         setCategoryId(
           product.categoryId?.toString() ||
             product.category_id?.toString() ||
@@ -100,6 +126,12 @@ export default function EditProductPage() {
     setSaving(true);
 
     try {
+      if (!mainImage) {
+        setError("Main image is required");
+        setSaving(false);
+        return;
+      }
+
       // Step 1: Update product basic info
       const res = await fetch(`/api/admin/products/${id}`, {
         method: "PUT",
@@ -109,8 +141,10 @@ export default function EditProductPage() {
           price: parseFloat(price),
           description,
           detailedDescription: detailedDescription || description,
-          imageUrl,
-          imageUrlHover: imageUrlHover || null,
+          imageUrl: mainImage.url,
+          imagePublicId: mainImage.publicId,
+          imageUrlHover: hoverImage?.url || null,
+          imageHoverPublicId: hoverImage?.publicId || null,
           categoryId: categoryId ? parseInt(categoryId, 10) : null,
         }),
       });
@@ -170,10 +204,11 @@ export default function EditProductPage() {
     //temporary solution for dealing with orphan image
     // delete all the unsaved photo
     const newImages = images.filter((img) => img.isNew);
+    const cleanupRequests: Promise<unknown>[] = [];
 
     if (newImages.length > 0) {
-      await Promise.allSettled(
-        newImages.map((img) =>
+      cleanupRequests.push(
+        ...newImages.map((img) =>
           fetch("/api/admin/delete-image", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -181,6 +216,30 @@ export default function EditProductPage() {
           })
         )
       );
+    }
+
+    if (mainImage?.isNew) {
+      cleanupRequests.push(
+        fetch("/api/admin/delete-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ publicId: mainImage.publicId }),
+        })
+      );
+    }
+
+    if (hoverImage?.isNew) {
+      cleanupRequests.push(
+        fetch("/api/admin/delete-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ publicId: hoverImage.publicId }),
+        })
+      );
+    }
+
+    if (cleanupRequests.length > 0) {
+      await Promise.allSettled(cleanupRequests);
     }
 
     router.push("/admin/products");
@@ -305,40 +364,20 @@ export default function EditProductPage() {
               </p>
             </div>
 
-            {/* Main Image URL */}
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                Main Image URL *
-              </label>
-              <input
-                type="url"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                required
-                className="w-full px-4 py-3 rounded-lg border border-[var(--color-border)] focus:border-[var(--color-primary)] focus:outline-none transition-colors"
-                placeholder="https://images.unsplash.com/..."
-              />
-              <p className="text-xs text-[var(--color-text-tertiary)] mt-1">
-                Primary product image (for product listing)
-              </p>
-            </div>
+            <SingleImageUploader
+              label="Main Image *"
+              required
+              value={mainImage}
+              onChange={setMainImage}
+              hint="Primary product image"
+            />
 
-            {/* Hover Image URL */}
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                Hover Image URL
-              </label>
-              <input
-                type="url"
-                value={imageUrlHover}
-                onChange={(e) => setImageUrlHover(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-[var(--color-border)] focus:border-[var(--color-primary)] focus:outline-none transition-colors"
-                placeholder="https://images.unsplash.com/... (optional)"
-              />
-              <p className="text-xs text-[var(--color-text-tertiary)] mt-1">
-                Image shown on hover (optional)
-              </p>
-            </div>
+            <SingleImageUploader
+              label="Hover Image"
+              value={hoverImage}
+              onChange={setHoverImage}
+              hint="Optional hover image"
+            />
 
             {/* Gallery Images */}
             <div>

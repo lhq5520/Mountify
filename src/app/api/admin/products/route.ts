@@ -20,7 +20,7 @@ export async function GET() {
 
     const result = await query(
       `SELECT p.id, p.name, p.price, p.description, p.detailed_description, 
-        p.image_url, p.image_url_hover, p.category_id, p.created_at,
+        p.image_url, p.image_url_hover, p.category_id, p.created_at, p.image_public_id, p.image_hover_public_id,
         c.name as category_name, c.slug as category_slug
       FROM products p
       LEFT JOIN categories c ON p.category_id = c.id
@@ -37,6 +37,8 @@ export async function GET() {
       imageUrlHover: row.image_url_hover,
       createdAt: row.created_at,
       categoryId: row.category_id,
+      image_public_id: row.image_public_id, 
+      image_hover_public_id: row.image_hover_public_id,
       categoryName: row.category_name,
       categorySlug: row.category_slug,
     }));
@@ -66,7 +68,17 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { name, price, description, detailedDescription, imageUrl, imageUrlHover, categoryId } = body;
+    const { 
+      name, 
+      price, 
+      description, 
+      detailedDescription, 
+      imageUrl, 
+      imagePublicId, 
+      imageUrlHover, 
+      imageHoverPublicId, 
+      categoryId 
+    } = body;
 
     // Validation
     if (!name || name.trim().length === 0) {
@@ -97,6 +109,13 @@ export async function POST(req: Request) {
       );
     }
 
+    if (!imagePublicId) {
+      return NextResponse.json(
+        { error: "Main image publicId is required" },
+        { status: 400 }
+      );
+    }
+
     // Basic URL format validation
     const urlRegex = /^https?:\/\/.+/i;
     if (!urlRegex.test(imageUrl)) {
@@ -113,19 +132,40 @@ export async function POST(req: Request) {
       );
     }
 
+    if (imageUrlHover && !imageHoverPublicId) {
+      return NextResponse.json(
+        { error: "Hover image publicId is required when hover image is provided" },
+        { status: 400 }
+      );
+    }
+
+    if (imageHoverPublicId && !imageUrlHover) {
+      return NextResponse.json(
+        { error: "Hover image URL is required when hover image publicId is provided" },
+        { status: 400 }
+      );
+    }
+
     // Insert product
     const result = await query(
-      `INSERT INTO products (name, price, description, detailed_description, image_url, image_url_hover, category_id) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) 
-       RETURNING id, name, price, created_at`,
+      `INSERT INTO products (
+        name, price, description, detailed_description,
+        image_url, image_public_id,
+        image_url_hover, image_hover_public_id,
+        category_id
+      )
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+      RETURNING id, name, price, created_at`,
       [
         name.trim(),
         price,
         description.trim(),
         detailedDescription?.trim() || description.trim(),
         imageUrl.trim(),
+        imagePublicId,
         imageUrlHover?.trim() || null,
-        categoryId || null
+        imageUrlHover ? imageHoverPublicId : null,
+        categoryId || null,
       ]
     );
 

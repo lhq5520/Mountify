@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import ImageUploader from "@/app/components/ImageUploader";
+import SingleImageUploader from "@/app/components/SingleImageUploader";
 
 // Product image type definition
 interface ProductImage {
@@ -22,8 +23,16 @@ export default function NewProductPage() {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [detailedDescription, setDetailedDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [imageUrlHover, setImageUrlHover] = useState("");
+  const [mainImage, setMainImage] = useState<{
+    url: string;
+    publicId: string;
+    isNew: boolean;
+  } | null>(null);
+  const [hoverImage, setHoverImage] = useState<{
+    url: string;
+    publicId: string;
+    isNew: boolean;
+  } | null>(null);
 
   // New: Multiple images state
   const [images, setImages] = useState<ProductImage[]>([]);
@@ -49,6 +58,12 @@ export default function NewProductPage() {
     setLoading(true);
 
     try {
+      if (!mainImage) {
+        setError("Main image is required");
+        setLoading(false);
+        return;
+      }
+
       // Step 1: Create product
       const res = await fetch("/api/admin/products", {
         method: "POST",
@@ -58,8 +73,10 @@ export default function NewProductPage() {
           price: parseFloat(price),
           description,
           detailedDescription: detailedDescription || description,
-          imageUrl,
-          imageUrlHover: imageUrlHover || null,
+          imageUrl: mainImage.url,
+          imagePublicId: mainImage.publicId,
+          imageUrlHover: hoverImage?.url || null,
+          imageHoverPublicId: hoverImage?.publicId || null,
           categoryId: categoryId ? parseInt(categoryId, 10) : null,
         }),
       });
@@ -104,9 +121,11 @@ export default function NewProductPage() {
     // delete all unsaved photo
     const newImages = images.filter((img) => img.isNew);
 
+    const cleanupRequests: Promise<unknown>[] = [];
+
     if (newImages.length > 0) {
-      await Promise.allSettled(
-        newImages.map((img) =>
+      cleanupRequests.push(
+        ...newImages.map((img) =>
           fetch("/api/admin/delete-image", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -114,6 +133,30 @@ export default function NewProductPage() {
           })
         )
       );
+    }
+
+    if (mainImage?.isNew) {
+      cleanupRequests.push(
+        fetch("/api/admin/delete-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ publicId: mainImage.publicId }),
+        })
+      );
+    }
+
+    if (hoverImage?.isNew) {
+      cleanupRequests.push(
+        fetch("/api/admin/delete-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ publicId: hoverImage.publicId }),
+        })
+      );
+    }
+
+    if (cleanupRequests.length > 0) {
+      await Promise.allSettled(cleanupRequests);
     }
 
     router.push("/admin/products");
@@ -238,40 +281,20 @@ export default function NewProductPage() {
               </p>
             </div>
 
-            {/* Main Image URL */}
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                Main Image URL *
-              </label>
-              <input
-                type="url"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                required
-                className="w-full px-4 py-3 rounded-lg border border-[var(--color-border)] focus:border-[var(--color-primary)] focus:outline-none transition-colors"
-                placeholder="https://images.unsplash.com/..."
-              />
-              <p className="text-xs text-[var(--color-text-tertiary)] mt-1">
-                Primary product image (for product listing)
-              </p>
-            </div>
+            <SingleImageUploader
+              label="Main Image *"
+              required
+              value={mainImage}
+              onChange={setMainImage}
+              hint="Primary product image (for product listing)"
+            />
 
-            {/* Hover Image URL */}
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                Hover Image URL
-              </label>
-              <input
-                type="url"
-                value={imageUrlHover}
-                onChange={(e) => setImageUrlHover(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-[var(--color-border)] focus:border-[var(--color-primary)] focus:outline-none transition-colors"
-                placeholder="https://images.unsplash.com/... (optional)"
-              />
-              <p className="text-xs text-[var(--color-text-tertiary)] mt-1">
-                Image shown on hover (optional)
-              </p>
-            </div>
+            <SingleImageUploader
+              label="Hover Image"
+              value={hoverImage}
+              onChange={setHoverImage}
+              hint="Optional hover image"
+            />
 
             {/* Multiple image upload - New section */}
             <div>

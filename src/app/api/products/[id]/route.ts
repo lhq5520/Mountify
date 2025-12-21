@@ -36,6 +36,8 @@ export async function GET(
     detailed_description: row.detailed_description,
     imageUrl: row.image_url,
     imageUrlHover: row.image_url_hover,
+    imagePublicId: row.image_public_id,
+    imageHoverPublicId: row.image_hover_public_id,
   };
 
   // Query product images

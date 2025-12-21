@@ -1,10 +1,10 @@
-//upload image to cloudinary in file mountify/products
+//upload image to cloudinary in file mountify/main-image
 
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import cloudinary from "@/lib/cloudinary";
 
-// POST /api/admin/upload-image - upload image for image gallery
+// POST /api/admin/upload-main-image - upload image for image on main page
 export async function POST(req: Request) {
   try {
     const session = await auth();
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
 
     // Upload to Cloudinary
     const result = await cloudinary.uploader.upload(dataURI, {
-      folder: 'mountify/products',
+      folder: 'mountify/main-image',
       resource_type: 'image',
     });
 
