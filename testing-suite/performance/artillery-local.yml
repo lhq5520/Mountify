@@ -1,0 +1,122 @@
+# Artillery - dev baseline + sanity + burst
+# 目标：本地开发环境下确认“没坑、抗一点尖峰、错误路径正确”
+# 用法：
+#   TEST_URL=http://localhost:3000 npx artillery run artillery.dev.yml
+
+config:
+  target: "{{ $processEnvironment.TEST_URL }}"
+  phases:
+    # Phase 1: 预热
+    - duration: 20
+      arrivalRate: 1
+      name: "Warm up - 1 user/sec"
+
+    # Phase 2: 轻负载（常规浏览）
+    - duration: 60
+      arrivalRate: 3
+      name: "Light load - 3 users/sec"
+
+    # Phase 3: 中等负载
+    - duration: 30
+      arrivalRate: 5
+      name: "Medium load - 5 users/sec"
+
+    # Phase 4: 短 burst（尖峰）
+    # 目的：看会不会瞬间抖动（连接池/DB连接/事件循环）
+    - duration: 12
+      arrivalRate: 20
+      name: "Burst - 20 users/sec (short spike)"
+
+    # Phase 5: 降温
+    - duration: 15
+      arrivalRate: 1
+      name: "Cool down - 1 user/sec"
+
+  ensure:
+    maxErrorRate: 2 # dev 里你现在是 0%，我建议收紧点
+    p95: 1000 # dev 环境下 p95 < 1s 算很健康
+    p99: 2500 # p99 < 2.5s，尖峰时也别炸
+
+  http:
+    timeout: 30
+    pool: 10
+
+  # 全局默认 header（按需改）
+  defaults:
+    headers:
+      accept: "application/json"
+
+scenarios:
+  # ==========================================
+  # 场景 1: 简单浏览（70%）
+  # ==========================================
+  - name: "Browser - 简单浏览"
+    weight: 70
+    flow:
+      - get:
+          url: "/api/products"
+
+      - think: 1
+
+      # 产品详情（如果你实际是 slug，改成 /api/products/some-slug）
+      - get:
+          url: "/api/products/1"
+
+      - think: 1
+
+      - get:
+          url: "/api/categories"
+
+  # ==========================================
+  # 场景 2: 搜索（20%）
+  # ==========================================
+  - name: "Search - 搜索"
+    weight: 20
+    flow:
+      - get:
+          url: "/api/products/search?q=mount"
+
+      - think: 1
+
+      - get:
+          url: "/api/products"
+
+  # ==========================================
+  # 场景 3: 参数/错误路径 Sanity（5%）
+  # 目的：确认不会 500，不会超慢，返回码合理
+  # ==========================================
+  - name: "Sanity - 边界参数 & 404"
+    weight: 5
+    flow:
+      # 不存在的产品（应该是 404 或 200 with empty，但别 500）
+      - get:
+          url: "/api/products/999999"
+
+      - think: 0.5
+
+      # 空搜索（应该快速返回、要么 400，要么空结果）
+      - get:
+          url: "/api/products/search?q="
+
+      - think: 0.5
+
+      # 超长 query（测试你有没有做长度限制/防止慢查询）
+      - get:
+          url: "/api/products/search?q={{ $randomString(500) }}"
+
+  # ==========================================
+  # 场景 4: “最慢接口”定点施压（5%）
+  # 目的：单独打你最可能慢的 endpoint
+  # 目前用 search 代替，你可以换成真正最慢的，比如：
+  #   /api/products?sort=popular&page=1
+  #   /api/products/search?q=...
+  #   /api/orders (admin)
+  # ==========================================
+  - name: "Hotspot - Focus on likely slow endpoint"
+    weight: 5
+    flow:
+      - loop:
+          - get:
+              url: "/api/products/search?q={{ $randomString(12) }}"
+          - think: 0.2
+        count: 8

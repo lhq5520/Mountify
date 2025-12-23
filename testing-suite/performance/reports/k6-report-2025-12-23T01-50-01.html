@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K6 性能测试报告</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a; 
+      color: #e2e8f0; 
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { 
+      font-size: 1.875rem; 
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .timestamp { color: #94a3b8; margin-bottom: 2rem; }
+    .status { 
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-left: 1rem;
+    }
+    .status.pass { background: #065f46; color: #6ee7b7; }
+    .status.fail { background: #7f1d1d; color: #fca5a5; }
+    .grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+      gap: 1rem; 
+      margin-bottom: 2rem;
+    }
+    .card { 
+      background: #1e293b; 
+      border-radius: 0.75rem; 
+      padding: 1.5rem;
+      border: 1px solid #334155;
+    }
+    .card h3 { 
+      color: #94a3b8; 
+      font-size: 0.875rem; 
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+    .card .value { 
+      font-size: 2rem; 
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+    .card .unit { 
+      font-size: 1rem; 
+      color: #64748b;
+      margin-left: 0.25rem;
+    }
+    .card.error .value { color: #f87171; }
+    table { 
+      width: 100%; 
+      border-collapse: collapse;
+      background: #1e293b;
+      border-radius: 0.75rem;
+      overflow: hidden;
+    }
+    th, td { 
+      padding: 1rem; 
+      text-align: left; 
+      border-bottom: 1px solid #334155;
+    }
+    th { 
+      background: #0f172a; 
+      color: #94a3b8;
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+    .pass-badge { color: #4ade80; }
+    .fail-badge { color: #f87171; }
+    .section { margin-bottom: 2rem; }
+    .section h2 { 
+      font-size: 1.25rem; 
+      margin-bottom: 1rem;
+      color: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>
+        K6 性能测试报告
+        <span class="status pass">✓ 通过</span>
+      </h1>
+      <p class="timestamp">生成时间: 12/22/2025, 17:50:01 | 目标: http://localhost:3000</p>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <h3>总请求数</h3>
+        <div class="value">2079</div>
+      </div>
+      <div class="card">
+        <h3>请求速率</h3>
+        <div class="value">7.63<span class="unit">req/s</span></div>
+      </div>
+      <div class="card error">
+        <h3>错误率</h3>
+        <div class="value">9.04<span class="unit">%</span></div>
+      </div>
+      <div class="card">
+        <h3>产品浏览量</h3>
+        <div class="value">430</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>响应时间</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>平均</h3>
+          <div class="value">34.57<span class="unit">ms</span></div>
+        </div>
+        <div class="card">
+          <h3>P95</h3>
+          <div class="value">55.76<span class="unit">ms</span></div>
+        </div>
+        <div class="card">
+          <h3>P99</h3>
+          <div class="value">0<span class="unit">ms</span></div>
+        </div>
+        <div class="card">
+          <h3>最大</h3>
+          <div class="value">670.10<span class="unit">ms</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>业务指标</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>结账耗时 (P95)</h3>
+          <div class="value">112.00<span class="unit">ms</span></div>
+        </div>
+        <div class="card">
+          <h3>搜索耗时 (P95)</h3>
+          <div class="value">26.00<span class="unit">ms</span></div>
+        </div>
+        <div class="card error">
+          <h3>业务错误率</h3>
+          <div class="value">100.00<span class="unit">%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>阈值检查 (0/0)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>指标</th>
+            <th>状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "name": "mountify-testing-suite",
+  "version": "1.0.0",
+  "description": "完整的测试套件 - 安全、性能、E2E",
+  "scripts": {
+    "test": "bash run-all-tests.sh",
+    "test:security": "npx dotenv -e ../.env.test -- node security/security-tests.js",
+    "test:performance:artillery": "npx dotenv -e ../.env.test -- artillery run performance/artillery-load-test.yml",
+    "test:performance:artillery:local": "npx dotenv -e ../.env.test -- artillery run performance/artillery-local.yml --output performance/reports/artillery-report.json && npx artillery report performance/reports/artillery-report.json --output performance/reports/artillery-report.html",
+    "test:performance:k6:local": "npx dotenv -e ../.env.test -- k6 run -e REPORT_DIR=./performance/reports performance/k6-local.js",
+    "test:performance:k6": "npx dotenv -e ../.env.test -- k6 run performance/k6-load-test.js",
+    "test:e2e": "npx dotenv -e ../.env.test -- playwright test -c e2e/playwright.config.ts",
+    "test:e2e:ui": "npx dotenv -e ../.env.test -- playwright test -c e2e/playwright.config.ts --ui",
+    "test:e2e:headed": "npx dotenv -e ../.env.test -- playwright test -c e2e/playwright.config.ts --headed",
+    "test:data": "npx dotenv -e ../.env.test -- psql $DATABASE_URL -f data-integrity/integrity-checks.sql",
+    "test:lighthouse": "npx dotenv -e ../.env.test -- lighthouse $TEST_URL --view",
+    "install:tools": "npm run install:playwright && npm run install:artillery && npm run install:lighthouse",
+    "install:playwright": "npm install -D @playwright/test && npx playwright install --with-deps",
+    "install:artillery": "npm install -g artillery",
+    "install:lighthouse": "npm install -g lighthouse",
+    "report": "open reports/index.html",
+    "clean": "rm -rf reports/* test-results/*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^20.0.0",
+    "dotenv-cli": "^7.4.2",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

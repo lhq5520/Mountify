@@ -302,12 +302,15 @@ export default function ProductsPage() {
 
         {/* Loading skeleton */}
         {loading && (
-          <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 md:gap-8 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="flex flex-col gap-3 animate-pulse">
-                <div className="aspect-[4/5] w-full rounded-2xl bg-gray-200" />
-                <div className="h-4 w-3/4 rounded bg-gray-200" />
-                <div className="h-4 w-1/2 rounded bg-gray-200" />
+              <div
+                key={i}
+                className="flex flex-col gap-2 md:gap-3 animate-pulse"
+              >
+                <div className="aspect-[4/5] w-full rounded-xl md:rounded-2xl bg-gray-200" />
+                <div className="h-3 md:h-4 w-3/4 rounded bg-gray-200" />
+                <div className="h-3 md:h-4 w-1/2 rounded bg-gray-200" />
               </div>
             ))}
           </div>
@@ -331,21 +334,21 @@ export default function ProductsPage() {
           </div>
         )}
 
-        {/* Product grid */}
+        {/* Product grid - 2 columns on mobile */}
         {!loading && productList.length > 0 && (
-          <section className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <section className="grid grid-cols-2 gap-4 md:gap-8 lg:grid-cols-3 xl:grid-cols-4">
             {productList.map((product) => (
               <article key={product.id} className="group flex flex-col">
                 <Link
                   href={`/products/${product.id}`}
-                  className="relative w-full overflow-hidden rounded-2xl bg-[#f1f2f4]"
+                  className="relative w-full overflow-hidden rounded-xl md:rounded-2xl bg-[#f1f2f4]"
                 >
                   <div className="relative aspect-[4/5]">
                     <Image
                       src={product.image_url}
                       alt={product.name}
                       fill
-                      sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
+                      sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw"
                       className="object-cover transition-opacity duration-300 group-hover:opacity-0"
                     />
                     {product.image_url_hover && (
@@ -353,52 +356,53 @@ export default function ProductsPage() {
                         src={product.image_url_hover}
                         alt={`${product.name} hover`}
                         fill
-                        sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
+                        sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw"
                         className="object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                       />
                     )}
 
                     {/* Stock badges */}
                     {stockMap[String(product.id)] === 0 && (
-                      <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full">
+                      <div className="absolute top-2 left-2 md:top-3 md:left-3 bg-red-500 text-white text-[10px] md:text-xs font-medium px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
                         Out of Stock
                       </div>
                     )}
                     {stockMap[String(product.id)] > 0 &&
                       stockMap[String(product.id)] <= 5 && (
-                        <div className="absolute top-3 left-3 bg-orange-500 text-white text-xs font-medium px-2 py-1 rounded-full">
+                        <div className="absolute top-2 left-2 md:top-3 md:left-3 bg-orange-500 text-white text-[10px] md:text-xs font-medium px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
                           Low Stock
                         </div>
                       )}
                   </div>
                 </Link>
 
-                <div className="mt-3 flex flex-1 flex-col">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <h2 className="text-sm font-medium text-[var(--color-text-primary)] line-clamp-2">
+                <div className="mt-2 md:mt-3 flex flex-1 flex-col">
+                  <div className="flex items-start justify-between gap-1 md:gap-2">
+                    <div className="min-w-0 flex-1">
+                      <h2 className="text-xs md:text-sm font-medium text-[var(--color-text-primary)] line-clamp-2">
                         {product.name}
                       </h2>
                       {product.category_name && (
-                        <p className="text-xs text-[var(--color-text-tertiary)] mt-0.5">
+                        <p className="text-[10px] md:text-xs text-[var(--color-text-tertiary)] mt-0.5 truncate">
                           {product.category_name}
                         </p>
                       )}
                     </div>
-                    <p className="text-sm font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
+                    <p className="text-xs md:text-sm font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
                       ${Number(product.price).toFixed(2)}
                     </p>
                   </div>
 
+                  {/* Hide description on mobile to save space */}
                   {product.description && (
-                    <p className="mt-1 text-xs text-[var(--color-text-secondary)] line-clamp-2">
+                    <p className="hidden md:block mt-1 text-xs text-[var(--color-text-secondary)] line-clamp-2">
                       {product.description}
                     </p>
                   )}
 
                   <Link
                     href={`/products/${product.id}`}
-                    className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+                    className="mt-2 md:mt-3 inline-flex items-center gap-1 text-[10px] md:text-xs font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
                   >
                     View details
                     <span aria-hidden>→</span>
@@ -417,14 +421,14 @@ export default function ProductsPage() {
                 updateFilters({ page: (currentPage - 1).toString() })
               }
               disabled={currentPage <= 1}
-              className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-white px-4 py-2 text-sm hover:border-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-white px-3 md:px-4 py-2 text-xs md:text-sm hover:border-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft size={16} />
-              Previous
+              <span className="hidden sm:inline">Previous</span>
             </button>
 
-            <span className="px-4 text-sm text-[var(--color-text-secondary)]">
-              Page {currentPage} of {pagination.totalPages}
+            <span className="px-2 md:px-4 text-xs md:text-sm text-[var(--color-text-secondary)]">
+              {currentPage} / {pagination.totalPages}
             </span>
 
             <button
@@ -432,9 +436,9 @@ export default function ProductsPage() {
                 updateFilters({ page: (currentPage + 1).toString() })
               }
               disabled={!pagination.hasMore}
-              className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-white px-4 py-2 text-sm hover:border-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-white px-3 md:px-4 py-2 text-xs md:text-sm hover:border-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Next
+              <span className="hidden sm:inline">Next </span>
               <ChevronRight size={16} />
             </button>
           </div>

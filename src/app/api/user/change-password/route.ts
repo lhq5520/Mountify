@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { query } from "@/lib/db";
 import bcrypt from "bcryptjs";
+import { redis } from "@/lib/redis";
 
 export async function POST(req: Request) {
   try {
@@ -15,6 +16,20 @@ export async function POST(req: Request) {
     }
 
     const { currentPassword, newPassword } = await req.json();
+
+    // Rate limiting: prevent brute-force attempts on password change
+    // Per-user: max 3 attempts per 15 minutes
+    const userKey = `rl:change-password:user:${session.user.id}`;
+    const attemptCount = await redis.incr(userKey);
+    if (attemptCount === 1) {
+      await redis.expire(userKey, 900); // 15 minutes
+    }
+    if (attemptCount > 3) {
+      return NextResponse.json(
+        { error: "Too many password change attempts. Please try again in 15 minutes." },
+        { status: 429 }
+      );
+    }
 
     // Validate input
     if (!currentPassword || !newPassword) {

@@ -19,6 +19,25 @@ export default function SignInPage() {
     setLoading(true);
 
     try {
+      // First check if we're rate limited by making a direct request
+      const checkResponse = await fetch("/api/auth/callback/credentials", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      // If rate limited (429), show friendly error and stop
+      if (checkResponse.status === 429) {
+        const errorData = await checkResponse.json().catch(() => ({}));
+        setError(
+          errorData.error ||
+            "Too many login attempts! Please try again in 5 minutes."
+        );
+        setLoading(false);
+        return;
+      }
+
+      // Otherwise proceed with NextAuth signIn
       const result = await signIn("credentials", {
         email,
         password,

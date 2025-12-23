@@ -6,6 +6,25 @@ import Google from "next-auth/providers/google";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET,
+  
+  // Custom logger to suppress noisy credential errors
+  logger: {
+    error(error) {
+      // Only log if it's NOT a CredentialsSignin error (which is just wrong password)
+      if (error.name !== 'CredentialsSignin') {
+        console.error('[Auth Error]', error);
+      }
+      // Silently ignore CredentialsSignin - it's expected when password is wrong
+    },
+    warn(code) {
+      console.warn('[Auth Warning]', code);
+    },
+    debug(code, metadata) {
+      // Uncomment to see debug logs:
+      // console.log('[Auth Debug]', code, metadata);
+    }
+  },
+  
   providers: [
   // Google OAuth
     Google({
@@ -23,9 +42,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // 1. Get user input
         const email = String(credentials?.email || "");
         const password = String(credentials?.password || "");
-        if (!email || !password) return null;
-
-                
+        
         // 2. Basic validation
         if (!email || !password) {
           return null;
@@ -44,19 +61,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 
         const user = result.rows[0];
 
-        //Oauth new logic - Oauth user can't login with passowrd
+        // 5. OAuth new logic - OAuth user can't login with password
         if (!user.password_hash) {
           return null;
         }
                 
-        // 5. Verify password
+        // 6. Verify password
         const isValid = await bcrypt.compare(password, user.password_hash);
                 
         if (!isValid) {
           return null;
         }
                 
-        // 6. Authentication successful - return user info
+        // 7. Authentication successful - return user info
         return {
           id: user.id.toString(),
           email: user.email,

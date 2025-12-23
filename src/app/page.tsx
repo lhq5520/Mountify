@@ -12,7 +12,7 @@ const NORMAL_HERO = {
     "Minimal, purpose-built phone mounts and driver essentials.\nDesigned for people who actually enjoy driving.",
   primaryCta: "Shop now",
   secondaryCta: "Explore products",
-  imageSrc: "/images/home.JPG",
+  imageSrc: "/images/home3.png",
   imageAlt: "Driver-focused interior with clean mounts and hardware",
 };
 

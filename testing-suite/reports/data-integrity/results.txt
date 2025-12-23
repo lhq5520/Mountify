@@ -1,0 +1,329 @@
+🔍 开始数据完整性检查...
+
+=== 1. 订单数据完整性 ===
+检查 1.1: 订单金额是否正确...
+ order_id | recorded_total | calculated_total | difference 
+----------+----------------+------------------+------------
+(0 rows)
+
+  ✓ 应该返回 0 行（所有订单金额正确）
+
+检查 1.2: 孤立的订单项...
+ order_item_id | order_id | product_id | quantity 
+---------------+----------+------------+----------
+(0 rows)
+
+  ✓ 应该返回 0 行（没有孤立的订单项）
+
+检查 1.3: 没有订单项的订单...
+ id | email | status | total | created_at 
+----+-------+--------+-------+------------
+(0 rows)
+
+  ✓ 应该返回 0 行或只有 pending/expired/cancelled 订单
+
+检查 1.4: Paid 订单的 Stripe Session ID...
+ id | email | status | total | stripe_session_id | created_at 
+----+-------+--------+-------+-------------------+------------
+(0 rows)
+
+  ✓ 应该返回 0 行（所有 paid 订单都有 session ID）
+
+检查 1.5: 重复的 Stripe Session ID...
+ stripe_session_id | order_count | order_ids 
+-------------------+-------------+-----------
+(0 rows)
+
+  ✓ 应该返回 0 行（每个 session 只对应一个订单）
+
+检查 1.6: 订单项引用不存在的产品...
+ order_item_id | order_id | product_id | quantity 
+---------------+----------+------------+----------
+(0 rows)
+
+  ✓ 应该返回 0 行（所有产品都存在）
+
+
+=== 2. 产品数据完整性 ===
+检查 2.1: 负数库存...
+psql:data-integrity/integrity-checks.sql:111: ERROR:  column "stock" does not exist
+LINE 4:     stock,
+            ^
+  ✓ 应该返回 0 行（库存不能为负）
+
+检查 2.2: 无效价格...
+psql:data-integrity/integrity-checks.sql:123: ERROR:  column "price_cad" does not exist
+LINE 4:     price_cad,
+            ^
+  ✓ 应该返回 0 行（价格必须为正数）
+
+检查 2.3: 孤立的产品图片...
+ image_id | product_id | cloudinary_public_id | display_order 
+----------+------------+----------------------+---------------
+(0 rows)
+
+  ✓ 应该返回 0 行（没有孤立的图片记录）
+
+检查 2.4: 没有图片的产品...
+psql:data-integrity/integrity-checks.sql:149: ERROR:  column p.price_cad does not exist
+LINE 4:     p.price_cad,
+            ^
+  ⚠️  这些产品没有图片（可能需要添加）
+
+检查 2.5: 产品引用不存在的分类...
+ id | name | category_id 
+----+------+-------------
+(0 rows)
+
+  ✓ 应该返回 0 行（所有分类都存在）
+
+
+=== 3. 用户数据完整性 ===
+检查 3.1: 重复的用户邮箱...
+ email | user_count | user_ids 
+-------+------------+----------
+(0 rows)
+
+  ✓ 应该返回 0 行（邮箱必须唯一）
+
+检查 3.2: OAuth 用户的密码字段...
+psql:data-integrity/integrity-checks.sql:192: ERROR:  column "oauth_provider" does not exist
+LINE 4:     oauth_provider
+            ^
+  ⚠️  OAuth 用户应该没有密码哈希
+
+检查 3.3: 普通用户缺少密码...
+psql:data-integrity/integrity-checks.sql:204: ERROR:  column "oauth_provider" does not exist
+LINE 4:     oauth_provider
+            ^
+  ✓ 应该返回 0 行（普通用户必须有密码）
+
+检查 3.4: 订单关联到不存在的用户...
+ order_id | user_id | email | status 
+----------+---------+-------+--------
+(0 rows)
+
+  ✓ 应该返回 0 行（所有用户都存在）
+
+
+=== 4. 物流数据完整性 ===
+检查 4.1: Shipped 订单的物流信息...
+ id | email | status | tracking_number | carrier | shipped_at 
+----+-------+--------+-----------------+---------+------------
+(0 rows)
+
+  ✓ 应该返回 0 行（所有发货订单都有物流信息）
+
+检查 4.2: 物流信息但状态不是 shipped/delivered...
+ id | email | status | tracking_number | carrier 
+----+-------+--------+-----------------+---------
+(0 rows)
+
+  ⚠️  这些订单有物流信息但状态异常
+
+检查 4.3: 发货时间早于订单创建时间...
+ id | email | created_at | shipped_at | time_diff 
+----+-------+------------+------------+-----------
+(0 rows)
+
+  ✓ 应该返回 0 行（发货时间不能早于创建时间）
+
+检查 4.4: Paid 订单缺少收货地址...
+ id |       email       |  status   | shipping_address | shipping_name |          created_at           
+----+-------------------+-----------+------------------+---------------+-------------------------------
+ 14 | test@example.com  | delivered |                  |               | 2025-12-01 01:40:27.104636+00
+ 15 | test@example.com  | paid      |                  |               | 2025-12-01 02:47:02.022323+00
+ 16 | test@example.com  | paid      |                  |               | 2025-12-01 18:46:31.987437+00
+ 20 | test@example.com  | paid      |                  |               | 2025-12-03 00:56:14.188237+00
+ 21 | test@test.com     | paid      |                  |               | 2025-12-04 05:17:12.176392+00
+ 22 | test@test.com     | paid      |                  |               | 2025-12-04 20:01:11.793326+00
+ 23 | test@test.com     | paid      |                  |               | 2025-12-04 20:08:39.086942+00
+ 24 | test@test.com     | paid      |                  |               | 2025-12-04 20:14:20.337352+00
+ 25 | testpage@page.com | paid      |                  |               | 2025-12-04 20:26:46.251096+00
+ 26 | wow@wow.com       | paid      |                  |               | 2025-12-05 02:28:31.746851+00
+ 28 | wow@wow.com       | paid      |                  |               | 2025-12-05 05:32:38.480013+00
+ 29 | test@test.com     | paid      |                  |               | 2025-12-08 19:55:35.301523+00
+ 50 | 989994@gmail.com  | paid      |                  |               | 2025-12-16 00:19:03.419399+00
+ 51 | 989994@gmail.com  | paid      |                  |               | 2025-12-18 02:18:56.03486+00
+ 52 | 989994@gmail.com  | paid      |                  |               | 2025-12-18 02:49:27.390954+00
+ 53 | 989994@gmail.com  | paid      |                  |               | 2025-12-18 09:56:01.551899+00
+ 54 | 989994@gmail.com  | paid      |                  |               | 2025-12-18 09:57:43.242957+00
+ 56 | 989994@gmail.com  | paid      |                  |               | 2025-12-18 10:05:57.834503+00
+ 57 | 989994@gmail.com  | paid      |                  |               | 2025-12-18 10:25:47.583413+00
+ 58 | 989994@gmail.com  | paid      |                  |               | 2025-12-18 10:27:24.004607+00
+ 10 | test@example.com  | shipped   |                  |               | 2025-11-29 01:55:34.820921+00
+ 59 | 989994@gmail.com  | shipped   |                  |               | 2025-12-18 10:29:07.205646+00
+ 69 | 989994@gmail.com  | delivered |                  |               | 2025-12-19 09:35:53.348248+00
+(23 rows)
+
+  ⚠️  这些订单没有收货地址（可能是旧数据）
+
+
+=== 5. 分类数据完整性 ===
+检查 5.1: 空分类（没有产品）...
+ id |  name   |  slug   | product_count 
+----+---------+---------+---------------
+  2 | other   | other   |             0
+  1 | chassis | chassis |             0
+(2 rows)
+
+  ⚠️  这些分类没有产品（可以考虑删除）
+
+检查 5.2: 重复的分类 slug...
+ slug | count | categories 
+------+-------+------------
+(0 rows)
+
+  ✓ 应该返回 0 行（slug 必须唯一）
+
+
+=== 6. 业务逻辑检查 ===
+检查 6.1: 超过 24 小时仍 pending 的订单...
+ id |      email       | status  | total  |          created_at           |           age           
+----+------------------+---------+--------+-------------------------------+-------------------------
+ 11 | test@example.com | pending | 379.89 | 2025-11-29 01:58:46.633278+00 | 23 days 04:21:10.652798
+ 12 | test@example.com | pending |  29.90 | 2025-11-29 02:00:42.758682+00 | 23 days 04:19:14.527394
+ 13 | test@example.com | pending | 578.99 | 2025-11-30 08:37:45.762495+00 | 21 days 21:42:11.523581
+ 17 | test@example.com | pending |  59.80 | 2025-12-02 04:27:53.415531+00 | 20 days 01:52:03.870545
+ 18 | test@example.com | pending | 379.89 | 2025-12-02 04:30:28.297731+00 | 20 days 01:49:28.988345
+ 19 | test@test.com    | pending |  29.90 | 2025-12-02 04:33:32.577988+00 | 20 days 01:46:24.708088
+ 27 | wow@wow.com      | pending | 578.99 | 2025-12-05 02:29:11.969515+00 | 17 days 03:50:45.316561
+ 30 | test@test.com    | pending |  29.90 | 2025-12-11 04:19:54.404728+00 | 11 days 02:00:02.881348
+ 31 | test@test.com    | pending |  29.90 | 2025-12-11 04:19:55.003785+00 | 11 days 02:00:02.282291
+ 32 | test@test.com    | pending |  29.90 | 2025-12-11 04:19:55.63081+00  | 11 days 02:00:01.655266
+ 33 | test@test.com    | pending |  29.90 | 2025-12-11 04:19:56.210828+00 | 11 days 02:00:01.075248
+ 34 | test@test.com    | pending |  29.90 | 2025-12-11 04:19:56.831757+00 | 11 days 02:00:00.454319
+ 35 | test@test.com    | pending |  29.90 | 2025-12-11 04:19:57.398778+00 | 11 days 01:59:59.887298
+ 36 | test@test.com    | pending |  29.90 | 2025-12-11 04:19:58.033728+00 | 11 days 01:59:59.252348
+ 37 | test@test.com    | pending |  29.90 | 2025-12-11 04:19:58.628745+00 | 11 days 01:59:58.657331
+ 38 | test@test.com    | pending |  29.90 | 2025-12-11 04:19:59.194799+00 | 11 days 01:59:58.091277
+ 39 | test@test.com    | pending |  29.90 | 2025-12-11 04:19:59.810758+00 | 11 days 01:59:57.475318
+ 40 | test@test.com    | pending |  29.90 | 2025-12-11 04:22:30.159724+00 | 11 days 01:57:27.126352
+ 41 | test@test.com    | pending |  29.90 | 2025-12-11 04:22:30.738727+00 | 11 days 01:57:26.547349
+ 42 | test@test.com    | pending |  29.90 | 2025-12-11 04:22:31.306795+00 | 11 days 01:57:25.979281
+ 43 | test@test.com    | pending |  29.90 | 2025-12-11 04:22:31.910767+00 | 11 days 01:57:25.375309
+ 44 | test@test.com    | pending |  29.90 | 2025-12-11 04:22:32.498791+00 | 11 days 01:57:24.787285
+ 45 | test@test.com    | pending |  29.90 | 2025-12-11 04:22:33.111807+00 | 11 days 01:57:24.174269
+ 46 | test@test.com    | pending |  29.90 | 2025-12-11 04:22:34.375148+00 | 11 days 01:57:22.910928
+ 47 | test@test.com    | pending |  29.90 | 2025-12-11 04:22:35.403875+00 | 11 days 01:57:21.882201
+ 48 | test@test.com    | pending |  29.90 | 2025-12-11 04:22:36.374986+00 | 11 days 01:57:20.91109
+ 49 | test@test.com    | pending |  29.90 | 2025-12-11 04:22:37.426781+00 | 11 days 01:57:19.859295
+ 55 | 989994@gmail.com | pending |  59.80 | 2025-12-18 10:01:21.903402+00 | 3 days 20:18:35.382674
+(28 rows)
+
+  ⚠️  这些订单可能需要标记为 expired
+
+检查 6.2: 异常高价订单（> $10,000）...
+ id | email | status | total | created_at 
+----+-------+--------+-------+------------
+(0 rows)
+
+  ⚠️  检查这些高价订单是否正常
+
+检查 6.3: 单个产品数量 > 100 的订单项...
+ id | order_id | product_id | product_name | quantity | email | status 
+----+----------+------------+--------------+----------+-------+--------
+(0 rows)
+
+  ⚠️  检查这些大批量订单是否合理
+
+检查 6.4: 低库存产品...
+psql:data-integrity/integrity-checks.sql:383: ERROR:  column "stock" does not exist
+LINE 4:     stock,
+            ^
+  ⚠️  这些产品库存较低，需要补货
+
+检查 6.5: 检查可能的超卖情况...
+psql:data-integrity/integrity-checks.sql:407: ERROR:  column p.stock does not exist
+LINE 14:     p.stock as current_stock,
+             ^
+  ✓ 应该返回 0 行（没有超卖）
+
+
+=== 7. 性能和索引检查 ===
+检查 7.1: 表数据量统计...
+   table_name   | row_count 
+----------------+-----------
+ order_items    |        71
+ orders         |        54
+ product_images |        15
+ products       |         6
+ users          |         6
+ categories     |         2
+(6 rows)
+
+  ℹ️  表数据量统计
+
+检查 7.2: 常用查询字段的索引...
+ schemaname |       tablename       |             indexname              
+------------+-----------------------+------------------------------------
+ public     | addresses             | addresses_pkey
+ public     | addresses             | idx_addresses_user
+ public     | addresses             | idx_addresses_user_default_created
+ public     | addresses             | uq_addresses_dedupe
+ public     | addresses             | uq_addresses_one_default_per_user
+ public     | cart_items            | cart_items_pkey
+ public     | cart_items            | cart_items_user_id_product_id_key
+ public     | cart_items            | idx_cart_items_user
+ public     | categories            | categories_pkey
+ public     | categories            | uq_categories_name
+ public     | categories            | uq_categories_slug
+ public     | inventory             | idx_inventory_updated_at
+ public     | inventory             | inventory_pkey
+ public     | order_items           | idx_order_items_order_id
+ public     | order_items           | idx_order_items_product_id
+ public     | order_items           | order_items_pkey
+ public     | order_items           | uq_order_items_order_product
+ public     | orders                | idx_orders_tracking_number
+ public     | orders                | orders_pkey
+ public     | orders                | uq_orders_stripe_session_id
+ public     | password_reset_tokens | idx_reset_tokens_token
+ public     | password_reset_tokens | password_reset_tokens_pkey
+ public     | password_reset_tokens | password_reset_tokens_user_id_key
+ public     | product_images        | idx_product_images_product
+ public     | product_images        | product_images_pkey
+ public     | products              | products_pkey
+ public     | users                 | users_email_key
+ public     | users                 | users_pkey
+(28 rows)
+
+  ℹ️  当前索引列表
+
+
+=== 8. 数据质量统计 ===
+统计 8.1: 订单状态分布...
+  status   | count | percentage 
+-----------+-------+------------
+ pending   |    28 |      51.85
+ paid      |    21 |      38.89
+ delivered |     3 |       5.56
+ shipped   |     2 |       3.70
+(4 rows)
+
+
+统计 8.2: 产品分类分布...
+ category | product_count 
+----------+---------------
+ 未分类   |             6
+(1 row)
+
+
+统计 8.3: 用户注册来源...
+psql:data-integrity/integrity-checks.sql:483: ERROR:  column "oauth_provider" does not exist
+LINE 2:     COALESCE(oauth_provider, 'email') as registration_method...
+                     ^
+
+统计 8.4: 最近 7 天订单统计...
+    date    | order_count | total_revenue | avg_order_value 
+------------+-------------+---------------+-----------------
+ 2025-12-22 |           2 |        579.98 |          289.99
+ 2025-12-20 |           1 |        289.99 |          289.99
+ 2025-12-19 |           1 |        289.99 |          289.99
+ 2025-12-18 |           8 |       1378.67 |          172.33
+ 2025-12-16 |           1 |        319.89 |          319.89
+(5 rows)
+
+
+✅ 数据完整性检查完成！
+请检查上述结果，修复发现的问题。
+

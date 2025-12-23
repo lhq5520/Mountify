@@ -3,11 +3,41 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { query } from "@/lib/db";
+import { redis } from "@/lib/redis";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { email, password } = body;
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || req.headers.get("x-real-ip") || "unknown";
+    const normalizedEmail = (email || "").toLowerCase().trim();
+
+    // Rate limiting: prevent registration abuse
+    // Per-IP: max 5 registrations per 10 minutes
+    const ipKey = `rl:register:ip:${ip}`;
+    const ipCount = await redis.incr(ipKey);
+    if (ipCount === 1) {
+      await redis.expire(ipKey, 600); // 10 minutes
+    }
+    if (ipCount > 5) {
+      return NextResponse.json(
+        { error: "Too many registration attempts. Please try again later." },
+        { status: 429 }
+      );
+    }
+
+    // Per-email: max 1 registration attempt per 10 minutes
+    const emailKey = `rl:register:email:${normalizedEmail}`;
+    const emailCount = await redis.incr(emailKey);
+    if (emailCount === 1) {
+      await redis.expire(emailKey, 600); // 10 minutes
+    }
+    if (emailCount > 1) {
+      return NextResponse.json(
+        { error: "Too many attempts for this email. Please try again later." },
+        { status: 429 }
+      );
+    }
     
     // Step 1: Validate inputs exist
     if (!email || !password) {
