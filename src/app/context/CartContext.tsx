@@ -8,7 +8,7 @@ import {
   ReactNode,
 } from "react";
 
-import type { Product } from "../types";
+import type { Product } from "@/app/types";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/app/context/ToastContext";
 
@@ -20,6 +20,7 @@ interface CartContextType {
   cart: CartItem[];
   addToCart: (p: Product) => void;
   removeFromCart: (id: number) => void;
+  updateQuantity: (id: number, quantity: number) => void;
   clearCart: () => void;
 }
 
@@ -76,7 +77,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       });
     }
 
-    // update - Version 5C new toast system
     showToast(`${product.name} added to cart`, "success");
   };
 
@@ -88,6 +88,29 @@ export function CartProvider({ children }: { children: ReactNode }) {
         method: "DELETE",
       }).catch((e) => {
         console.error("Failed to remove from cart:", e);
+      });
+    }
+  };
+
+  const updateQuantity = (id: number, quantity: number) => {
+    // Validate quantity
+    if (quantity < 1) return;
+
+    // Optimistic update
+    setCart((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+    );
+
+    // Sync to database if logged in
+    if (session?.user?.id) {
+      fetch(`/api/cart/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity }),
+      }).catch((e) => {
+        console.error("Failed to update quantity:", e);
+        // Refetch cart on error to restore correct state
+        fetchCartFromDatabase();
       });
     }
   };
@@ -110,6 +133,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         cart,
         addToCart,
         removeFromCart,
+        updateQuantity,
         clearCart,
       }}
     >

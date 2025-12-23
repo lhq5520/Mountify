@@ -178,12 +178,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2439,
+                      "duration": 2430,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:53.241Z",
+                      "startTime": "2025-12-23T09:32:31.198Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -212,12 +212,12 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 4459,
+                      "duration": 4174,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:53.244Z",
+                      "startTime": "2025-12-23T09:32:31.201Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -246,12 +246,12 @@
                       "workerIndex": 2,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 4498,
+                      "duration": 4434,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:53.248Z",
+                      "startTime": "2025-12-23T09:32:31.213Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -280,12 +280,12 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 2605,
+                      "duration": 2814,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:53.295Z",
+                      "startTime": "2025-12-23T09:32:31.222Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -314,12 +314,12 @@
                       "workerIndex": 4,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 2149,
+                      "duration": 2204,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:53.290Z",
+                      "startTime": "2025-12-23T09:32:31.196Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -348,12 +348,12 @@
                       "workerIndex": 5,
                       "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 2203,
+                      "duration": 2312,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:53.271Z",
+                      "startTime": "2025-12-23T09:32:31.240Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -379,15 +379,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 8,
+                      "workerIndex": 10,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 1681,
+                      "duration": 3680,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:00.568Z",
+                      "startTime": "2025-12-23T09:32:39.181Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -413,15 +413,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 12,
-                      "parallelIndex": 3,
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 8343,
+                      "duration": 2559,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:01.610Z",
+                      "startTime": "2025-12-23T09:32:39.144Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -448,14 +448,14 @@
                   "results": [
                     {
                       "workerIndex": 13,
-                      "parallelIndex": 6,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 9455,
+                      "duration": 9683,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:01.645Z",
+                      "startTime": "2025-12-23T09:32:39.241Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -481,15 +481,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 10,
-                      "parallelIndex": 7,
+                      "workerIndex": 9,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 3247,
+                      "duration": 2565,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:01.569Z",
+                      "startTime": "2025-12-23T09:32:39.152Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -515,15 +515,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 9,
+                      "workerIndex": 11,
                       "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 4436,
+                      "duration": 1721,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:01.560Z",
+                      "startTime": "2025-12-23T09:32:39.172Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -549,15 +549,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 11,
-                      "parallelIndex": 0,
+                      "workerIndex": 12,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 4575,
+                      "duration": 3595,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:01.565Z",
+                      "startTime": "2025-12-23T09:32:39.194Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -583,15 +583,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 20,
-                      "parallelIndex": 1,
+                      "workerIndex": 23,
+                      "parallelIndex": 7,
                       "status": "passed",
-                      "duration": 2974,
+                      "duration": 2454,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:17.462Z",
+                      "startTime": "2025-12-23T09:32:54.973Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -617,15 +617,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 19,
-                      "parallelIndex": 4,
+                      "workerIndex": 16,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 3280,
+                      "duration": 3121,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:17.494Z",
+                      "startTime": "2025-12-23T09:32:54.846Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -651,15 +651,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 16,
-                      "parallelIndex": 7,
+                      "workerIndex": 17,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 3862,
+                      "duration": 3551,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:17.401Z",
+                      "startTime": "2025-12-23T09:32:54.860Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -685,15 +685,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 22,
-                      "parallelIndex": 2,
+                      "workerIndex": 18,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 2948,
+                      "duration": 2834,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:17.635Z",
+                      "startTime": "2025-12-23T09:32:54.877Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -719,15 +719,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 18,
-                      "parallelIndex": 6,
+                      "workerIndex": 22,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 2082,
+                      "duration": 2022,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:17.543Z",
+                      "startTime": "2025-12-23T09:32:54.876Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -753,15 +753,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 21,
-                      "parallelIndex": 3,
+                      "workerIndex": 20,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 2048,
+                      "duration": 1841,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:17.572Z",
+                      "startTime": "2025-12-23T09:32:54.915Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -788,33 +788,33 @@
                   "results": [
                     {
                       "workerIndex": 24,
-                      "parallelIndex": 3,
+                      "parallelIndex": 2,
                       "status": "failed",
-                      "duration": 6549,
+                      "duration": 7058,
                       "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('nav a[href=\"/products\"]')\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('nav a[href=\"/products\"]')\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n\n    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:19:59",
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('nav a[href=\"/products\"]').first()\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]').first()\u001b[22m\n\u001b[2m    9 × locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('nav a[href=\"/products\"]').first()\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]').first()\u001b[22m\n\u001b[2m    9 × locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n\n    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:19:67",
                         "location": {
                           "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                          "column": 59,
+                          "column": 67,
                           "line": 19
                         },
-                        "snippet": "\u001b[0m \u001b[90m 17 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 18 |\u001b[39m     \u001b[90m// 导航栏里的 Products 链接（用 nav 内限定）\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 19 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 20 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 22 |\u001b[39m\u001b[0m"
+                        "snippet": "\u001b[0m \u001b[90m 17 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 18 |\u001b[39m     \u001b[90m// 导航栏里的 Products 链接\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 19 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 20 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 22 |\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
                           "location": {
                             "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                            "column": 59,
+                            "column": 67,
                             "line": 19
                           },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('nav a[href=\"/products\"]')\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 17 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 18 |\u001b[39m     \u001b[90m// 导航栏里的 Products 链接（用 nav 内限定）\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 19 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 20 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 22 |\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:19:59\u001b[22m"
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('nav a[href=\"/products\"]').first()\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]').first()\u001b[22m\n\u001b[2m    9 × locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 17 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 18 |\u001b[39m     \u001b[90m// 导航栏里的 Products 链接\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 19 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 20 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 22 |\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:19:67\u001b[22m"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:24.512Z",
+                      "startTime": "2025-12-23T09:33:01.294Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -835,7 +835,7 @@
                       ],
                       "errorLocation": {
                         "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                        "column": 59,
+                        "column": 67,
                         "line": 19
                       }
                     }
@@ -862,14 +862,14 @@
                   "results": [
                     {
                       "workerIndex": 25,
-                      "parallelIndex": 7,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1257,
+                      "duration": 1261,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:24.826Z",
+                      "startTime": "2025-12-23T09:33:01.995Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -896,14 +896,14 @@
                   "results": [
                     {
                       "workerIndex": 26,
-                      "parallelIndex": 5,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1916,
+                      "duration": 2251,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:24.888Z",
+                      "startTime": "2025-12-23T09:33:02.060Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -930,14 +930,14 @@
                   "results": [
                     {
                       "workerIndex": 27,
-                      "parallelIndex": 6,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 957,
+                      "duration": 1382,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:25.940Z",
+                      "startTime": "2025-12-23T09:33:02.243Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -964,14 +964,14 @@
                   "results": [
                     {
                       "workerIndex": 28,
-                      "parallelIndex": 2,
+                      "parallelIndex": 7,
                       "status": "passed",
-                      "duration": 2107,
+                      "duration": 1703,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:26.062Z",
+                      "startTime": "2025-12-23T09:33:02.627Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -998,14 +998,14 @@
                   "results": [
                     {
                       "workerIndex": 29,
-                      "parallelIndex": 0,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 1975,
+                      "duration": 1485,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:26.352Z",
+                      "startTime": "2025-12-23T09:33:02.873Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1032,33 +1032,33 @@
                   "results": [
                     {
                       "workerIndex": 32,
-                      "parallelIndex": 4,
+                      "parallelIndex": 7,
                       "status": "failed",
-                      "duration": 6181,
+                      "duration": 6473,
                       "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('nav a[href=\"/products\"]')\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('nav a[href=\"/products\"]')\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n\n    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:19:59",
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('nav a[href=\"/products\"]').first()\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]').first()\u001b[22m\n\u001b[2m    9 × locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('nav a[href=\"/products\"]').first()\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]').first()\u001b[22m\n\u001b[2m    9 × locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n\n    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:19:67",
                         "location": {
                           "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                          "column": 59,
+                          "column": 67,
                           "line": 19
                         },
-                        "snippet": "\u001b[0m \u001b[90m 17 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 18 |\u001b[39m     \u001b[90m// 导航栏里的 Products 链接（用 nav 内限定）\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 19 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 20 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 22 |\u001b[39m\u001b[0m"
+                        "snippet": "\u001b[0m \u001b[90m 17 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 18 |\u001b[39m     \u001b[90m// 导航栏里的 Products 链接\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 19 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 20 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 22 |\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
                           "location": {
                             "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                            "column": 59,
+                            "column": 67,
                             "line": 19
                           },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('nav a[href=\"/products\"]')\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 17 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 18 |\u001b[39m     \u001b[90m// 导航栏里的 Products 链接（用 nav 内限定）\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 19 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 20 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 22 |\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:19:59\u001b[22m"
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('nav a[href=\"/products\"]').first()\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]').first()\u001b[22m\n\u001b[2m    9 × locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m      - unexpected value \"hidden\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 17 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 18 |\u001b[39m     \u001b[90m// 导航栏里的 Products 链接\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 19 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 20 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 22 |\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:19:67\u001b[22m"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:31.653Z",
+                      "startTime": "2025-12-23T09:33:08.836Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1079,7 +1079,7 @@
                       ],
                       "errorLocation": {
                         "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                        "column": 59,
+                        "column": 67,
                         "line": 19
                       }
                     }
@@ -1106,14 +1106,14 @@
                   "results": [
                     {
                       "workerIndex": 33,
-                      "parallelIndex": 2,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 1263,
+                      "duration": 1547,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:32.042Z",
+                      "startTime": "2025-12-23T09:33:08.757Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1139,15 +1139,15 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 35,
-                      "parallelIndex": 0,
+                      "workerIndex": 34,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 2682,
+                      "duration": 3180,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:32.110Z",
+                      "startTime": "2025-12-23T09:33:09.182Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1173,15 +1173,15 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 34,
-                      "parallelIndex": 5,
+                      "workerIndex": 35,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 1232,
+                      "duration": 1348,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:32.043Z",
+                      "startTime": "2025-12-23T09:33:09.776Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1208,14 +1208,14 @@
                   "results": [
                     {
                       "workerIndex": 36,
-                      "parallelIndex": 6,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 1269,
+                      "duration": 1357,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:32.110Z",
+                      "startTime": "2025-12-23T09:33:09.761Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1242,14 +1242,14 @@
                   "results": [
                     {
                       "workerIndex": 37,
-                      "parallelIndex": 3,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1139,
+                      "duration": 1446,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:32.215Z",
+                      "startTime": "2025-12-23T09:33:10.121Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1276,14 +1276,14 @@
                   "results": [
                     {
                       "workerIndex": 39,
-                      "parallelIndex": 7,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 975,
+                      "duration": 2046,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:39.258Z",
+                      "startTime": "2025-12-23T09:33:18.679Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1310,14 +1310,14 @@
                   "results": [
                     {
                       "workerIndex": 40,
-                      "parallelIndex": 0,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 1228,
+                      "duration": 1795,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:39.703Z",
+                      "startTime": "2025-12-23T09:33:19.069Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1344,14 +1344,14 @@
                   "results": [
                     {
                       "workerIndex": 41,
-                      "parallelIndex": 6,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 2272,
+                      "duration": 4554,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:39.899Z",
+                      "startTime": "2025-12-23T09:33:19.707Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1378,14 +1378,14 @@
                   "results": [
                     {
                       "workerIndex": 42,
-                      "parallelIndex": 2,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 2369,
+                      "duration": 3273,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:40.270Z",
+                      "startTime": "2025-12-23T09:33:19.922Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1412,14 +1412,14 @@
                   "results": [
                     {
                       "workerIndex": 43,
-                      "parallelIndex": 1,
+                      "parallelIndex": 7,
                       "status": "passed",
-                      "duration": 1525,
+                      "duration": 2401,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:40.684Z",
+                      "startTime": "2025-12-23T09:33:20.251Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1446,14 +1446,14 @@
                   "results": [
                     {
                       "workerIndex": 44,
-                      "parallelIndex": 4,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1299,
+                      "duration": 2422,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:42.243Z",
+                      "startTime": "2025-12-23T09:33:20.783Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1490,12 +1490,12 @@
                       "workerIndex": 6,
                       "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 3844,
+                      "duration": 4287,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:53.302Z",
+                      "startTime": "2025-12-23T09:32:31.272Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1524,12 +1524,12 @@
                       "workerIndex": 7,
                       "parallelIndex": 7,
                       "status": "passed",
-                      "duration": 3032,
+                      "duration": 4090,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:53.243Z",
+                      "startTime": "2025-12-23T09:32:31.257Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1558,12 +1558,12 @@
                       "workerIndex": 4,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 2793,
+                      "duration": 2261,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:55.622Z",
+                      "startTime": "2025-12-23T09:32:33.593Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1592,12 +1592,12 @@
                       "workerIndex": 14,
                       "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 4118,
+                      "duration": 7994,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:01.663Z",
+                      "startTime": "2025-12-23T09:32:39.586Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1624,14 +1624,14 @@
                   "results": [
                     {
                       "workerIndex": 15,
-                      "parallelIndex": 2,
+                      "parallelIndex": 7,
                       "status": "passed",
-                      "duration": 3154,
+                      "duration": 8005,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:01.717Z",
+                      "startTime": "2025-12-23T09:32:39.915Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1657,15 +1657,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 4,
+                      "workerIndex": 11,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 1166,
+                      "duration": 1752,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:02.868Z",
+                      "startTime": "2025-12-23T09:32:41.683Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1691,15 +1691,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 17,
-                      "parallelIndex": 0,
+                      "workerIndex": 21,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 4182,
+                      "duration": 3701,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:17.460Z",
+                      "startTime": "2025-12-23T09:32:54.858Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1725,15 +1725,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 23,
-                      "parallelIndex": 5,
+                      "workerIndex": 19,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 3383,
+                      "duration": 3445,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:17.719Z",
+                      "startTime": "2025-12-23T09:32:54.852Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1759,15 +1759,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 21,
-                      "parallelIndex": 3,
+                      "workerIndex": 20,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 3054,
+                      "duration": 2832,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:19.793Z",
+                      "startTime": "2025-12-23T09:32:56.933Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1794,14 +1794,14 @@
                   "results": [
                     {
                       "workerIndex": 30,
-                      "parallelIndex": 4,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 1742,
+                      "duration": 2353,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:27.081Z",
+                      "startTime": "2025-12-23T09:33:02.950Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1828,33 +1828,33 @@
                   "results": [
                     {
                       "workerIndex": 31,
-                      "parallelIndex": 1,
+                      "parallelIndex": 5,
                       "status": "failed",
-                      "duration": 11946,
+                      "duration": 13572,
                       "error": {
-                        "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
-                        "stack": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:110:51",
+                        "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]').first()\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+                        "stack": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]').first()\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:110:59",
                         "location": {
                           "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                          "column": 51,
+                          "column": 59,
                           "line": 110
                         },
-                        "snippet": "\u001b[0m \u001b[90m 108 |\u001b[39m     \n \u001b[90m 109 |\u001b[39m     \u001b[90m// 点击导航栏里的 Products 链接\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 110 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 111 |\u001b[39m     \n \u001b[90m 112 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 113 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/products'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
+                        "snippet": "\u001b[0m \u001b[90m 108 |\u001b[39m     \n \u001b[90m 109 |\u001b[39m     \u001b[90m// 点击导航栏里的 Products 链接（可能有多个，用 first）\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 110 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 111 |\u001b[39m     \n \u001b[90m 112 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 113 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/products'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
                           "location": {
                             "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                            "column": 51,
+                            "column": 59,
                             "line": 110
                           },
-                          "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n\u001b[0m \u001b[90m 108 |\u001b[39m     \n \u001b[90m 109 |\u001b[39m     \u001b[90m// 点击导航栏里的 Products 链接\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 110 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 111 |\u001b[39m     \n \u001b[90m 112 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 113 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/products'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:110:51\u001b[22m"
+                          "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]').first()\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n\u001b[0m \u001b[90m 108 |\u001b[39m     \n \u001b[90m 109 |\u001b[39m     \u001b[90m// 点击导航栏里的 Products 链接（可能有多个，用 first）\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 110 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 111 |\u001b[39m     \n \u001b[90m 112 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 113 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/products'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:110:59\u001b[22m"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:27.139Z",
+                      "startTime": "2025-12-23T09:33:03.186Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1875,7 +1875,7 @@
                       ],
                       "errorLocation": {
                         "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                        "column": 51,
+                        "column": 59,
                         "line": 110
                       }
                     }
@@ -1902,33 +1902,33 @@
                   "results": [
                     {
                       "workerIndex": 25,
-                      "parallelIndex": 7,
+                      "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 11814,
+                      "duration": 13542,
                       "error": {
-                        "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/cart\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/cart\" class=\"relative flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">…</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
-                        "stack": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/cart\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/cart\" class=\"relative flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">…</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:120:47",
+                        "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/cart\"]').first()\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/cart\" class=\"relative flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">…</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+                        "stack": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/cart\"]').first()\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/cart\" class=\"relative flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">…</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:120:55",
                         "location": {
                           "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                          "column": 47,
+                          "column": 55,
                           "line": 120
                         },
-                        "snippet": "\u001b[0m \u001b[90m 118 |\u001b[39m     \n \u001b[90m 119 |\u001b[39m     \u001b[90m// 点击导航栏里的购物车图标\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 120 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 121 |\u001b[39m     \n \u001b[90m 122 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 123 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/cart'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
+                        "snippet": "\u001b[0m \u001b[90m 118 |\u001b[39m     \n \u001b[90m 119 |\u001b[39m     \u001b[90m// 点击购物车图标（响应式有两个，用 first）\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 120 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 121 |\u001b[39m     \n \u001b[90m 122 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 123 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/cart'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
                           "location": {
                             "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                            "column": 47,
+                            "column": 55,
                             "line": 120
                           },
-                          "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/cart\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/cart\" class=\"relative flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">…</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n\u001b[0m \u001b[90m 118 |\u001b[39m     \n \u001b[90m 119 |\u001b[39m     \u001b[90m// 点击导航栏里的购物车图标\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 120 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 121 |\u001b[39m     \n \u001b[90m 122 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 123 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/cart'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:120:47\u001b[22m"
+                          "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/cart\"]').first()\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/cart\" class=\"relative flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">…</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n\u001b[0m \u001b[90m 118 |\u001b[39m     \n \u001b[90m 119 |\u001b[39m     \u001b[90m// 点击购物车图标（响应式有两个，用 first）\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 120 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 121 |\u001b[39m     \n \u001b[90m 122 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 123 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/cart'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:120:55\u001b[22m"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:26.256Z",
+                      "startTime": "2025-12-23T09:33:03.390Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1949,7 +1949,7 @@
                       ],
                       "errorLocation": {
                         "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                        "column": 47,
+                        "column": 55,
                         "line": 120
                       }
                     }
@@ -1976,14 +1976,14 @@
                   "results": [
                     {
                       "workerIndex": 33,
-                      "parallelIndex": 2,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 1861,
+                      "duration": 2844,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:33.377Z",
+                      "startTime": "2025-12-23T09:33:10.405Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2009,34 +2009,34 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 34,
-                      "parallelIndex": 5,
+                      "workerIndex": 36,
+                      "parallelIndex": 4,
                       "status": "failed",
-                      "duration": 11228,
+                      "duration": 13250,
                       "error": {
-                        "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    12 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
-                        "stack": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    12 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:110:51",
+                        "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]').first()\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+                        "stack": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]').first()\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:110:59",
                         "location": {
                           "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                          "column": 51,
+                          "column": 59,
                           "line": 110
                         },
-                        "snippet": "\u001b[0m \u001b[90m 108 |\u001b[39m     \n \u001b[90m 109 |\u001b[39m     \u001b[90m// 点击导航栏里的 Products 链接\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 110 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 111 |\u001b[39m     \n \u001b[90m 112 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 113 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/products'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
+                        "snippet": "\u001b[0m \u001b[90m 108 |\u001b[39m     \n \u001b[90m 109 |\u001b[39m     \u001b[90m// 点击导航栏里的 Products 链接（可能有多个，用 first）\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 110 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 111 |\u001b[39m     \n \u001b[90m 112 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 113 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/products'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
                           "location": {
                             "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                            "column": 51,
+                            "column": 59,
                             "line": 110
                           },
-                          "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    12 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n\u001b[0m \u001b[90m 108 |\u001b[39m     \n \u001b[90m 109 |\u001b[39m     \u001b[90m// 点击导航栏里的 Products 链接\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 110 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 111 |\u001b[39m     \n \u001b[90m 112 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 113 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/products'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:110:51\u001b[22m"
+                          "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/products\"]').first()\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/products\" class=\"text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">Products</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n\u001b[0m \u001b[90m 108 |\u001b[39m     \n \u001b[90m 109 |\u001b[39m     \u001b[90m// 点击导航栏里的 Products 链接（可能有多个，用 first）\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 110 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/products\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 111 |\u001b[39m     \n \u001b[90m 112 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 113 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/products'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:110:59\u001b[22m"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:33.458Z",
+                      "startTime": "2025-12-23T09:33:11.225Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2057,7 +2057,7 @@
                       ],
                       "errorLocation": {
                         "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                        "column": 51,
+                        "column": 59,
                         "line": 110
                       }
                     }
@@ -2083,34 +2083,34 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 37,
-                      "parallelIndex": 3,
+                      "workerIndex": 35,
+                      "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 11195,
+                      "duration": 12971,
                       "error": {
-                        "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/cart\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/cart\" class=\"relative flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">…</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    12 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
-                        "stack": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/cart\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/cart\" class=\"relative flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">…</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    12 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:120:47",
+                        "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/cart\"]').first()\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/cart\" class=\"relative flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">…</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+                        "stack": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/cart\"]').first()\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/cart\" class=\"relative flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">…</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:120:55",
                         "location": {
                           "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                          "column": 47,
+                          "column": 55,
                           "line": 120
                         },
-                        "snippet": "\u001b[0m \u001b[90m 118 |\u001b[39m     \n \u001b[90m 119 |\u001b[39m     \u001b[90m// 点击导航栏里的购物车图标\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 120 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 121 |\u001b[39m     \n \u001b[90m 122 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 123 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/cart'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
+                        "snippet": "\u001b[0m \u001b[90m 118 |\u001b[39m     \n \u001b[90m 119 |\u001b[39m     \u001b[90m// 点击购物车图标（响应式有两个，用 first）\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 120 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 121 |\u001b[39m     \n \u001b[90m 122 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 123 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/cart'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
                           "location": {
                             "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                            "column": 47,
+                            "column": 55,
                             "line": 120
                           },
-                          "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/cart\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/cart\" class=\"relative flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">…</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    12 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n\u001b[0m \u001b[90m 118 |\u001b[39m     \n \u001b[90m 119 |\u001b[39m     \u001b[90m// 点击导航栏里的购物车图标\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 120 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 121 |\u001b[39m     \n \u001b[90m 122 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 123 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/cart'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:120:47\u001b[22m"
+                          "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('nav a[href=\"/cart\"]').first()\u001b[22m\n\u001b[2m    - locator resolved to <a href=\"/cart\" class=\"relative flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors duration-200\">…</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n\u001b[0m \u001b[90m 118 |\u001b[39m     \n \u001b[90m 119 |\u001b[39m     \u001b[90m// 点击购物车图标（响应式有两个，用 first）\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 120 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav a[href=\"/cart\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 121 |\u001b[39m     \n \u001b[90m 122 |\u001b[39m     \u001b[90m// 验证跳转\u001b[39m\n \u001b[90m 123 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/cart'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts:120:55\u001b[22m"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:33.499Z",
+                      "startTime": "2025-12-23T09:33:11.250Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2131,7 +2131,7 @@
                       ],
                       "errorLocation": {
                         "file": "C:\\Users\\98999\\Desktop\\mountify\\testing-suite\\e2e\\tests\\shopping-flow.spec.ts",
-                        "column": 47,
+                        "column": 55,
                         "line": 120
                       }
                     }
@@ -2157,15 +2157,15 @@
                   "projectName": "iPad",
                   "results": [
                     {
-                      "workerIndex": 39,
-                      "parallelIndex": 7,
+                      "workerIndex": 40,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 2319,
+                      "duration": 4389,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:40.364Z",
+                      "startTime": "2025-12-23T09:33:21.070Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2191,15 +2191,15 @@
                   "projectName": "iPad",
                   "results": [
                     {
-                      "workerIndex": 40,
+                      "workerIndex": 39,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1546,
+                      "duration": 3316,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:41.127Z",
+                      "startTime": "2025-12-23T09:33:21.166Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2225,15 +2225,15 @@
                   "projectName": "iPad",
                   "results": [
                     {
-                      "workerIndex": 41,
-                      "parallelIndex": 6,
+                      "workerIndex": 43,
+                      "parallelIndex": 7,
                       "status": "passed",
-                      "duration": 1891,
+                      "duration": 5183,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:42.372Z",
+                      "startTime": "2025-12-23T09:33:22.882Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2270,12 +2270,12 @@
                       "workerIndex": 5,
                       "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 2697,
+                      "duration": 2020,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:55.716Z",
+                      "startTime": "2025-12-23T09:32:33.789Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2304,12 +2304,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2118,
+                      "duration": 1689,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:55.932Z",
+                      "startTime": "2025-12-23T09:32:33.817Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2338,12 +2338,12 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1697,
+                      "duration": 1232,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:56.353Z",
+                      "startTime": "2025-12-23T09:32:34.276Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2369,15 +2369,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 4,
+                      "workerIndex": 9,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 2161,
+                      "duration": 2196,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:04.065Z",
+                      "startTime": "2025-12-23T09:32:42.172Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2403,15 +2403,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 10,
-                      "parallelIndex": 7,
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2730,
+                      "duration": 1653,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:05.280Z",
+                      "startTime": "2025-12-23T09:32:42.862Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2437,15 +2437,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 15,
-                      "parallelIndex": 2,
+                      "workerIndex": 11,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 2687,
+                      "duration": 1846,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:05.620Z",
+                      "startTime": "2025-12-23T09:32:43.466Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2471,15 +2471,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 18,
-                      "parallelIndex": 6,
+                      "workerIndex": 22,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 2995,
+                      "duration": 2532,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:19.794Z",
+                      "startTime": "2025-12-23T09:32:56.995Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2505,15 +2505,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 20,
-                      "parallelIndex": 1,
+                      "workerIndex": 23,
+                      "parallelIndex": 7,
                       "status": "passed",
-                      "duration": 1998,
+                      "duration": 1547,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:20.558Z",
+                      "startTime": "2025-12-23T09:32:57.587Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2539,15 +2539,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 22,
-                      "parallelIndex": 2,
+                      "workerIndex": 18,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 1871,
+                      "duration": 1526,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:20.825Z",
+                      "startTime": "2025-12-23T09:32:57.809Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2573,15 +2573,15 @@
                   "projectName": "Mobile Chrome",
                   "results": [
                     {
-                      "workerIndex": 26,
-                      "parallelIndex": 5,
+                      "workerIndex": 27,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 1173,
+                      "duration": 1598,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:27.045Z",
+                      "startTime": "2025-12-23T09:33:03.842Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2607,15 +2607,15 @@
                   "projectName": "Mobile Chrome",
                   "results": [
                     {
-                      "workerIndex": 27,
-                      "parallelIndex": 6,
+                      "workerIndex": 26,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1433,
+                      "duration": 1171,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:27.111Z",
+                      "startTime": "2025-12-23T09:33:04.498Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2641,15 +2641,15 @@
                   "projectName": "Mobile Chrome",
                   "results": [
                     {
-                      "workerIndex": 26,
-                      "parallelIndex": 5,
+                      "workerIndex": 28,
+                      "parallelIndex": 7,
                       "status": "passed",
-                      "duration": 1095,
+                      "duration": 1140,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:28.238Z",
+                      "startTime": "2025-12-23T09:33:04.498Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2675,15 +2675,15 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 36,
-                      "parallelIndex": 6,
+                      "workerIndex": 37,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1458,
+                      "duration": 1824,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:33.588Z",
+                      "startTime": "2025-12-23T09:33:11.705Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2709,15 +2709,15 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 35,
-                      "parallelIndex": 0,
+                      "workerIndex": 34,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 656,
+                      "duration": 840,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:34.883Z",
+                      "startTime": "2025-12-23T09:33:12.448Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2743,15 +2743,15 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 36,
+                      "workerIndex": 33,
                       "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 722,
+                      "duration": 1030,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:35.066Z",
+                      "startTime": "2025-12-23T09:33:13.280Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2777,15 +2777,15 @@
                   "projectName": "iPad",
                   "results": [
                     {
-                      "workerIndex": 43,
-                      "parallelIndex": 1,
+                      "workerIndex": 44,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 2376,
+                      "duration": 4682,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:42.540Z",
+                      "startTime": "2025-12-23T09:33:23.370Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2811,15 +2811,15 @@
                   "projectName": "iPad",
                   "results": [
                     {
-                      "workerIndex": 40,
-                      "parallelIndex": 0,
+                      "workerIndex": 42,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 1134,
+                      "duration": 1478,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:42.705Z",
+                      "startTime": "2025-12-23T09:33:23.370Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2846,14 +2846,14 @@
                   "results": [
                     {
                       "workerIndex": 39,
-                      "parallelIndex": 7,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1182,
+                      "duration": 914,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:42.707Z",
+                      "startTime": "2025-12-23T09:33:24.598Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2887,15 +2887,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 7,
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1458,
+                      "duration": 2189,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:56.600Z",
+                      "startTime": "2025-12-23T09:32:35.532Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2921,15 +2921,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 6,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 2792,
+                      "duration": 2286,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:57.365Z",
+                      "startTime": "2025-12-23T09:32:35.547Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2958,12 +2958,12 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 2369,
+                      "duration": 2851,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:57.904Z",
+                      "startTime": "2025-12-23T09:32:35.624Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2989,15 +2989,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 4,
+                      "workerIndex": 9,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1976,
+                      "duration": 4033,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:06.246Z",
+                      "startTime": "2025-12-23T09:32:44.397Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3023,15 +3023,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 14,
-                      "parallelIndex": 1,
+                      "workerIndex": 10,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 7029,
+                      "duration": 4905,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:07.009Z",
+                      "startTime": "2025-12-23T09:32:44.442Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3057,15 +3057,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 10,
-                      "parallelIndex": 7,
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 6107,
+                      "duration": 6434,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:08.036Z",
+                      "startTime": "2025-12-23T09:32:44.542Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3091,15 +3091,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 19,
-                      "parallelIndex": 4,
+                      "workerIndex": 16,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1595,
+                      "duration": 1389,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:20.958Z",
+                      "startTime": "2025-12-23T09:32:58.066Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3125,15 +3125,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 23,
-                      "parallelIndex": 5,
+                      "workerIndex": 19,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 2003,
+                      "duration": 2300,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:21.250Z",
+                      "startTime": "2025-12-23T09:32:58.419Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3159,15 +3159,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 16,
-                      "parallelIndex": 7,
+                      "workerIndex": 17,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 1829,
+                      "duration": 2801,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:21.418Z",
+                      "startTime": "2025-12-23T09:32:58.523Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3193,15 +3193,15 @@
                   "projectName": "Mobile Chrome",
                   "results": [
                     {
-                      "workerIndex": 28,
-                      "parallelIndex": 2,
+                      "workerIndex": 29,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 1217,
+                      "duration": 1486,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:28.486Z",
+                      "startTime": "2025-12-23T09:33:04.543Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3227,15 +3227,15 @@
                   "projectName": "Mobile Chrome",
                   "results": [
                     {
-                      "workerIndex": 29,
-                      "parallelIndex": 0,
+                      "workerIndex": 27,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 2355,
+                      "duration": 2790,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:28.510Z",
+                      "startTime": "2025-12-23T09:33:05.462Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3261,15 +3261,15 @@
                   "projectName": "Mobile Chrome",
                   "results": [
                     {
-                      "workerIndex": 27,
-                      "parallelIndex": 6,
+                      "workerIndex": 30,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 1699,
+                      "duration": 1662,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:28.567Z",
+                      "startTime": "2025-12-23T09:33:05.501Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3295,15 +3295,15 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 33,
-                      "parallelIndex": 2,
+                      "workerIndex": 34,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 909,
+                      "duration": 1278,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:35.258Z",
+                      "startTime": "2025-12-23T09:33:13.316Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3329,15 +3329,15 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 35,
-                      "parallelIndex": 0,
+                      "workerIndex": 37,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1692,
+                      "duration": 2291,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:35.556Z",
+                      "startTime": "2025-12-23T09:33:13.550Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3363,15 +3363,15 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 36,
+                      "workerIndex": 33,
                       "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 1542,
+                      "duration": 2513,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:35.809Z",
+                      "startTime": "2025-12-23T09:33:14.415Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3397,15 +3397,15 @@
                   "projectName": "iPad",
                   "results": [
                     {
-                      "workerIndex": 42,
-                      "parallelIndex": 2,
+                      "workerIndex": 45,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 1075,
+                      "duration": 3099,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:42.792Z",
+                      "startTime": "2025-12-23T09:33:25.889Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3431,15 +3431,15 @@
                   "projectName": "iPad",
                   "results": [
                     {
-                      "workerIndex": 44,
-                      "parallelIndex": 4,
+                      "workerIndex": 41,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1080,
+                      "duration": 2790,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:43.841Z",
+                      "startTime": "2025-12-23T09:33:24.779Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3465,15 +3465,15 @@
                   "projectName": "iPad",
                   "results": [
                     {
-                      "workerIndex": 40,
-                      "parallelIndex": 0,
+                      "workerIndex": 46,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 1994,
+                      "duration": 3168,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:43.861Z",
+                      "startTime": "2025-12-23T09:33:25.931Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3507,15 +3507,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 7,
+                      "parallelIndex": 7,
                       "status": "passed",
-                      "duration": 2571,
+                      "duration": 3275,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:57.934Z",
+                      "startTime": "2025-12-23T09:32:35.644Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3541,15 +3541,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 2185,
+                      "duration": 2072,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:58.075Z",
+                      "startTime": "2025-12-23T09:32:35.831Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3575,15 +3575,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 11,
-                      "parallelIndex": 0,
+                      "workerIndex": 12,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 7080,
+                      "duration": 7089,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:08.117Z",
+                      "startTime": "2025-12-23T09:32:45.067Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3609,15 +3609,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 4,
+                      "workerIndex": 11,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 5863,
+                      "duration": 4684,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:08.245Z",
+                      "startTime": "2025-12-23T09:32:45.333Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3643,15 +3643,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 17,
-                      "parallelIndex": 0,
+                      "workerIndex": 21,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 2907,
+                      "duration": 2829,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:21.748Z",
+                      "startTime": "2025-12-23T09:32:58.794Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3677,15 +3677,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 19,
-                      "parallelIndex": 4,
+                      "workerIndex": 23,
+                      "parallelIndex": 7,
                       "status": "passed",
-                      "duration": 2558,
+                      "duration": 1890,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:22.575Z",
+                      "startTime": "2025-12-23T09:32:59.161Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3711,15 +3711,15 @@
                   "projectName": "Mobile Chrome",
                   "results": [
                     {
-                      "workerIndex": 30,
-                      "parallelIndex": 4,
+                      "workerIndex": 28,
+                      "parallelIndex": 7,
                       "status": "passed",
-                      "duration": 1351,
+                      "duration": 1591,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:29.000Z",
+                      "startTime": "2025-12-23T09:33:05.658Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3746,14 +3746,14 @@
                   "results": [
                     {
                       "workerIndex": 26,
-                      "parallelIndex": 5,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 953,
+                      "duration": 1141,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:29.366Z",
+                      "startTime": "2025-12-23T09:33:05.688Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3779,15 +3779,15 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 33,
-                      "parallelIndex": 2,
+                      "workerIndex": 34,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1593,
+                      "duration": 2743,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:36.183Z",
+                      "startTime": "2025-12-23T09:33:15.294Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3813,15 +3813,15 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 35,
-                      "parallelIndex": 0,
+                      "workerIndex": 38,
+                      "parallelIndex": 7,
                       "status": "passed",
-                      "duration": 1257,
+                      "duration": 1526,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:37.266Z",
+                      "startTime": "2025-12-23T09:33:16.908Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3848,14 +3848,14 @@
                   "results": [
                     {
                       "workerIndex": 42,
-                      "parallelIndex": 2,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 2320,
+                      "duration": 3473,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:43.897Z",
+                      "startTime": "2025-12-23T09:33:24.871Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3881,15 +3881,15 @@
                   "projectName": "iPad",
                   "results": [
                     {
-                      "workerIndex": 39,
-                      "parallelIndex": 7,
+                      "workerIndex": 40,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 1736,
+                      "duration": 2084,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:43.908Z",
+                      "startTime": "2025-12-23T09:33:25.484Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3923,15 +3923,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 7,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 2100,
+                      "duration": 2014,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:58.082Z",
+                      "startTime": "2025-12-23T09:32:35.847Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3957,15 +3957,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 15,
+                      "workerIndex": 9,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 6076,
+                      "duration": 3947,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:08.361Z",
+                      "startTime": "2025-12-23T09:32:48.805Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3991,15 +3991,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 20,
+                      "workerIndex": 18,
                       "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 2727,
+                      "duration": 2104,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:22.581Z",
+                      "startTime": "2025-12-23T09:32:59.362Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4025,15 +4025,15 @@
                   "projectName": "Mobile Chrome",
                   "results": [
                     {
-                      "workerIndex": 28,
-                      "parallelIndex": 2,
+                      "workerIndex": 29,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 1051,
+                      "duration": 1233,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:29.725Z",
+                      "startTime": "2025-12-23T09:33:06.050Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4059,15 +4059,15 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 36,
-                      "parallelIndex": 6,
+                      "workerIndex": 37,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1298,
+                      "duration": 1416,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:37.368Z",
+                      "startTime": "2025-12-23T09:33:15.999Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4093,15 +4093,15 @@
                   "projectName": "iPad",
                   "results": [
                     {
-                      "workerIndex": 41,
-                      "parallelIndex": 6,
+                      "workerIndex": 39,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1353,
+                      "duration": 1991,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:44.293Z",
+                      "startTime": "2025-12-23T09:33:25.533Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4135,15 +4135,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 3,
-                      "parallelIndex": 3,
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 1953,
+                      "duration": 1823,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:58.084Z",
+                      "startTime": "2025-12-23T09:32:35.880Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4169,15 +4169,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 5,
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 1812,
+                      "duration": 1993,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:15:58.438Z",
+                      "startTime": "2025-12-23T09:32:36.013Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4203,15 +4203,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 5,
+                      "workerIndex": 10,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 5109,
+                      "duration": 2893,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:08.812Z",
+                      "startTime": "2025-12-23T09:32:49.711Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4237,15 +4237,15 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 9,
+                      "workerIndex": 11,
                       "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 1653,
+                      "duration": 2659,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:13.951Z",
+                      "startTime": "2025-12-23T09:32:50.120Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4271,15 +4271,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 22,
-                      "parallelIndex": 2,
+                      "workerIndex": 16,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1627,
+                      "duration": 1136,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:22.726Z",
+                      "startTime": "2025-12-23T09:32:59.481Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4305,15 +4305,15 @@
                   "projectName": "webkit",
                   "results": [
                     {
-                      "workerIndex": 18,
-                      "parallelIndex": 6,
+                      "workerIndex": 22,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 1494,
+                      "duration": 1294,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:22.811Z",
+                      "startTime": "2025-12-23T09:32:59.560Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4339,15 +4339,15 @@
                   "projectName": "Mobile Chrome",
                   "results": [
                     {
-                      "workerIndex": 27,
-                      "parallelIndex": 6,
+                      "workerIndex": 26,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 709,
+                      "duration": 534,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:30.288Z",
+                      "startTime": "2025-12-23T09:33:06.841Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4373,15 +4373,15 @@
                   "projectName": "Mobile Chrome",
                   "results": [
                     {
-                      "workerIndex": 26,
-                      "parallelIndex": 5,
+                      "workerIndex": 30,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 651,
+                      "duration": 702,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:30.337Z",
+                      "startTime": "2025-12-23T09:33:07.182Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4408,14 +4408,14 @@
                   "results": [
                     {
                       "workerIndex": 33,
-                      "parallelIndex": 2,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 1132,
+                      "duration": 1108,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:37.795Z",
+                      "startTime": "2025-12-23T09:33:16.997Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4441,15 +4441,15 @@
                   "projectName": "Mobile Safari",
                   "results": [
                     {
-                      "workerIndex": 38,
-                      "parallelIndex": 4,
+                      "workerIndex": 37,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1085,
+                      "duration": 1338,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:39.151Z",
+                      "startTime": "2025-12-23T09:33:17.436Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4475,15 +4475,15 @@
                   "projectName": "iPad",
                   "results": [
                     {
-                      "workerIndex": 45,
-                      "parallelIndex": 5,
+                      "workerIndex": 39,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 599,
+                      "duration": 1871,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:46.156Z",
+                      "startTime": "2025-12-23T09:33:27.580Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4509,15 +4509,15 @@
                   "projectName": "iPad",
                   "results": [
                     {
-                      "workerIndex": 46,
-                      "parallelIndex": 3,
+                      "workerIndex": 40,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 593,
+                      "duration": 1899,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-23T08:16:46.156Z",
+                      "startTime": "2025-12-23T09:33:27.593Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4537,8 +4537,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-12-23T08:15:52.105Z",
-    "duration": 54884.123,
+    "startTime": "2025-12-23T09:32:30.071Z",
+    "duration": 59572.278,
     "expected": 114,
     "skipped": 0,
     "unexpected": 6,

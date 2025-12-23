@@ -10,14 +10,14 @@ test.describe('完整购物流程', () => {
     await page.goto('/');
     await expect(page).toHaveTitle(/Mountify/i);
     
-    // 验证 Logo 存在
-    await expect(page.locator('a[href="/"]').filter({ hasText: 'Mountify' })).toBeVisible();
+    // 验证 Logo 存在（响应式设计有两个，用 first）
+    await expect(page.getByRole('link', { name: 'Mountify' }).first()).toBeVisible();
     
     // 验证导航栏
     await expect(page.locator('nav')).toBeVisible();
-    // 导航栏里的 Products 链接（用 nav 内限定）
-    await expect(page.locator('nav a[href="/products"]')).toBeVisible();
-    await expect(page.locator('nav a[href="/cart"]')).toBeVisible();
+    // 导航栏里的 Products 链接
+    await expect(page.locator('nav a[href="/products"]').first()).toBeVisible();
+    await expect(page.locator('nav a[href="/cart"]').first()).toBeVisible();
   });
 
   test('产品列表页加载正常', async ({ page }) => {
@@ -96,8 +96,8 @@ test.describe('导航功能', () => {
   test('Logo 链接回首页', async ({ page }) => {
     await page.goto('/products');
     
-    // 点击 Logo
-    await page.locator('a[href="/"]').filter({ hasText: 'Mountify' }).click();
+    // 点击 Logo（响应式有两个，用 first）
+    await page.getByRole('link', { name: 'Mountify' }).first().click();
     
     // 验证回到首页
     await expect(page).toHaveURL('/');
@@ -106,8 +106,8 @@ test.describe('导航功能', () => {
   test('Products 导航链接', async ({ page }) => {
     await page.goto('/');
     
-    // 点击导航栏里的 Products 链接
-    await page.locator('nav a[href="/products"]').click();
+    // 点击导航栏里的 Products 链接（可能有多个，用 first）
+    await page.locator('nav a[href="/products"]').first().click();
     
     // 验证跳转
     await expect(page).toHaveURL('/products');
@@ -116,8 +116,8 @@ test.describe('导航功能', () => {
   test('购物车图标链接', async ({ page }) => {
     await page.goto('/');
     
-    // 点击导航栏里的购物车图标
-    await page.locator('nav a[href="/cart"]').click();
+    // 点击购物车图标（响应式有两个，用 first）
+    await page.locator('nav a[href="/cart"]').first().click();
     
     // 验证跳转
     await expect(page).toHaveURL('/cart');
@@ -188,8 +188,8 @@ test.describe('响应式设计', () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
     
-    // 桌面端导航应该可见（nav 内的链接）
-    await expect(page.locator('nav a[href="/products"]')).toBeVisible();
+    // 桌面端导航应该可见
+    await expect(page.locator('nav a[href="/products"]').first()).toBeVisible();
   });
 
   test('产品网格布局 - 桌面端多列', async ({ page }) => {
