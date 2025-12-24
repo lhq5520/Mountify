@@ -6,14 +6,14 @@ import Image from "next/image";
 const IS_SALE = false;
 
 const NORMAL_HERO = {
-  badge: "Designed for drivers",
-  title: "Premium Parts.\nBuilt For Real Driving.",
+  badge: "Built By Curiosity",
+  title: "Small-Batch 3D Prints.\nMade to Be Used.",
   subtitle:
-    "Minimal, purpose-built phone mounts and driver essentials.\nDesigned for people who actually enjoy driving.",
+    "An experimental store for 3D-printed goods \nFrom key shells and mounts \nTo small, practical, and occasionally fun creations.",
   primaryCta: "Shop now",
   secondaryCta: "Explore products",
   imageSrc: "/images/home3.png",
-  imageAlt: "Driver-focused interior with clean mounts and hardware",
+  imageAlt: "Workbench-style scene with 3D-printed objects and tools",
 };
 
 const SALE_HERO = {
@@ -100,14 +100,16 @@ export default function Home() {
             Our story
           </p>
           <p className="text-slate-700">
-            Mountify started as a small experiment in a parking lot — trying to
-            mount a phone and data without rattles, clutter, or cheap plastic.
-            We now design small-batch hardware focused on feel, everyday
-            usability, and clean integration with modern interiors.
+            Mountify started as a personal experiment — building a real
+            e-commerce site from scratch, driven by a love for technology and
+            the urge to make things. 3D printing became the fastest way to turn
+            ideas into physical objects.
           </p>
           <p className="mt-3 text-slate-700">
-            No fake carbon, no loud branding. Just parts that make your car
-            nicer to live with and more fun to drive.
+            This site is a playground for creating small, useful, and sometimes
+            just fun products. No hype, no mass production — just thoughtful
+            designs, printed in small batches, and refined as we keep learning
+            and building.
           </p>
         </div>
       </section>
