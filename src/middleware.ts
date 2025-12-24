@@ -1,74 +1,67 @@
 // src/middleware.ts
-/**
- * Authentication & Authorization middleware
- *
- * - Uses Auth.js v5 `auth()` wrapper (Edge-safe, production-safe)
- * - Protects user-only routes (orders / profile / settings)
- * - Protects admin-only routes (admin / api/admin)
- * - Avoids `getToken()` which is unreliable in Edge + secure cookie setups
- */
-
-import { auth } from "@/auth";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export default auth((req) => {
+/**
+ * Edge-safe auth gate using `getToken()`.
+ *
+ * Why:
+ * - Next.js Middleware runs on the Edge runtime by default.
+ * - Edge runtime does NOT support Node's `crypto`.
+ * - Your current Auth.js `auth()` wrapper triggers Node crypto -> crash.
+ *
+ * This middleware:
+ * - Reads JWT from the session cookie via `getToken()`
+ * - Redirects unauthenticated users away from protected routes
+ * - Enforces admin-only routes via `token.role`
+ */
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // `req.auth` is populated by Auth.js middleware wrapper
-  // - null/undefined -> not logged in
-  // - object -> logged in session
-  const isLoggedIn = !!req.auth;
+  // IMPORTANT:
+  // In Auth.js v5, the session cookie name is often "authjs.session-token"
+  // and in production (HTTPS) it may be prefixed with "__Secure-".
+  // We try both common names to be robust.
+  const token =
+    (await getToken({
+      req,
+      cookieName: "__Secure-authjs.session-token",
+    })) ||
+    (await getToken({
+      req,
+      cookieName: "authjs.session-token",
+    })) ||
+    // fallback for older next-auth cookie names (optional safety)
+    (await getToken({
+      req,
+      cookieName: "__Secure-next-auth.session-token",
+    })) ||
+    (await getToken({
+      req,
+      cookieName: "next-auth.session-token",
+    }));
 
-  /**
-   * Routes that require a logged-in user
-   */
-  const isProtectedRoute =
-    pathname.startsWith("/orders") ||
-    pathname.startsWith("/profile") ||
-    pathname.startsWith("/settings");
+  const protectedRoutes = ["/orders", "/profile", "/settings"];
+  const isProtectedRoute = protectedRoutes.some((r) => pathname.startsWith(r));
 
-  /**
-   * Routes that require admin privileges
-   * (admin pages + admin APIs)
-   */
-  const isAdminRoute =
-    pathname.startsWith("/admin") ||
-    pathname.startsWith("/api/admin");
+  const isAdminRoute = pathname.startsWith("/admin") || pathname.startsWith("/api/admin");
 
-  /**
-   * If the user is NOT logged in and tries to access
-   * a protected or admin route, redirect to sign-in page
-   */
-  if ((isProtectedRoute || isAdminRoute) && !isLoggedIn) {
-    const signInUrl = new URL("/auth/signin", req.nextUrl.origin);
+  if (isProtectedRoute || isAdminRoute) {
+    if (!token) {
+      const signInUrl = new URL("/auth/signin", req.url);
+      signInUrl.searchParams.set("callbackUrl", req.nextUrl.href);
+      return NextResponse.redirect(signInUrl);
+    }
 
-    // Preserve full URL so user can be redirected back after login
-    signInUrl.searchParams.set("callbackUrl", req.nextUrl.href);
-
-    return NextResponse.redirect(signInUrl);
-  }
-
-  /**
-   * If user is logged in but tries to access admin-only routes,
-   * check role from session
-   */
-  if (isAdminRoute) {
-    const role = (req.auth?.user as any)?.role;
-
-    if (role !== "admin") {
-      // Non-admin users are redirected to home page
-      return NextResponse.redirect(new URL("/", req.nextUrl.origin));
+    if (isAdminRoute && (token as any).role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
-  // All checks passed -> continue request
   return NextResponse.next();
-});
+}
 
-/**
- * Only run middleware on these routes
- * (avoids unnecessary overhead on public pages and static assets)
- */
 export const config = {
   matcher: [
     "/orders/:path*",
