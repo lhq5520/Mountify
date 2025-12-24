@@ -6,9 +6,23 @@ import { pool, query } from "@/lib/db"; // use for order insertion when checkout
 import { auth } from "@/auth";  // ← use for user validation
 import { redis } from "@/lib/redis";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2025-11-17.clover",
-});
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+let stripe: Stripe | null = null;
+
+function getStripe() {
+  if (stripe) return stripe;
+
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    // 关键：build 阶段不应该炸；只有真正调用 checkout 才报错
+    throw new Error("STRIPE_SECRET_KEY is missing (runtime required)");
+  }
+
+  stripe = new Stripe(key, { apiVersion: "2025-11-17.clover" as any });
+  return stripe;
+}
+
 
 //step3b updated - for security purpose, we only need quantity and productID from frontend
 type CheckoutItem = {
@@ -223,12 +237,12 @@ export async function POST(req: Request) {
 
       let stripeSession: Stripe.Checkout.Session;
       try{
-        stripeSession = await stripe.checkout.sessions.create({
+        stripeSession = await getStripe().checkout.sessions.create({
           mode: "payment",
           line_items: lineItems,
-          success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cart`,
-          customer_email: body.email,
+          success_url: `${SITE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${SITE_URL}/cart`,
+          customer_email: email ?? undefined,
           // get user address
           shipping_address_collection: {
             allowed_countries: ['US', 'CA', 'GB', 'AU', 'DE', 'FR', 'JP', 'CN'],

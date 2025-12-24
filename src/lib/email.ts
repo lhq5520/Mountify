@@ -23,7 +23,21 @@ interface ShipmentEmailData {
   shippedAt: string | Date;
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resendClient: Resend | null = null;
+
+function getResend(): Resend {
+  if (resendClient) return resendClient;
+
+  const key = process.env.RESEND_API_KEY;
+  if (!key) {
+    // Note：don't throw when module is loading；only throw when send emails
+    throw new Error("RESEND_API_KEY is not set");
+  }
+
+  resendClient = new Resend(key);
+  return resendClient;
+}
+
 
 const EMAIL_FROM = process.env.EMAIL_FROM || "onboarding@resend.dev";
 
@@ -31,8 +45,14 @@ export async function sendPasswordResetEmail(
   to: string,
   resetUrl: string
 ) {
+  
+  if (!process.env.RESEND_API_KEY) {
+    console.error("RESEND_API_KEY is not set; skipping shipment email");
+    return { success: false, error: "Missing RESEND_API_KEY" } as const;
+  }
+
   try {
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResend().emails.send({
       from: EMAIL_FROM,
       to,
       subject: "Reset your password - Mountify",
@@ -86,7 +106,14 @@ export async function sendPasswordResetEmail(
 }
 
 export async function sendOrderConfirmationEmail(data: OrderEmailData) {
+
+  
   const { orderId, email, total, items, createdAt } = data;
+
+  if (!process.env.RESEND_API_KEY) {
+    console.error("RESEND_API_KEY is not set; skipping shipment email");
+    return { success: false, error: "Missing RESEND_API_KEY" } as const;
+  }
 
   // 生成商品列表 HTML
   const itemsHtml = items
@@ -106,7 +133,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
     .join("");
 
   try {
-    const { data: result, error } = await resend.emails.send({
+    const { data: result, error } = await getResend().emails.send({
       from: EMAIL_FROM,
       to: email,
       subject: `Order Confirmed #${orderId} - Mountify`,
@@ -214,7 +241,7 @@ export async function sendShipmentNotificationEmail(data: ShipmentEmailData) {
   const safeTrackingUrl = trackingUrl || "";
 
   try {
-    const { data: result, error } = await resend.emails.send({
+    const { data: result, error } = await getResend().emails.send({
       from: EMAIL_FROM,
       to: email,
       subject: `Your order #${orderId} has shipped - Mountify`,

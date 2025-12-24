@@ -5,11 +5,24 @@ import Stripe from "stripe";
 import { query } from "@/lib/db";
 import { sendOrderConfirmationEmail } from "@/lib/email";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2025-11-17.clover",
-});
+let stripe: Stripe | null = null;
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
+function getStripe() {
+  if (stripe) return stripe;
+
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error("STRIPE_SECRET_KEY is missing (runtime required)");
+
+  stripe = new Stripe(key, { apiVersion: "2025-11-17.clover" as any });
+  return stripe;
+}
+
+function getWebhookSecret() {
+  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!secret) throw new Error("STRIPE_WEBHOOK_SECRET is missing (runtime required)");
+  return secret;
+}
+
 
 export async function POST(req: Request) {
   try {
@@ -23,7 +36,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "No signature" }, { status: 400 });
     }
         // 2. verify signature and parse event
-    const event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
+    const event = getStripe().webhooks.constructEvent(body, sig, getWebhookSecret());
 
 
     // 3. Parse event
