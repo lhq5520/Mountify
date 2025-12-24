@@ -41,10 +41,10 @@ export async function POST(req: Request) {
     const normalizedEmail = email.toLowerCase().trim();
 
     // Build reset link
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
     if (!baseUrl) {
-      console.error("Missing NEXT_PUBLIC_APP_URL");
+      console.error("Missing NEXT_PUBLIC_SITE_URL");
       // Still return success to avoid leaking anything
       return NextResponse.json({
         success: true,
