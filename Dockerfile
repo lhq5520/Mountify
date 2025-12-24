@@ -26,6 +26,9 @@ COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/next.config.* ./
 
+# fix cache directory
+RUN mkdir -p .next/cache/images && chown -R nextjs:nextjs .next 
+
 USER nextjs
 EXPOSE 3000
 CMD ["npm", "run", "start"]
