@@ -15,7 +15,7 @@ A production-grade e-commerce platform built with Next.js
 
 📖 [View Documentation / 查阅文档](https://docs.mountify.shop)
 
-<img src="/public/images/logo.png" alt="Logo" width="200" />
+<img src="/public/images/logo.png" alt="Logo" width="150" />
 
 ---
 
