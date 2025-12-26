@@ -1,9 +1,0 @@
-services:
-  web:
-    build: .
-    container_name: mountify_web
-    ports:
-      - "3524:3000"
-    env_file:
-      - .env.production
-    restart: unless-stopped
