@@ -13,7 +13,7 @@ A production-grade e-commerce platform built with Next.js
 
 [English](#english) | [中文](#中文)
 
-<a href="https://docs.mountify.shop" target="_blank">📖 View Documentation / 查阅文档</a>
+📖 [View Documentation / 查阅文档](https://docs.mountify.shop)
 
 <img src="/public/images/logo.png" alt="Logo" width="200" />
 
@@ -80,7 +80,7 @@ Test card: `4242 4242 4242 4242`
 
 ### Documentation
 
-<a href="https://docs.mountify.shop" target="_blank">📖 docs.mountify.shop</a>
+📖 [docs.mountify.shop](https://docs.mountify.shop)
 
 ---
 
@@ -145,7 +145,7 @@ stripe listen --forward-to localhost:3000/api/webhooks/stripe
 
 ### 文档
 
-<a href="https://docs.mountify.shop" target="_blank">📖 docs.mountify.shop</a>
+📖 [docs.mountify.shop](https://docs.mountify.shop)
 
 ---
 
