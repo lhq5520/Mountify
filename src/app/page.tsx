@@ -12,7 +12,7 @@ const NORMAL_HERO = {
     "An experimental store for 3D-printed goods \nFrom key shells and mounts \nTo small, practical, and occasionally fun creations.",
   primaryCta: "Shop now",
   secondaryCta: "Explore products",
-  imageSrc: "/images/home3.png",
+  imageSrc: "/images/home1.png",
   imageAlt: "Workbench-style scene with 3D-printed objects and tools",
 };
 

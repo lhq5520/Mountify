@@ -1,172 +1,150 @@
-# ![DEMO](/public/images/DEMO.png)
+# ![Mountify](/public/images/DEMO.png)
 
-# Mountify – Quick Start Guide
+# Mountify
 
-Mountify is a full‑stack e‑commerce demo built with Next.js App Router, TypeScript, PostgreSQL (Neon), NextAuth, and Stripe Checkout + Webhooks. This Readme is a concise, developer‑focused handoff derived from the full project README, intended for day‑to‑day setup, running, and troubleshooting.
+A production-grade e-commerce platform built with Next.js
 
-## Overview
+一个基于 Next.js 构建的生产级电商平台
 
-- Modern UI/UX with a global design system (globals.css)
-- Secure checkout: server‑validated pricing + Stripe webhooks
-- Auth via NextAuth; session surfaced in client with `useSession()`
-- Cart backed by API endpoints; quantity and product validation server‑side
-- Admin orders listing (intended to be gated in production)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Stripe](https://img.shields.io/badge/Stripe-Payments-635bff?logo=stripe)](https://stripe.com/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-## Tech Stack
+[English](#english) | [中文](#中文)
 
-- Frontend: Next.js (App Router) 16, React, TypeScript, Tailwind
-- Backend: Next.js API Routes, NextAuth 5
-- Database: PostgreSQL (Neon)
-- Cache/Rate Limit (optional): Redis (Upstash)
-- Payments: Stripe Checkout + Webhooks
+---
 
-## Prerequisites
+## English
 
-- Node.js 18+ and a package manager (npm/yarn/pnpm/bun)
-- Neon PostgreSQL database (connection string)
-- Stripe account (test keys) + Stripe CLI for local webhook forwarding
+### Features
 
-## Latest Update
+- Full e-commerce flow: cart → checkout → payment → order confirmation
+- Auth via NextAuth v5 (credentials + Google OAuth)
+- Stripe Checkout + Webhooks with idempotent processing
+- Redis caching (56x faster queries)
+- Rate limiting, input validation, RBAC
+- Docker / PM2 / Vercel deployment ready
 
-- 12/19/2025 Version 5i
+### Tech Stack
 
-## Environment Variables
+| Layer    | Tech                                       |
+| -------- | ------------------------------------------ |
+| Frontend | Next.js 16, React 19, TypeScript, Tailwind |
+| Backend  | Next.js API Routes, NextAuth 5             |
+| Database | PostgreSQL (Neon)                          |
+| Cache    | Redis (Upstash)                            |
+| Payments | Stripe Checkout + Webhooks                 |
+| Email    | Resend                                     |
 
-Create `.env.local` in the project root and include **all** of the following (adjust to your setup):
+### Quick Start
+
+```bash
+git clone https://github.com/lhq5520/Mountify-Commerce.git
+cd Mountify-Commerce
+npm install
+cp .env.example .env.local  # Configure your environment variables
+npm run dev
+```
+
+### Environment Variables
 
 ```env
-# Site URLs
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-
-# Database (Neon PostgreSQL)
-DATABASE_URL=postgresql://user:password@host/database?sslmode=require
-
-# Stripe Payment
+# Required
+DATABASE_URL=postgresql://...
+AUTH_SECRET=...
 STRIPE_SECRET_KEY=sk_test_...
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+UPSTASH_REDIS_REST_URL=...
+UPSTASH_REDIS_REST_TOKEN=...
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
 
-# NextAuth
-AUTH_SECRET=...  # Generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-
-# Redis (Upstash) - for rate limiting & caching
-UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
-UPSTASH_REDIS_REST_TOKEN=your_token_here
-
-# Cloudinary - for image uploads
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-# Google OAuth (optional)
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-# Facebook OAuth (optional)
-FACEBOOK_CLIENT_ID=your_facebook_client_id
-FACEBOOK_CLIENT_SECRET=your_facebook_client_secret
-
-# Discord OAuth (optional)
-DISCORD_CLIENT_ID=your_discord_client_id
-DISCORD_CLIENT_SECRET=your_discord_client_secret
-
-# Email (Resend)
-RESEND_API_KEY=re_...
-EMAIL_FROM=noreply@yourdomain.com
+# Optional
+RESEND_API_KEY=...
+CLOUDINARY_API_KEY=...
 ```
 
-**Required variables** (app will not work without these):
-
-- `DATABASE_URL`
-- `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`
-- `AUTH_SECRET`
-- `NEXT_PUBLIC_SITE_URL`
-- `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`
-- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
-- `RESEND_API_KEY`, `EMAIL_FROM`
-- `Google`: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
-
-**Optional variables** (for OAuth providers):
-
-- Facebook: `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`
-- Discord: `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`
-
-## Install & Run
+### Stripe Test
 
 ```bash
-npm install
-npm run dev
-# open http://localhost:3000
-```
-
-To test webhooks locally:
-
-```bash
-stripe login
 stripe listen --forward-to localhost:3000/api/webhooks/stripe
 ```
 
-## Key Paths
+Test card: `4242 4242 4242 4242`
 
-- UI components: `src/app/components/`
-- Global styles: `src/app/globals.css`
-- App layout: `src/app/layout.tsx`
-- Pages: `src/app/...`
-- APIs (public): `src/app/api/...`
-- Checkout: `src/app/api/checkout/route.ts`
-- Webhooks: `src/app/api/webhooks/stripe/route.ts`
-- Orders polling: `src/app/api/orders/session/[sessionId]/route.ts`
-- Admin orders: `src/app/admin/orders/page.tsx` and `src/app/api/admin/orders/route.ts`
+### Documentation
 
-## Security Posture (Essentials)
+📖 [docs.mountify.shop](https://docs.mountify.shop)
 
-- Pricing is validated server‑side in `/api/checkout` (frontend only sends `productId` + `quantity`).
-- Stripe webhook verifies signatures and updates orders to `paid` when `checkout.session.completed`.
-- Quantity is validated on the server (integer, bounded) to prevent abuse.
-- Admin routes should be protected in production (authentication/authorization required).
+---
 
-## Common Issues & Fixes
+## 中文
 
-- TypeScript: missing `pg` types → install dev types:
-  ```bash
-  npm i --save-dev @types/pg
-  ```
-- Path alias for components: ensure `tsconfig.json` has
-  ```json
-  {
-    "compilerOptions": {
-      "baseUrl": ".",
-      "paths": {
-        "@/*": ["./src/*"],
-        "@/components/*": ["./src/app/components/*"]
-      }
-    }
-  }
-  ```
-  Or import directly from `@/app/components/...`.
+### 功能特性
 
-## Stripe Test Flow
+- 完整电商流程：购物车 → 结账 → 支付 → 订单确认
+- NextAuth v5 认证（账号密码 + Google OAuth）
+- Stripe 支付 + Webhooks 幂等处理
+- Redis 缓存（查询速度提升 56 倍）
+- 限流、输入验证、RBAC 权限控制
+- 支持 Docker / PM2 / Vercel 部署
 
-1. Add products to cart → `/cart`
-2. Click “Checkout with Stripe” (frontend posts to `/api/checkout`)
-3. Redirect to Stripe hosted page (use test card `4242 4242 4242 4242`)
-4. On success, Stripe redirects to `/checkout/success?session_id=...`
-5. Success page polls `/api/orders/session/{sessionId}` until status is `paid` (set by webhook)
+### 技术栈
 
-## Data Model Notes
+| 层级   | 技术                                       |
+| ------ | ------------------------------------------ |
+| 前端   | Next.js 16, React 19, TypeScript, Tailwind |
+| 后端   | Next.js API Routes, NextAuth 5             |
+| 数据库 | PostgreSQL (Neon)                          |
+| 缓存   | Redis (Upstash)                            |
+| 支付   | Stripe Checkout + Webhooks                 |
+| 邮件   | Resend                                     |
 
-- Products include `image_url`, `image_url_hover`, and `detailed_description` for richer UI.
-- Orders track `status` (`pending` → `paid`) and `stripe_session_id` for correlation.
-- Cart API joins product data and returns normalized items for the frontend.
+### 快速开始
 
-## Development Tips
+```bash
+git clone https://github.com/lhq5520/Mountify-Commerce.git
+cd Mountify-Commerce
+npm install
+cp .env.example .env.local  # 配置环境变量
+npm run dev
+```
 
-- Keep UI polish centralized in `globals.css` and shared components.
-- Use `useSession()` in client components to read NextAuth session.
-- Prefer server‑side validation for any sensitive inputs (price, quantity).
-- Restart dev server after changing `.env.local` or Stripe CLI secrets.
+### 环境变量
+
+```env
+# 必需
+DATABASE_URL=postgresql://...
+AUTH_SECRET=...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+UPSTASH_REDIS_REST_URL=...
+UPSTASH_REDIS_REST_TOKEN=...
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+
+# 可选
+RESEND_API_KEY=...
+CLOUDINARY_API_KEY=...
+```
+
+### Stripe 测试
+
+```bash
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
+```
+
+测试卡号：`4242 4242 4242 4242`
+
+### 文档
+
+📖 [docs.mountify.shop](https://docs.mountify.shop)
+
+---
 
 ## License
 
-For personal learning and demo purposes. No production warranty - I mean I do think about in production way but you might need to refine to make it robust.
+MIT © [Weifan Li](https://github.com/lhq5520)
